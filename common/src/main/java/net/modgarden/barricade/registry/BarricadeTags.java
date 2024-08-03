@@ -12,7 +12,7 @@ public class BarricadeTags {
     }
 
     public static class EntityTags {
-        public static final TagKey<EntityType<?>> PASSIVES = TagKey.create(Registries.ENTITY_TYPE, Barricade.asResource("passives"));
-        public static final TagKey<EntityType<?>> HOSTILES = TagKey.create(Registries.ENTITY_TYPE, Barricade.asResource("hostiles"));
+        public static final TagKey<EntityType<?>> BLOCKED_BY_PASSIVE_BARRIER = TagKey.create(Registries.ENTITY_TYPE, Barricade.asResource("blocked_by_passive_barrier"));
+        public static final TagKey<EntityType<?>> BLOCKED_BY_HOSTILE_BARRIER = TagKey.create(Registries.ENTITY_TYPE, Barricade.asResource("blocked_by_hostile_barrier"));
     }
 }
