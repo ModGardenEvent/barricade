@@ -1,6 +1,5 @@
-import dev.greenhouseteam.examplemod.gradle.Properties
-import dev.greenhouseteam.examplemod.gradle.Versions
-import me.modmuss50.mpp.PublishModTask
+import dev.modgarden.barricade.gradle.Properties
+import dev.modgarden.barricade.gradle.Versions
 
 plugins {
     id("conventions.common")

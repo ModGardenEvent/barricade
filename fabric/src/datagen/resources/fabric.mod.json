@@ -1,8 +1,8 @@
 {
     "schemaVersion": 1,
-    "id": "${mod_id}",
+    "id": "${mod_id}_datagen",
     "version": "${mod_version}+${minecraft_version}",
-    "name": "${mod_name}",
+    "name": "${mod_name} Datagen",
     "description": "${mod_description}",
     "authors": [
         "${mod_author}"
@@ -19,19 +19,10 @@
     "icon": "${mod_id}.png",
     "environment": "*",
     "entrypoints": {
-        "main": [
-            "net.modgarden.barricade.BarricadeFabric"
-        ],
-        "client": [
-            "net.modgarden.barricade.client.BarricadeFabricClient"
-        ],
-        "preLaunch": [
-            "net.modgarden.barricade.BarricadeFabricPre"
+        "fabric-datagen": [
+            "net.modgarden.barricade.datagen.BarricadeDataGen"
         ]
     },
-    "mixins": [
-        "${mod_id}.mixins.json"
-    ],
     "depends": {
         "fabricloader": "${fabric_loader_range}",
         "fabric-api": "*",

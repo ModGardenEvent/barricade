@@ -1,4 +1,4 @@
-import dev.greenhouseteam.examplemod.gradle.Properties
+import dev.modgarden.barricade.gradle.Properties
 
 plugins {
     id("conventions.common")

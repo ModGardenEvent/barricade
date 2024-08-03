@@ -1,5 +1,5 @@
-import dev.greenhouseteam.examplemod.gradle.Properties
-import dev.greenhouseteam.examplemod.gradle.Versions
+import dev.modgarden.barricade.gradle.Properties
+import dev.modgarden.barricade.gradle.Versions
 import org.apache.tools.ant.filters.LineContains
 import org.gradle.jvm.tasks.Jar
 
@@ -65,17 +65,6 @@ publishMods {
     changelog = rootProject.file("CHANGELOG.md").readText()
     version = "${Versions.MOD}+${Versions.MINECRAFT}-neoforge"
     type = STABLE
-
-    curseforge {
-        projectId = Properties.CURSEFORGE_PROJECT_ID
-        accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
-
-        minecraftVersions.add(Versions.MINECRAFT)
-        javaVersions.add(JavaVersion.VERSION_21)
-
-        clientRequired = true
-        serverRequired = true
-    }
 
     modrinth {
         projectId = Properties.MODRINTH_PROJECT_ID

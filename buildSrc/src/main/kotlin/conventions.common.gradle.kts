@@ -1,5 +1,5 @@
-import dev.greenhouseteam.examplemod.gradle.Properties
-import dev.greenhouseteam.examplemod.gradle.Versions
+import dev.modgarden.barricade.gradle.Properties
+import dev.modgarden.barricade.gradle.Versions
 
 plugins {
     base

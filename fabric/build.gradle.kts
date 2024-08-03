@@ -1,6 +1,5 @@
-import dev.greenhouseteam.examplemod.gradle.Properties
-import dev.greenhouseteam.examplemod.gradle.Versions
-import net.fabricmc.loom.task.RemapJarTask
+import dev.modgarden.barricade.gradle.Properties
+import dev.modgarden.barricade.gradle.Versions
 import org.gradle.jvm.tasks.Jar
 
 plugins {
@@ -13,6 +12,15 @@ repositories {
     maven {
         name = "TerraformersMC"
         url = uri("https://maven.terraformersmc.com/")
+    }
+}
+
+sourceSets {
+    create("datagen") {
+        compileClasspath += main.get().compileClasspath
+        runtimeClasspath += main.get().runtimeClasspath
+        compileClasspath += main.get().output
+        runtimeClasspath += main.get().output
     }
 }
 
@@ -56,11 +64,11 @@ loom {
         register("datagen") {
             server()
             configName = "Fabric Datagen"
-            setSource(sourceSets["test"])
+            setSource(sourceSets["datagen"])
             ideConfigGenerated(true)
             vmArg("-Dfabric-api.datagen")
             vmArg("-Dfabric-api.datagen.output-dir=${file("../common/src/generated/resources")}")
-            vmArg("-Dfabric-api.datagen.modid=${Properties.MOD_ID}")
+            vmArg("-Dfabric-api.datagen.modid=${Properties.MOD_ID}_datagen")
             runDir("build/datagen")
         }
     }
@@ -78,17 +86,6 @@ publishMods {
     changelog = rootProject.file("CHANGELOG.md").readText()
     version = "${Versions.MOD}+${Versions.MINECRAFT}-fabric"
     type = STABLE
-
-    curseforge {
-        projectId = Properties.CURSEFORGE_PROJECT_ID
-        accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
-
-        minecraftVersions.add(Versions.MINECRAFT)
-        javaVersions.add(JavaVersion.VERSION_21)
-
-        clientRequired = true
-        serverRequired = true
-    }
 
     modrinth {
         projectId = Properties.MODRINTH_PROJECT_ID
