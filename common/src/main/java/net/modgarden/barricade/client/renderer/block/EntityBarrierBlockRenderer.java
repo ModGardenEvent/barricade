@@ -29,7 +29,7 @@ public class EntityBarrierBlockRenderer implements BlockEntityRenderer<EntityBar
     @Override
     @SuppressWarnings("ConstantConditions")
     public void render(EntityBarrierBlockEntity blockEntity, float partialTick, PoseStack pose, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        if (blockEntity.getBackTextureLocation() == null || Minecraft.getInstance().gameMode.getPlayerMode() != GameType.CREATIVE || !Minecraft.getInstance().player.isHolding(blockEntity::matches))
+        if (blockEntity.getBackTextureLocation() == null || Minecraft.getInstance().gameMode.getPlayerMode() != GameType.CREATIVE || !Minecraft.getInstance().player.isHolding(blockEntity::matches) || Minecraft.getInstance().player.distanceToSqr(blockEntity.getBlockPos().getCenter()) > 2048)
             return;
 
         if (!SUCCESS_MAP.containsKey(blockEntity.getBackTextureLocation()))
@@ -41,7 +41,10 @@ public class EntityBarrierBlockRenderer implements BlockEntityRenderer<EntityBar
         pose.scale(0.5F, 0.5F, 0.5F);
         pose.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
         renderSprite(blockAtlas.getSprite(backLoc), pose, buffer, packedLight);
-        renderSprite(blockAtlas.getSprite(BARRIER_TEXTURE), pose, buffer, packedLight);
+        if (blockEntity.getBlockedDirections() == null)
+            renderSprite(blockAtlas.getSprite(BARRIER_TEXTURE), pose, buffer, packedLight);
+        else
+            DirectionalBarrierBlockRenderer.renderDirectionalBarrier(blockEntity.getBlockedDirections(), blockAtlas, blockEntity.getBlockPos(), pose, buffer, packedLight);
         pose.popPose();
     }
 

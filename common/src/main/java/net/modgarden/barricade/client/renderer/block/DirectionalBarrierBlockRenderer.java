@@ -3,7 +3,6 @@ package net.modgarden.barricade.client.renderer.block;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -14,9 +13,9 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.phys.Vec3;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.entity.DirectionalBarrierBlockEntity;
 import net.modgarden.barricade.component.BlockedDirectionsComponent;
@@ -25,12 +24,12 @@ public class DirectionalBarrierBlockRenderer implements BlockEntityRenderer<Dire
     private static final ResourceLocation NO_BARRIER_TEXTURE = Barricade.asResource("item/barricade/no_barrier");
     private static final ResourceLocation BARRIER_TEXTURE = ResourceLocation.withDefaultNamespace("item/barrier");
 
-    private static final ResourceLocation DIRECTION_UP_TEXTURE = Barricade.asResource("item/barricade/direction/up");
-    private static final ResourceLocation DIRECTION_DOWN_TEXTURE = Barricade.asResource("item/barricade/direction/down");
-    private static final ResourceLocation DIRECTION_NORTH_TEXTURE = Barricade.asResource("item/barricade/direction/north");
-    private static final ResourceLocation DIRECTION_SOUTH_TEXTURE = Barricade.asResource("item/barricade/direction/south");
-    private static final ResourceLocation DIRECTION_WEST_TEXTURE = Barricade.asResource("item/barricade/direction/west");
-    private static final ResourceLocation DIRECTION_EAST_TEXTURE = Barricade.asResource("item/barricade/direction/east");
+    public static final ResourceLocation DIRECTION_UP_TEXTURE = Barricade.asResource("item/barricade/direction/up");
+    public static final ResourceLocation DIRECTION_DOWN_TEXTURE = Barricade.asResource("item/barricade/direction/down");
+    public static final ResourceLocation DIRECTION_NORTH_TEXTURE = Barricade.asResource("item/barricade/direction/north");
+    public static final ResourceLocation DIRECTION_SOUTH_TEXTURE = Barricade.asResource("item/barricade/direction/south");
+    public static final ResourceLocation DIRECTION_WEST_TEXTURE = Barricade.asResource("item/barricade/direction/west");
+    public static final ResourceLocation DIRECTION_EAST_TEXTURE = Barricade.asResource("item/barricade/direction/east");
 
 
     private final TextureAtlas blockAtlas;
@@ -42,7 +41,7 @@ public class DirectionalBarrierBlockRenderer implements BlockEntityRenderer<Dire
     @Override
     @SuppressWarnings("ConstantConditions")
     public void render(DirectionalBarrierBlockEntity blockEntity, float partialTick, PoseStack pose, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        if (Minecraft.getInstance().gameMode.getPlayerMode() != GameType.CREATIVE || !Minecraft.getInstance().player.isHolding(blockEntity::matches))
+        if (Minecraft.getInstance().gameMode.getPlayerMode() != GameType.CREATIVE || !Minecraft.getInstance().player.isHolding(blockEntity::matches) || Minecraft.getInstance().player.distanceToSqr(blockEntity.getBlockPos().getCenter()) > 2048)
             return;
 
         pose.pushPose();
@@ -50,14 +49,19 @@ public class DirectionalBarrierBlockRenderer implements BlockEntityRenderer<Dire
         pose.scale(0.5F, 0.5F, 0.5F);
         pose.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
         BlockedDirectionsComponent component = BlockedDirectionsComponent.fromBlockState(blockEntity.getBlockState());
+        renderDirectionalBarrier(component, blockAtlas, blockEntity.getBlockPos(), pose, buffer, packedLight);
+        pose.popPose();
+    }
+
+    public static void renderDirectionalBarrier(BlockedDirectionsComponent component, TextureAtlas blockAtlas, BlockPos pos, PoseStack pose, MultiBufferSource buffer, int packedLight) {
         if (component.doesNotBlock())
-            renderSprite(blockAtlas.getSprite(NO_BARRIER_TEXTURE), pose, buffer, packedLight);
-        else if (component.blocksAll()) {
-            renderSprite(blockAtlas.getSprite(BARRIER_TEXTURE), pose, buffer, packedLight);
-        } else {
-            renderSprite(blockAtlas.getSprite(NO_BARRIER_TEXTURE), pose, buffer, packedLight);
-            Direction relativeHorizontal = getRelativeHorizontalDirectionToPlayer(blockEntity.getBlockPos());
-            Direction relativeVertical = getRelativeVerticalDirectionToPlayer(blockEntity.getBlockPos());
+            renderSprite(blockAtlas.getSprite(DirectionalBarrierBlockRenderer.NO_BARRIER_TEXTURE), pose, buffer, packedLight);
+        else if (component.blocksAll())
+            renderSprite(blockAtlas.getSprite(DirectionalBarrierBlockRenderer.BARRIER_TEXTURE), pose, buffer, packedLight);
+        else {
+            renderSprite(blockAtlas.getSprite(DirectionalBarrierBlockRenderer.NO_BARRIER_TEXTURE), pose, buffer, packedLight);
+            Direction relativeHorizontal = getRelativeHorizontalDirectionToPlayer(pos);
+            Direction relativeVertical = getRelativeVerticalDirectionToPlayer(pos);
 
             Direction relativeNorth;
             Direction relativeSouth;
@@ -117,24 +121,22 @@ public class DirectionalBarrierBlockRenderer implements BlockEntityRenderer<Dire
             }
 
             if (component.blocks(relativeSouth))
-                renderSprite(blockAtlas.getSprite(DIRECTION_SOUTH_TEXTURE), pose, buffer, packedLight);
+                renderSprite(blockAtlas.getSprite(DirectionalBarrierBlockRenderer.DIRECTION_SOUTH_TEXTURE), pose, buffer, packedLight);
             else if (component.blocks(relativeNorth))
-                renderSprite(blockAtlas.getSprite(DIRECTION_NORTH_TEXTURE), pose, buffer, packedLight);
+                renderSprite(blockAtlas.getSprite(DirectionalBarrierBlockRenderer.DIRECTION_NORTH_TEXTURE), pose, buffer, packedLight);
 
             if (component.blocks(relativeEast))
-                renderSprite(blockAtlas.getSprite(DIRECTION_EAST_TEXTURE), pose, buffer, packedLight);
+                renderSprite(blockAtlas.getSprite(DirectionalBarrierBlockRenderer.DIRECTION_EAST_TEXTURE), pose, buffer, packedLight);
 
             if (component.blocks(relativeWest))
-                renderSprite(blockAtlas.getSprite(DIRECTION_WEST_TEXTURE), pose, buffer, packedLight);
+                renderSprite(blockAtlas.getSprite(DirectionalBarrierBlockRenderer.DIRECTION_WEST_TEXTURE), pose, buffer, packedLight);
 
             if (component.blocks(relativeUp))
-                renderSprite(blockAtlas.getSprite(DIRECTION_UP_TEXTURE), pose, buffer, packedLight);
+                renderSprite(blockAtlas.getSprite(DirectionalBarrierBlockRenderer.DIRECTION_UP_TEXTURE), pose, buffer, packedLight);
 
             if (component.blocks(relativeDown))
-                renderSprite(blockAtlas.getSprite(DIRECTION_DOWN_TEXTURE), pose, buffer, packedLight);
+                renderSprite(blockAtlas.getSprite(DirectionalBarrierBlockRenderer.DIRECTION_DOWN_TEXTURE), pose, buffer, packedLight);
         }
-
-        pose.popPose();
     }
 
     private static Direction getRelativeHorizontalDirectionToPlayer(BlockPos pos) {
@@ -144,13 +146,19 @@ public class DirectionalBarrierBlockRenderer implements BlockEntityRenderer<Dire
 
     private static Direction getRelativeVerticalDirectionToPlayer(BlockPos pos) {
         Player player = Minecraft.getInstance().player;
-        if (player.getY() - pos.getY() > Mth.sqrt((float) player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ())))
+
+        if (player == null)
+            return null;
+
+        Vec3 direction = new Vec3(0, 1, 0);
+        double dot = direction.dot(player.position().subtract(pos.getCenter()));
+
+        if (dot >= (0.5 * (player.position().subtract(pos.getCenter()).length())))
             return Direction.UP;
 
-        if (pos.getY() - player.getY() > Mth.sqrt((float) player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ())))
+        if (dot <= (-0.9 * (player.position().subtract(pos.getCenter()).length())))
             return Direction.DOWN;
 
-        // Placeholder direction.
         return null;
     }
 

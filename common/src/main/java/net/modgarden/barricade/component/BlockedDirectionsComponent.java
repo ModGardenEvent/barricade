@@ -84,7 +84,7 @@ public record BlockedDirectionsComponent(Object2BooleanOpenHashMap<Direction> di
 
             // Prevents the entity from colliding vertically on horizontal blocks.
             double horizontalDiff = entity.position().multiply(1.0F, 0.0F, 1.0F).add(entity.getDeltaMovement().multiply(1.0F, 0.0F, 1.0F)).distanceTo(pos.getCenter().multiply(1.0F, 0.0F, 1.0F));
-            if (axis.isHorizontal() && horizontalDiff < 0.68)
+            if (axis.isHorizontal() && (horizontalDiff < 0.6 || !entity.getBoundingBox().inflate(1.5, 0.5, 1.5).contains(pos.getCenter()) || verticalDiff < 0.35 || verticalDiff > 2))
                 continue;
 
             if (direction.getAxisDirection() == Direction.AxisDirection.POSITIVE && entity.position().get(axis) > (double) pos.get(axis) + Shapes.block().max(axis) - 1.0E-5F)
