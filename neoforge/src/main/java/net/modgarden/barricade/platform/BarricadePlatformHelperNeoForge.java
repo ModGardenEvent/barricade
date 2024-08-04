@@ -1,11 +1,9 @@
 package net.modgarden.barricade.platform;
 
-import net.modgarden.barricade.platform.BarricadePlatformHelper;
-import net.modgarden.barricade.platform.Platform;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 
-public class ExamplePlatformHelperNeoForge implements BarricadePlatformHelper {
+public class BarricadePlatformHelperNeoForge implements BarricadePlatformHelper {
 
     @Override
     public Platform getPlatform() {

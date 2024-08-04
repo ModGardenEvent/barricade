@@ -29,9 +29,6 @@
             "net.modgarden.barricade.BarricadeFabricPre"
         ]
     },
-    "mixins": [
-        "${mod_id}.mixins.json"
-    ],
     "depends": {
         "fabricloader": "${fabric_loader_range}",
         "fabric-api": "*",

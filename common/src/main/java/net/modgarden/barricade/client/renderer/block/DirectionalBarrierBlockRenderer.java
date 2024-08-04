@@ -103,16 +103,16 @@ public class DirectionalBarrierBlockRenderer implements BlockEntityRenderer<Dire
                     Direction previousNorth = relativeNorth;
                     relativeSouth = Direction.UP;
                     relativeNorth = Direction.DOWN;
-                    relativeUp = previousSouth;
-                    relativeDown = previousNorth;
+                    relativeUp = previousNorth;
+                    relativeDown = previousSouth;
                 }
                 case DOWN -> {
-                    Direction previousFront = relativeSouth;
-                    Direction previousBehind = relativeNorth;
+                    Direction previousSouth = relativeSouth;
+                    Direction previousNorth = relativeNorth;
                     relativeSouth = Direction.DOWN;
                     relativeNorth = Direction.UP;
-                    relativeUp = previousFront;
-                    relativeDown = previousBehind;
+                    relativeUp = previousSouth;
+                    relativeDown = previousNorth;
                 }
                 case null, default -> {
                     relativeUp = Direction.UP;

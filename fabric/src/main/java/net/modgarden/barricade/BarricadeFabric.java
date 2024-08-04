@@ -11,9 +11,9 @@ public class BarricadeFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         Barricade.init();
-        BarricadeComponents.registerAll(Registry::register);
-        BarricadeItems.registerAll(Registry::register);
         BarricadeBlocks.registerAll(Registry::register);
         BarricadeBlockEntityTypes.registerAll(Registry::register);
+        BarricadeComponents.registerAll(Registry::register);
+        BarricadeItems.registerAll(Registry::register);
     }
 }
