@@ -34,6 +34,6 @@ You may access and modify either type of barrier by changing the components of o
 
 `/give @s barricade:entity_barrier[barricade:blocked_entities={entities:["#minecraft:skeletons"]}]` - Blocks all skeletons.
 
-`/give @s barricade:entity_barrier[barricade:blocked_entities={entities:["#minecraft:zombies"],inverted:true}]` - Blocks everything but zombies.
+`/give @s barricade:entity_barrier[barricade:blocked_entities={entities:["#minecraft:zombies","minecraft:player"],inverted:true}]` - Blocks everything but zombies and players.
 
 `/give @s barricade:entity_barrier[barricade:blocked_entities={backing_texture_location:"barricade:item/barricade/entity/player",entities:["minecraft:player"]},barricade:blocked_directions={west:true,north:true,south:true,east:true}]` - Blocks only players from all horizontal directions.
