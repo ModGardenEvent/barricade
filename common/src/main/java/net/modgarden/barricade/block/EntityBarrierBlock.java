@@ -28,7 +28,9 @@ public class EntityBarrierBlock extends BarrierBlock implements EntityBlock {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        if (level.getBlockEntity(pos) instanceof EntityBarrierBlockEntity blockEntity && (blockEntity.getBlockedEntities() == null || blockEntity.getBlockedEntities().canPass(context))) {
+        if (level.getBlockEntity(pos) instanceof EntityBarrierBlockEntity blockEntity) {
+            if ((blockEntity.getBlockedEntities() == null || blockEntity.getBlockedEntities().canPass(context)))
+                return Shapes.empty();
             if (blockEntity.getBlockedDirections() == null)
                 return Shapes.empty();
             Direction direction = blockEntity.getBlockedDirections().blockingDirection(pos, context);
