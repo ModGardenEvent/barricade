@@ -1,24 +1,35 @@
-# Greenhouse Multiloader Template
-This is a version of the Multiloader Template that is tailored towards Greenhouse's mods.
+# Barricade
+Barricade is a mod that implements more barrier types meant for use within Mod Garden events. Although it is free for other mapmakers to use too.
 
-## Swapping Versions
-Versions and properties are not within gradle.properties. This is because Kotlin DSL does not play nicely with gradle.properties.
-Versions are contained within `buildSrc/src/main/kotlin/dev/greenhouseteam/examplemod/gradle/Versions.kt`.
-Properties are contained within `buildSrc/src/main/kotlin/dev/greenhouseteam/examplemod/gradle/Properties.kt`.
+## The Barriers
+This mod adds two barrier types, Directional and Entity Type barriers.
+Directional barriers block movement from specific directions, whereas entity type barriers block specific types of entities.
 
-It is ideal to change any mention of `examplemod` within the codebase when creating from this template.
+All items may be accessed through the /give command or the Operator Utilities creative menu tab.
 
-## Changes from MLT
-The main changes from the Multiloader Template, which we have forked are:
-- Uses Kotlin DSL instead of Groovy DSL.
-- Rewrites to expanded properties, to fit loader conventions and create less overhead.
-- Removal of access transformer file from Fabric's build and refmap line in common mixins.json for NeoForge.
-- Platform Helpers are done without services, instead being added to the common class within Fabric pre-launch and NeoForge init.
-  - This must be done in pre-launch on Fabric due to random load order for mods. Otherwise the game may crash if a mod depends on the helper.
-- Cut down on a few classes.
-- Set up client mixins from the example in the `mixin.client` package, following convention for Greenhouse mixins.
-- Modmuss' mod publish plugin is set up for both loaders. For CurseForge, Modrinth and GitHub.
-  - Feel free to remove any of these, you may desire GitHub only if the mod is supposed to be an internal library
-  - You can run this with `publishMods`. Just make sure tokens are set up.
+### Default Directional Barriers
+- `barricade:down_barrier` - Blocks out entities from below.
+- `barricade:up_barrier` - Blocks out entities from above.
+- `barricade:east_barrier` - Blocks out entities from the east.
+- `barricade:west_barrier` - Blocks out entities from the west.
+- `barricade:north_barrier` - Blocks out entities from the north.
+- `barricade:south_barrier` - Blocks out entities from the south.
+- `barricade:horizontal_barrier` - Blocks out entities from all horizontal directions.
+- `barricade:vertical_barrier` - Blocks out entities from all vertical directions.
 
-# Remember to change this README for any projects!
+### Default Entity Type Barriers
+- `barricade:hostile_barrier` - Blocks out mobs considered hostile, and neutral mobs that are more-so hostile.
+- `barricade:mob_barrier` - Blocks out all non player entities.
+- `barricade:passive_barrier` - Blocks out mobs considered passive, and neutral mobs that are more-so passive.
+- `barricade:player_barrier` - Exclusively blocks out players.
+
+You may access and modify either type of barrier by changing the components of one of the pre-existing barriers of said type.
+
+### Example /give commands.
+`/give @s barricade:south_barrier[barricade:blocked_directions={south:true,north:true}]`
+`/give @s barricade:west_barrier[barricade:blocked_directions={west:true,up:true}]`
+`/give @s barricade:north_barrier[barricade:blocked_directions={west:true,north:true,south:true}]`
+
+`/give @s barricade:mob_barrier[barricade:blocked_entities={entities:["#minecraft:skeletons"]}]`
+`/give @s barricade:mob_barrier[barricade:blocked_entities={entities:["#minecraft:zombies"],inverted:true}]`
+`/give @s barricade:player_barrier[barricade:blocked_entities={backing_texture_location:"barricade:item/barricade/entity/player",entities:["minecraft:player"]},barricade:blocked_directions={west:true,north:true,south:true,east:true}]`
