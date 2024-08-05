@@ -26,10 +26,14 @@ All items may be accessed through the /give command or the Operator Utilities cr
 You may access and modify either type of barrier by changing the components of one of the pre-existing barriers of said type.
 
 ### Example /give commands.
-`/give @s barricade:directional_barrier[barricade:blocked_directions={south:true,north:true}]`
-`/give @s barricade:directional_barrier[barricade:blocked_directions={west:true,up:true}]`
-`/give @s barricade:directional_barrier[barricade:blocked_directions={west:true,north:true,south:true}]`
+`/give @s barricade:directional_barrier[barricade:blocked_directions={south:true,north:true}] - Blocks south and north.
+`
+`/give @s barricade:directional_barrier[barricade:blocked_directions={west:true,up:true}]` - Blocks west and up.
 
-`/give @s barricade:entity_barrier[barricade:blocked_entities={entities:["#minecraft:skeletons"]}]`
-`/give @s barricade:entity_barrier[barricade:blocked_entities={entities:["#minecraft:zombies"],inverted:true}]`
-`/give @s barricade:entity_barrier[barricade:blocked_entities={backing_texture_location:"barricade:item/barricade/entity/player",entities:["minecraft:player"]},barricade:blocked_directions={west:true,north:true,south:true,east:true}]`
+`/give @s barricade:directional_barrier[barricade:blocked_directions={west:true,north:true,south:true}]` - Blocks all horizontal directions besides east.
+
+`/give @s barricade:entity_barrier[barricade:blocked_entities={entities:["#minecraft:skeletons"]}]` - Blocks all skeletons.
+
+`/give @s barricade:entity_barrier[barricade:blocked_entities={entities:["#minecraft:zombies"],inverted:true}]` - Blocks everything but zombies.
+
+`/give @s barricade:entity_barrier[barricade:blocked_entities={backing_texture_location:"barricade:item/barricade/entity/player",entities:["minecraft:player"]},barricade:blocked_directions={west:true,north:true,south:true,east:true}]` - Blocks only players from all horizontal directions.
