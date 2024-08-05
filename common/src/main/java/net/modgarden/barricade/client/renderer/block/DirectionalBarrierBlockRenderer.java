@@ -21,8 +21,8 @@ import net.modgarden.barricade.block.entity.DirectionalBarrierBlockEntity;
 import net.modgarden.barricade.component.BlockedDirectionsComponent;
 
 public class DirectionalBarrierBlockRenderer implements BlockEntityRenderer<DirectionalBarrierBlockEntity> {
-    private static final ResourceLocation NO_BARRIER_TEXTURE = Barricade.asResource("item/barricade/no_barrier");
-    private static final ResourceLocation BARRIER_TEXTURE = ResourceLocation.withDefaultNamespace("item/barrier");
+    public static final ResourceLocation NO_BARRIER_TEXTURE = Barricade.asResource("item/barricade/no_barrier");
+    public static final ResourceLocation BARRIER_TEXTURE = ResourceLocation.withDefaultNamespace("item/barrier");
 
     public static final ResourceLocation DIRECTION_UP_TEXTURE = Barricade.asResource("item/barricade/direction/up");
     public static final ResourceLocation DIRECTION_DOWN_TEXTURE = Barricade.asResource("item/barricade/direction/down");

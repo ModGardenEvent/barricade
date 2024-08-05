@@ -1,5 +1,10 @@
 package net.modgarden.barricade.platform;
 
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+
+import java.util.Collection;
+
 public interface BarricadePlatformHelper {
 
     /**
@@ -33,4 +38,6 @@ public interface BarricadePlatformHelper {
 
         return isDevelopmentEnvironment() ? "development" : "production";
     }
+
+    <T> Collection<T> fixSeamsOnNeoForge(Collection<T> collection, Object textureAtlasSprite);
 }

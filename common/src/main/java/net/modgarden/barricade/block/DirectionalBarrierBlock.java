@@ -3,6 +3,7 @@ package net.modgarden.barricade.block;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -82,7 +83,12 @@ public class DirectionalBarrierBlock extends BarrierBlock implements EntityBlock
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        Direction direction = BlockedDirectionsComponent.fromBlockState(state).blockingDirection(pos, context);
+        BlockedDirectionsComponent component = BlockedDirectionsComponent.fromBlockState(state);
+        if (component.doesNotBlock())
+            return Shapes.empty();
+        if (component.blocksAll())
+            return super.getCollisionShape(state, level, pos, context);
+        Direction direction = component.blockingDirection(pos, context);
         if (direction == null)
             return Shapes.empty();
         return Shapes.block().getFaceShape(direction);

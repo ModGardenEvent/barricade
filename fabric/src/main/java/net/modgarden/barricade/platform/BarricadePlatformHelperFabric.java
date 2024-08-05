@@ -2,6 +2,8 @@ package net.modgarden.barricade.platform;
 
 import net.fabricmc.loader.api.FabricLoader;
 
+import java.util.Collection;
+
 public class BarricadePlatformHelperFabric implements BarricadePlatformHelper {
 
     @Override
@@ -17,5 +19,10 @@ public class BarricadePlatformHelperFabric implements BarricadePlatformHelper {
     @Override
     public boolean isDevelopmentEnvironment() {
         return FabricLoader.getInstance().isDevelopmentEnvironment();
+    }
+
+    @Override
+    public <T> Collection<T> fixSeamsOnNeoForge(Collection<T> collection, Object textureAtlasSprite) {
+        return collection;
     }
 }

@@ -31,8 +31,10 @@ public class EntityBarrierBlock extends BarrierBlock implements EntityBlock {
         if (level.getBlockEntity(pos) instanceof EntityBarrierBlockEntity blockEntity) {
             if ((blockEntity.getBlockedEntities() == null || blockEntity.getBlockedEntities().canPass(context)))
                 return Shapes.empty();
-            if (blockEntity.getBlockedDirections() == null)
+            if (blockEntity.getBlockedDirections() != null && blockEntity.getBlockedDirections().doesNotBlock())
                 return Shapes.empty();
+            if (blockEntity.getBlockedDirections() == null || blockEntity.getBlockedDirections().blocksAll())
+                return super.getCollisionShape(state, level, pos, context);
             Direction direction = blockEntity.getBlockedDirections().blockingDirection(pos, context);
             if (direction == null)
                 return Shapes.empty();

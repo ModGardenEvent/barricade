@@ -59,11 +59,11 @@ public record BlockedEntitiesComponent(ResourceLocation backTextureLocation, Lis
         if (!(context instanceof EntityCollisionContext entityContext) || entityContext.getEntity() == null)
             return true;
         Entity entity = entityContext.getEntity();
-        return !isBlocked(entity.getType());
+        return canPass(entity.getType());
     }
 
-    public boolean isBlocked(EntityType<?> entityType) {
-        return entities.stream().allMatch(tagKeyHolderEither -> tagKeyHolderEither.map(entityType::is, holder -> holder.is(entityType.builtInRegistryHolder()))) ^ inverted;
+    public boolean canPass(EntityType<?> entityType) {
+        return entities.stream().noneMatch(tagKeyHolderEither -> tagKeyHolderEither.map(entityType::is, holder -> holder.is(entityType.builtInRegistryHolder()))) ^ inverted;
     }
 
     @Override

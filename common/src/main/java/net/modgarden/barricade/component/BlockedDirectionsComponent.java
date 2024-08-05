@@ -9,12 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.VerticalAnchor;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -83,8 +78,8 @@ public record BlockedDirectionsComponent(Object2BooleanOpenHashMap<Direction> di
                 continue;
 
             // Prevents the entity from colliding vertically on horizontal blocks.
-            double horizontalDiff = entity.position().multiply(1.0F, 0.0F, 1.0F).add(entity.getDeltaMovement().multiply(1.0F, 0.0F, 1.0F)).distanceTo(pos.getCenter().multiply(1.0F, 0.0F, 1.0F));
-            if (axis.isHorizontal() && (horizontalDiff < 0.6 || !entity.getBoundingBox().inflate(1.5, 0.5, 1.5).contains(pos.getCenter()) || verticalDiff < 0.35 || verticalDiff > 2))
+            double horizontalDiff = entity.position().multiply(1.0F, 0.0F, 1.0F).add(entity.getDeltaMovement().multiply(1.0F, 0.0F, 1.0F)).distanceTo(pos.getCenter().add(direction.getStepX() * -0.3, direction.getStepY() * -0.3, direction.getStepZ() * -0.3).multiply(1.0F, 0.0F, 1.0F));
+            if (axis.isHorizontal() && (horizontalDiff < 0.6 || !entity.getBoundingBox().inflate(1.5, 0.5, 1.5).contains(pos.getCenter().add(direction.getStepX() * 0.3, direction.getStepY() * 0.3, direction.getStepZ() * 0.3)) || verticalDiff < 0.3 || verticalDiff > 2))
                 continue;
 
             if (direction.getAxisDirection() == Direction.AxisDirection.POSITIVE && entity.position().get(axis) > (double) pos.get(axis) + Shapes.block().max(axis) - 1.0E-5F)

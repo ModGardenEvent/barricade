@@ -26,10 +26,10 @@ All items may be accessed through the /give command or the Operator Utilities cr
 You may access and modify either type of barrier by changing the components of one of the pre-existing barriers of said type.
 
 ### Example /give commands.
-`/give @s barricade:south_barrier[barricade:blocked_directions={south:true,north:true}]`
-`/give @s barricade:west_barrier[barricade:blocked_directions={west:true,up:true}]`
-`/give @s barricade:north_barrier[barricade:blocked_directions={west:true,north:true,south:true}]`
+`/give @s barricade:directional_barrier[barricade:blocked_directions={south:true,north:true}]`
+`/give @s barricade:directional_barrier[barricade:blocked_directions={west:true,up:true}]`
+`/give @s barricade:directional_barrier[barricade:blocked_directions={west:true,north:true,south:true}]`
 
-`/give @s barricade:mob_barrier[barricade:blocked_entities={entities:["#minecraft:skeletons"]}]`
-`/give @s barricade:mob_barrier[barricade:blocked_entities={entities:["#minecraft:zombies"],inverted:true}]`
-`/give @s barricade:player_barrier[barricade:blocked_entities={backing_texture_location:"barricade:item/barricade/entity/player",entities:["minecraft:player"]},barricade:blocked_directions={west:true,north:true,south:true,east:true}]`
+`/give @s barricade:entity_barrier[barricade:blocked_entities={entities:["#minecraft:skeletons"]}]`
+`/give @s barricade:entity_barrier[barricade:blocked_entities={entities:["#minecraft:zombies"],inverted:true}]`
+`/give @s barricade:entity_barrier[barricade:blocked_entities={backing_texture_location:"barricade:item/barricade/entity/player",entities:["minecraft:player"]},barricade:blocked_directions={west:true,north:true,south:true,east:true}]`
