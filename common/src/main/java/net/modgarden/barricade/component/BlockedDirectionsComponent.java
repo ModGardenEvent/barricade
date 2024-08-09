@@ -9,57 +9,21 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.modgarden.barricade.block.DirectionalBarrierBlock;
-import net.modgarden.barricade.registry.BarricadeBlocks;
-import net.modgarden.barricade.registry.BarricadeTags;
 import net.modgarden.barricade.util.CodecUtil;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public record BlockedDirectionsComponent(Object2BooleanOpenHashMap<Direction> directionMap) {
-    public static final BlockedDirectionsComponent EMPTY = new BlockedDirectionsComponent(new Object2BooleanOpenHashMap<>());
-
     public static final Codec<BlockedDirectionsComponent> CODEC = CodecUtil.DIRECTION_MAP_CODEC.flatComapMap(BlockedDirectionsComponent::new, blockedDirectionsComponent -> DataResult.success(blockedDirectionsComponent.directionMap));
     public static final StreamCodec<ByteBuf, BlockedDirectionsComponent> STREAM_CODEC = CodecUtil.DIRECTION_MAP_STREAM_CODEC.map(BlockedDirectionsComponent::new, BlockedDirectionsComponent::directionMap);
 
     public static BlockedDirectionsComponent of(Direction... directions) {
         return new BlockedDirectionsComponent(Arrays.stream(directions).collect(Object2BooleanOpenHashMap::new, (map, dir) -> map.put(dir, true), Object2BooleanOpenHashMap::putAll));
-    }
-
-    public static BlockedDirectionsComponent fromBlockState(BlockState state) {
-        if (!state.is(BarricadeTags.BlockTags.DIRECTION_ALLOWED_BARRIERS))
-            return EMPTY;
-        Map<Direction, Boolean> map = new HashMap<>();
-        if (state.getValue(DirectionalBarrierBlock.DOWN))
-            map.put(Direction.DOWN, true);
-        if (state.getValue(DirectionalBarrierBlock.UP))
-            map.put(Direction.UP, true);
-        if (state.getValue(DirectionalBarrierBlock.NORTH))
-            map.put(Direction.NORTH, true);
-        if (state.getValue(DirectionalBarrierBlock.EAST))
-            map.put(Direction.EAST, true);
-        if (state.getValue(DirectionalBarrierBlock.SOUTH))
-            map.put(Direction.SOUTH, true);
-        if (state.getValue(DirectionalBarrierBlock.WEST))
-            map.put(Direction.WEST, true);
-        return new BlockedDirectionsComponent(new Object2BooleanOpenHashMap<>(map));
-    }
-
-    public boolean matches(BlockState blockState) {
-        return blockState.is(BarricadeBlocks.DIRECTIONAL_BARRIER) &&
-                blocks(Direction.DOWN) == blockState.getValue(DirectionalBarrierBlock.DOWN) &&
-                blocks(Direction.UP) == blockState.getValue(DirectionalBarrierBlock.UP) &&
-                blocks(Direction.NORTH) == blockState.getValue(DirectionalBarrierBlock.NORTH) &&
-                blocks(Direction.EAST) == blockState.getValue(DirectionalBarrierBlock.EAST) &&
-                blocks(Direction.SOUTH) == blockState.getValue(DirectionalBarrierBlock.SOUTH) &&
-                blocks(Direction.WEST) == blockState.getValue(DirectionalBarrierBlock.WEST);
     }
 
     public Direction blockingDirection(BlockPos pos, CollisionContext context) {

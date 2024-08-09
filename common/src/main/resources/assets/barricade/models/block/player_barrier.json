@@ -1,0 +1,12 @@
+{
+  "loader": "barricade:creative_only",
+  "block": "#barricade:barriers",
+  "model": {
+    "parent": "barricade:block/entity_barrier",
+    "textures": {
+      "all": "barricade:block/barrier",
+      "inner": "barricade:item/barricade/entity/player"
+    },
+    "render_type": "cutout"
+  }
+}

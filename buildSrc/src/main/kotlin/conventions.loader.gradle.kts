@@ -1,4 +1,4 @@
-import dev.modgarden.barricade.gradle.Properties
+import net.modgarden.barricade.gradle.Properties
 
 plugins {
     id("conventions.common")

@@ -1,5 +1,5 @@
-import dev.modgarden.barricade.gradle.Properties
-import dev.modgarden.barricade.gradle.Versions
+import net.modgarden.barricade.gradle.Properties
+import net.modgarden.barricade.gradle.Versions
 import org.apache.tools.ant.filters.LineContains
 import org.gradle.jvm.tasks.Jar
 
@@ -12,7 +12,7 @@ plugins {
 neoForge {
     version = Versions.NEOFORGE
     parchment {
-        minecraftVersion = Versions.INTERNAL_MINECRAFT
+        minecraftVersion = Versions.PARCHMENT_MINECRAFT
         mappingsVersion = Versions.PARCHMENT
     }
     addModdingDependenciesTo(sourceSets["test"])

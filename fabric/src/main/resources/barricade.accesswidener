@@ -1,4 +1,5 @@
 accessWidener v2 named
+accessible class net/minecraft/client/multiplayer/ClientChunkCache$Storage
 accessible class net/minecraft/client/resources/model/ModelBakery$ModelBakerImpl
 accessible method net/minecraft/client/resources/model/ModelBakery$ModelBakerImpl <init> (Lnet/minecraft/client/resources/model/ModelBakery;Lnet/minecraft/client/resources/model/ModelBakery$TextureGetter;Lnet/minecraft/client/resources/model/ModelResourceLocation;)V
 accessible class net/minecraft/client/resources/model/ModelManager$ReloadState

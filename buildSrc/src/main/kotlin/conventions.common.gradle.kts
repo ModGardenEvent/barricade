@@ -1,5 +1,5 @@
-import dev.modgarden.barricade.gradle.Properties
-import dev.modgarden.barricade.gradle.Versions
+import net.modgarden.barricade.gradle.Properties
+import net.modgarden.barricade.gradle.Versions
 
 plugins {
     base
@@ -81,7 +81,7 @@ tasks {
             attributes["Implementation-Title"] = project.name
             attributes["Implementation-Version"] = archiveVersion
             attributes["Implementation-Vendor"] = Properties.MOD_AUTHOR
-            attributes["Built-On-Minecraft"] = Versions.INTERNAL_MINECRAFT
+            attributes["Built-On-Minecraft"] = Versions.MINECRAFT
         }
     }
 

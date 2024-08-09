@@ -1,0 +1,20 @@
+{
+  "loader": "barricade:creative_only",
+  "block": "#barricade:barriers",
+  "model": {
+    "parent": "minecraft:cube/cube_all",
+    "textures": {
+      "all": "barricade:block/barrier"
+    },
+    "elements": [
+      {
+        "from": [0, 0, 0],
+        "to": [16, 16, 16],
+        "faces": {
+          "north": {"uv": [0, 0, 16, 16], "texture": "#all", "cullface": "north"}
+        }
+      }
+    ],
+    "render_type": "cutout"
+  }
+}

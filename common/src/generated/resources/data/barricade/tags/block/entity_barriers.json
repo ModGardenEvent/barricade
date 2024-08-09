@@ -1,0 +1,9 @@
+{
+  "values": [
+    "barricade:advanced_barrier",
+    "barricade:player_barrier",
+    "barricade:mob_barrier",
+    "barricade:passive_barrier",
+    "barricade:hostile_barrier"
+  ]
+}

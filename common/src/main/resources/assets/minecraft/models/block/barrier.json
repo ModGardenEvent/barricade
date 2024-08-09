@@ -1,0 +1,11 @@
+{
+  "loader": "barricade:creative_only",
+  "block": "#barricade:barriers",
+  "model": {
+    "parent": "minecraft:block/cube_all",
+    "textures": {
+      "all": "barricade:block/barrier"
+    },
+    "render_type": "cutout"
+  }
+}

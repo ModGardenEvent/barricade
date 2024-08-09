@@ -1,0 +1,16 @@
+{
+  "block.barricade.advanced_barrier": "Advanced Barrier",
+  "block.barricade.down_barrier": "Down Barrier",
+  "block.barricade.up_barrier": "Up Barrier",
+  "block.barricade.south_barrier": "South Barrier",
+  "block.barricade.north_barrier": "North Barrier",
+  "block.barricade.east_barrier": "East Barrier",
+  "block.barricade.west_barrier": "West Barrier",
+  "block.barricade.horizontal_barrier": "Horizontal Barrier",
+  "block.barricade.vertical_barrier": "Vertical Barrier",
+  "block.barricade.player_barrier": "Player Barrier",
+  "block.barricade.mob_barrier": "Mob Barrier",
+  "block.barricade.passive_barrier": "Passive Barrier",
+  "block.barricade.hostile_barrier": "Hostile Barrier",
+  "tag.item.barricade.barriers": "Barriers"
+}

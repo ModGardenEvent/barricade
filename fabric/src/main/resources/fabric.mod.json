@@ -20,17 +20,15 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "net.modgarden.barricade.BarricadeFabric"
+            "net.modgarden.barricade.fabric.BarricadeFabric"
         ],
         "client": [
-            "net.modgarden.barricade.client.BarricadeFabricClient"
-        ],
-        "preLaunch": [
-            "net.modgarden.barricade.BarricadeFabricPre"
+            "net.modgarden.barricade.fabric.client.BarricadeFabricClient"
         ]
     },
     "mixins": [
-        "${mod_id}.mixins.json"
+        "${mod_id}.mixins.json",
+        "${mod_id}.fabric.mixins.json"
     ],
     "accessWidener": "${mod_id}.accesswidener",
     "depends": {

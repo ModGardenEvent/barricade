@@ -1,15 +1,14 @@
 package net.modgarden.barricade.item;
 
-import net.minecraft.world.item.ItemNameBlockItem;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.modgarden.barricade.component.BlockedEntitiesComponent;
-import net.modgarden.barricade.registry.BarricadeComponents;
+import net.modgarden.barricade.block.EntityBarrierBlock;
 
-public class EntityBarrierBlockItem extends ItemNameBlockItem {
+public class EntityBarrierBlockItem extends BlockItem {
     public EntityBarrierBlockItem(Block block, Properties properties) {
         super(block, properties);
     }
@@ -19,7 +18,9 @@ public class EntityBarrierBlockItem extends ItemNameBlockItem {
         return context.getLevel().getEntities(null, Shapes.block().bounds().move(context.getClickedPos())).stream()
                 .noneMatch(entity -> {
                     CollisionContext collisionContext = entity == null ? CollisionContext.empty() : CollisionContext.of(entity);
-                    return !context.getItemInHand().getOrDefault(BarricadeComponents.BLOCKED_ENTITIES, BlockedEntitiesComponent.EMPTY).canPass(collisionContext);
+                    if (state.getBlock() instanceof EntityBarrierBlock entityBarrier)
+                        return !entityBarrier.entities().canPass(collisionContext);
+                    return false;
                 });
     }
 }

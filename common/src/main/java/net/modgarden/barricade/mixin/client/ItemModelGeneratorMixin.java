@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.block.model.ItemModelGenerator;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
-import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.BarricadeClient;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,7 +34,7 @@ public abstract class ItemModelGeneratorMixin {
             Material material = model.getMaterial(s);
             map.put(s, Either.left(material));
             SpriteContents spritecontents = spriteGetter.apply(material).contents();
-            list.addAll(Barricade.getHelper().fixSeamsOnNeoForge(processFrames(i, s, spritecontents), material.sprite()));
+            list.addAll(BarricadeClient.getHelper().fixSeamsOnNeoForge(processFrames(i, s, spritecontents), material.sprite()));
         }
     }
 }

@@ -1,5 +1,29 @@
 {
-  "textures": {
-    "particle": "minecraft:item/barrier"
-  }
+  "parent": "block/cube_all_inner_faces",
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": {"uv": [0, 0, 16, 16], "texture": "#all", "cullface": "north"},
+        "east": {"uv": [0, 0, 16, 16], "texture": "#all", "cullface": "east"},
+        "south": {"uv": [0, 0, 16, 16], "texture": "#all", "cullface": "south"},
+        "west": {"uv": [0, 0, 16, 16], "texture": "#all", "cullface": "west"},
+        "up": {"uv": [0, 0, 16, 16], "texture": "#all", "cullface": "up"},
+        "down": {"uv": [0, 0, 16, 16], "texture": "#all", "cullface": "down"}
+      }
+    },
+    {
+      "from": [0.002, 0.002, 0.002],
+      "to": [15.998, 15.998, 15.998],
+      "faces": {
+        "north": {"uv": [0, 0, 16, 16], "texture": "#inner", "cullface": "north"},
+        "east": {"uv": [0, 0, 16, 16], "texture": "#inner", "cullface": "east"},
+        "south": {"uv": [0, 0, 16, 16], "texture": "#inner", "cullface": "south"},
+        "west": {"uv": [0, 0, 16, 16], "texture": "#inner", "cullface": "west"},
+        "up": {"uv": [0, 0, 16, 16], "texture": "#inner", "cullface": "up"},
+        "down": {"uv": [0, 0, 16, 16], "texture": "#inner", "cullface": "down"}
+      }
+    }
+  ]
 }

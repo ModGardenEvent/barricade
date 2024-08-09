@@ -8,8 +8,11 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeTags;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -17,8 +20,9 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator generator) {
         FabricDataGenerator.Pack pack = generator.createPack();
-        pack.addProvider(BlockTagProvider::new);
+        BlockTagProvider blockTagProvider = pack.addProvider(BlockTagProvider::new);
         pack.addProvider(EntityTypeTagProvider::new);
+        pack.addProvider((output, registries) -> new ItemTagProvider(output, registries, blockTagProvider));
     }
 
     private static class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
@@ -28,32 +32,42 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 
         @Override
         protected void addTags(HolderLookup.Provider lookup) {
-            getOrCreateTagBuilder(BarricadeTags.BlockTags.DIRECTION_ALLOWED_BARRIERS)
+            getOrCreateTagBuilder(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS)
                     .add(
-                        BarricadeBlocks.DIRECTIONAL_BARRIER,
-                        BarricadeBlocks.ENTITY_BARRIER
+                            BarricadeBlocks.ADVANCED_BARRIER,
+                            BarricadeBlocks.DOWN_BARRIER,
+                            BarricadeBlocks.UP_BARRIER,
+                            BarricadeBlocks.NORTH_BARRIER,
+                            BarricadeBlocks.SOUTH_BARRIER,
+                            BarricadeBlocks.EAST_BARRIER,
+                            BarricadeBlocks.WEST_BARRIER,
+                            BarricadeBlocks.HORIZONTAL_BARRIER,
+                            BarricadeBlocks.VERTICAL_BARRIER
                     );
+            getOrCreateTagBuilder(BarricadeTags.BlockTags.ENTITY_BARRIERS)
+                    .add(
+                            BarricadeBlocks.ADVANCED_BARRIER,
+                            BarricadeBlocks.PLAYER_BARRIER,
+                            BarricadeBlocks.MOB_BARRIER,
+                            BarricadeBlocks.PASSIVE_BARRIER,
+                            BarricadeBlocks.HOSTILE_BARRIER
+                    );
+            getOrCreateTagBuilder(BarricadeTags.BlockTags.BARRIERS)
+                    .add(Blocks.BARRIER)
+                    .forceAddTag(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS)
+                    .forceAddTag(BarricadeTags.BlockTags.ENTITY_BARRIERS);
             getOrCreateTagBuilder(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS)
-                    .add(
-                            BarricadeBlocks.DIRECTIONAL_BARRIER,
-                            BarricadeBlocks.ENTITY_BARRIER
-                    );
+                    .forceAddTag(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS)
+                    .forceAddTag(BarricadeTags.BlockTags.ENTITY_BARRIERS);
             getOrCreateTagBuilder(BlockTags.SNOW_LAYER_CANNOT_SURVIVE_ON)
-                    .add(
-                        BarricadeBlocks.DIRECTIONAL_BARRIER,
-                        BarricadeBlocks.ENTITY_BARRIER
-                    );
+                    .forceAddTag(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS)
+                    .forceAddTag(BarricadeTags.BlockTags.ENTITY_BARRIERS);
             getOrCreateTagBuilder(BlockTags.DRAGON_IMMUNE)
-                    .add(
-                        BarricadeBlocks.DIRECTIONAL_BARRIER,
-                        BarricadeBlocks.ENTITY_BARRIER
-                    );
+                    .forceAddTag(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS)
+                    .forceAddTag(BarricadeTags.BlockTags.ENTITY_BARRIERS);
             getOrCreateTagBuilder(BlockTags.WITHER_IMMUNE)
-
-                    .add(
-                            BarricadeBlocks.DIRECTIONAL_BARRIER,
-                            BarricadeBlocks.ENTITY_BARRIER
-                    );
+                    .forceAddTag(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS)
+                    .forceAddTag(BarricadeTags.BlockTags.ENTITY_BARRIERS);
         }
     }
 
@@ -149,4 +163,17 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
         }
     }
 
+    private static class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
+        public ItemTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> completableFuture, @Nullable FabricTagProvider.BlockTagProvider blockTagProvider) {
+            super(output, completableFuture, blockTagProvider);
+        }
+
+        @Override
+        protected void addTags(HolderLookup.Provider wrapperLookup) {
+            getOrCreateTagBuilder(BarricadeTags.ItemTags.BARRIERS)
+                    .add(Items.BARRIER);
+            copy(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS, BarricadeTags.ItemTags.BARRIERS);
+            copy(BarricadeTags.BlockTags.ENTITY_BARRIERS, BarricadeTags.ItemTags.BARRIERS);
+        }
+    }
 }

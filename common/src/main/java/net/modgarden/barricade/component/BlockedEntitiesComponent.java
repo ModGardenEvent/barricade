@@ -63,7 +63,7 @@ public record BlockedEntitiesComponent(ResourceLocation backTextureLocation, Lis
     }
 
     public boolean canPass(EntityType<?> entityType) {
-        return entities.stream().noneMatch(tagKeyHolderEither -> tagKeyHolderEither.map(entityType::is, holder -> holder.is(entityType.builtInRegistryHolder()))) ^ inverted;
+        return entities.stream().noneMatch(tagKeyHolderEither -> tagKeyHolderEither.map(entityType::is, holder -> entityType.builtInRegistryHolder().is(holder))) ^ inverted;
     }
 
     @Override

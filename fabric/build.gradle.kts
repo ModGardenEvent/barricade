@@ -1,5 +1,5 @@
-import dev.modgarden.barricade.gradle.Properties
-import dev.modgarden.barricade.gradle.Versions
+import net.modgarden.barricade.gradle.Properties
+import net.modgarden.barricade.gradle.Versions
 import org.gradle.jvm.tasks.Jar
 
 plugins {
@@ -25,8 +25,11 @@ sourceSets {
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${Versions.INTERNAL_MINECRAFT}")
-    mappings(loom.officialMojangMappings())
+    minecraft("com.mojang:minecraft:${Versions.MINECRAFT}")
+    mappings(loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${Versions.PARCHMENT_MINECRAFT}:${Versions.PARCHMENT}@zip")
+    })
 
     modImplementation("net.fabricmc:fabric-loader:${Versions.FABRIC_LOADER}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${Versions.FABRIC_API}")

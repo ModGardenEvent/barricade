@@ -1,0 +1,13 @@
+{
+  "values": [
+    "barricade:advanced_barrier",
+    "barricade:down_barrier",
+    "barricade:up_barrier",
+    "barricade:north_barrier",
+    "barricade:south_barrier",
+    "barricade:east_barrier",
+    "barricade:west_barrier",
+    "barricade:horizontal_barrier",
+    "barricade:vertical_barrier"
+  ]
+}

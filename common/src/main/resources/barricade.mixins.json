@@ -4,10 +4,22 @@
   "package": "net.modgarden.barricade.mixin",
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "BarrierMixin",
+    "BlockBehaviourMixin",
+    "BlockMixin",
+    "PlayerMixin"
+  ],
   "client": [
+    "client.ClientChunkCacheAccessor",
+    "client.ClientChunkCacheStorageAccessor",
+    "client.ClientLevelMixin",
     "client.ItemModelGeneratorMixin",
+    "client.LevelRendererInvoker",
+    "client.MinecraftMixin",
     "client.ModelBakeryAccessor",
-    "client.ModelManagerMixin"
+    "client.ModelManagerMixin",
+    "client.StructureBlockRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

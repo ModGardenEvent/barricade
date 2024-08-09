@@ -1,0 +1,7 @@
+{
+  "values": [
+    "minecraft:barrier",
+    "#barricade:directional_barriers",
+    "#barricade:entity_barriers"
+  ]
+}

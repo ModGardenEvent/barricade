@@ -1,5 +1,5 @@
-import dev.modgarden.barricade.gradle.Properties
-import dev.modgarden.barricade.gradle.Versions
+import net.modgarden.barricade.gradle.Properties
+import net.modgarden.barricade.gradle.Versions
 
 plugins {
     id("conventions.common")
@@ -18,7 +18,7 @@ sourceSets {
 neoForge {
     neoFormVersion = Versions.NEOFORM
     parchment {
-        minecraftVersion = Versions.INTERNAL_MINECRAFT
+        minecraftVersion = Versions.PARCHMENT_MINECRAFT
         mappingsVersion = Versions.PARCHMENT
     }
     addModdingDependenciesTo(sourceSets["test"])
