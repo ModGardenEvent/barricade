@@ -37,7 +37,7 @@ public record BlockedDirectionsComponent(Set<Direction> directions) {
 
             // Prevents the entity from colliding horizontally with vertical blocks.
             double verticalDiff = Mth.abs((float) (entity.getY() + entity.getDeltaMovement().y - (pos.getY() + 0.6)));
-            if (axis.isVertical() &&  (direction == Direction.DOWN && verticalDiff < 2 || (direction == Direction.UP && verticalDiff > 0.6)))
+            if (axis.isVertical() && (direction == Direction.DOWN && verticalDiff < entity.getBoundingBox().getYsize() + 0.2 || (direction == Direction.UP && verticalDiff > Math.max(0.4, entity.getBoundingBox().getYsize() / 3))))
                 continue;
 
             // Prevents the entity from colliding vertically on horizontal blocks.
