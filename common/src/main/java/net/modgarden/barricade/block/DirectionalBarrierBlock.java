@@ -43,8 +43,8 @@ public class DirectionalBarrierBlock extends BarrierBlock {
     public DirectionalBarrierBlock(BlockedDirectionsComponent directions, Properties properties) {
         super(properties);
         this.directions = directions;
-        if (directions.directionMap().size() == 1)
-            DIRECTION_MAP.put(directions.directionMap().keySet().stream().findFirst().get(), this);
+        if (directions.directions().size() == 1)
+            DIRECTION_MAP.put(directions.directions().stream().findFirst().get(), this);
     }
 
     public BlockedDirectionsComponent directions() {
@@ -70,15 +70,15 @@ public class DirectionalBarrierBlock extends BarrierBlock {
 
     @Override
     protected BlockState rotate(BlockState state, Rotation rot) {
-        if (!(state.getBlock() instanceof DirectionalBarrierBlock directional) || directional.directions.directionMap().size() != 1)
+        if (!(state.getBlock() instanceof DirectionalBarrierBlock directional) || directional.directions.directions().size() != 1)
             return state;
-        return DIRECTION_MAP.get(rot.rotate(directional.directions.directionMap().keySet().stream().findFirst().get())).defaultBlockState();
+        return DIRECTION_MAP.get(rot.rotate(directional.directions.directions().stream().findFirst().get())).defaultBlockState();
     }
 
     @Override
     protected BlockState mirror(BlockState state, Mirror mirror) {
-        if (!(state.getBlock() instanceof DirectionalBarrierBlock directional) || directional.directions.directionMap().size() != 1)
+        if (!(state.getBlock() instanceof DirectionalBarrierBlock directional) || directional.directions.directions().size() != 1)
             return state;
-        return DIRECTION_MAP.get(mirror.mirror(directional.directions.directionMap().keySet().stream().findFirst().get())).defaultBlockState();
+        return DIRECTION_MAP.get(mirror.mirror(directional.directions.directions().stream().findFirst().get())).defaultBlockState();
     }
 }

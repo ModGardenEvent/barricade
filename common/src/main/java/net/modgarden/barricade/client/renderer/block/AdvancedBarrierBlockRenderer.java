@@ -57,7 +57,7 @@ public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<Advance
         if (components.blockedDirections() != null && !components.blockedDirections().doesNotBlock()) {
             if (!variant.isEmpty())
                 variant = variant + ",";
-            variant = String.join(",", components.blockedDirections().directionMap().keySet().stream().map(Direction::getName).toList());
+            variant = String.join(",", components.blockedDirections().directions().stream().map(Direction::getName).toList());
         }
         BlockModel blockModel = new AdvancedBarrierBlockUnbakedModel(components.blockedDirections(), components.blockedEntities());
         return blockModel

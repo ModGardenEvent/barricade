@@ -43,9 +43,9 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
                 } else {
                     Direction direction = blockEntity.getBlockedDirections().blockingDirection(pos, context);
                     if (direction == null) {
-                        return super.getCollisionShape(state, level, pos, context);
+                        return Shapes.empty();
                     }
-                    return Shapes.empty();
+                    return super.getCollisionShape(state, level, pos, context);
                 }
             }
         }

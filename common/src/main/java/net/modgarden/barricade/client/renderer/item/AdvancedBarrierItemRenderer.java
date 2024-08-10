@@ -83,18 +83,16 @@ public class AdvancedBarrierItemRenderer {
         if (components.blockedDirections() == null || components.blockedDirections().blocksAll()) {
             textureMap.put("barricade_layer" + i, Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, BARRIER_TEXTURE)));
             ++i;
-        } else if (!components.blockedDirections().blocksAll()) {
+        } else if (components.blockedDirections().doesNotBlock()) {
             textureMap.put("barricade_layer" + i, Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, NO_BARRIER_TEXTURE)));
             ++i;
         } else {
             textureMap.put("barricade_layer" + i, Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, NO_BARRIER_TEXTURE)));
             ++i;
 
-            for (Map.Entry<Direction, Boolean> entry : components.blockedDirections().directionMap().object2BooleanEntrySet()) {
-                if (entry.getValue()) {
-                    textureMap.put("barricade_layer" + i, Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, DIRECTION_TO_MATERIAL_LOCATION.get(entry.getKey()))));
-                    ++i;
-                }
+            for (Direction entry : components.blockedDirections().directions()) {
+                textureMap.put("barricade_layer" + i, Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, DIRECTION_TO_MATERIAL_LOCATION.get(entry))));
+                ++i;
             }
         }
 
@@ -105,7 +103,7 @@ public class AdvancedBarrierItemRenderer {
         if (components.blockedDirections() != null && !components.blockedDirections().doesNotBlock()) {
             if (!variant.isEmpty())
                 variant = variant + ",";
-            variant = String.join(",", components.blockedDirections().directionMap().keySet().stream().map(Direction::getName).toList());
+            variant = String.join(",", components.blockedDirections().directions().stream().map(Direction::getName).toList());
         }
         BlockModel blockModel = new BlockModel(ResourceLocation.withDefaultNamespace("builtin/generated"), List.of(), textureMap, false, BlockModel.GuiLight.FRONT, Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(Items.BARRIER).getTransforms(), List.of());
         return ModelBakeryAccessor.getItemModelGenerator()

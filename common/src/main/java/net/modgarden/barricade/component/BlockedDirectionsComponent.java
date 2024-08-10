@@ -3,37 +3,36 @@ package net.modgarden.barricade.component;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import io.netty.buffer.ByteBuf;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Mth;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.modgarden.barricade.util.CodecUtil;
 
 import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-public record BlockedDirectionsComponent(Object2BooleanOpenHashMap<Direction> directionMap) {
-    public static final Codec<BlockedDirectionsComponent> CODEC = CodecUtil.DIRECTION_MAP_CODEC.flatComapMap(BlockedDirectionsComponent::new, blockedDirectionsComponent -> DataResult.success(blockedDirectionsComponent.directionMap));
-    public static final StreamCodec<ByteBuf, BlockedDirectionsComponent> STREAM_CODEC = CodecUtil.DIRECTION_MAP_STREAM_CODEC.map(BlockedDirectionsComponent::new, BlockedDirectionsComponent::directionMap);
+public record BlockedDirectionsComponent(Set<Direction> directions) {
+    public static final Codec<BlockedDirectionsComponent> CODEC = StringRepresentable.fromEnum(Direction::values).listOf().flatXmap(directions -> DataResult.success(new BlockedDirectionsComponent(Set.copyOf(directions))), component -> DataResult.success(List.copyOf(component.directions)));
+    public static final StreamCodec<ByteBuf, BlockedDirectionsComponent> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
     public static BlockedDirectionsComponent of(Direction... directions) {
-        return new BlockedDirectionsComponent(Arrays.stream(directions).collect(Object2BooleanOpenHashMap::new, (map, dir) -> map.put(dir, true), Object2BooleanOpenHashMap::putAll));
+        return new BlockedDirectionsComponent(Arrays.stream(directions).collect(Collectors.toUnmodifiableSet()));
     }
 
     public Direction blockingDirection(BlockPos pos, CollisionContext context) {
         if (!(context instanceof EntityCollisionContext entityContext) || entityContext.getEntity() == null)
             return null;
         Entity entity = entityContext.getEntity();
-        for (Map.Entry<Direction, Boolean> entry : directionMap.object2BooleanEntrySet()) {
-            if (!entry.getValue())
-                continue;
-            Direction direction = entry.getKey();
+        for (Direction direction : directions) {
             Direction.Axis axis = direction.getAxis();
 
             // Prevents the entity from colliding horizontally with vertical blocks.
@@ -56,29 +55,29 @@ public record BlockedDirectionsComponent(Object2BooleanOpenHashMap<Direction> di
     }
 
     public boolean doesNotBlock() {
-        return directionMap.isEmpty();
+        return directions.isEmpty();
     }
 
     public boolean blocksAll() {
         for (Direction dir : Direction.values())
-            if (!directionMap.containsKey(dir) || !directionMap.getBoolean(dir))
+            if (!directions.contains(dir))
                 return false;
         return true;
     }
 
     public boolean blocks(Direction direction) {
-        return directionMap.containsKey(direction) && directionMap.getBoolean(direction);
+        return directions.contains(direction);
     }
 
     @Override
     public boolean equals(Object other) {
         if (!(other instanceof BlockedDirectionsComponent component))
             return false;
-        return component.directionMap.equals(directionMap);
+        return component.directions.equals(directions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(directionMap);
+        return Objects.hashCode(directions);
     }
 }
