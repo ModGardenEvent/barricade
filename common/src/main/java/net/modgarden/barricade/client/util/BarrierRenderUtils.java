@@ -1,12 +1,6 @@
 package net.modgarden.barricade.client.util;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.BlockItem;
@@ -23,33 +17,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class BarrierRenderUtils {
-    public static void renderSprite(TextureAtlasSprite sprite, PoseStack pose, VertexConsumer consumer) {
-        PoseStack.Pose pose1 = pose.last();
-        float u0 = sprite.getU0();
-        float u1 = sprite.getU1();
-        float v0 = sprite.getV0();
-        float v1 = sprite.getV1();
-        RenderSystem.setShader(GameRenderer::getRendertypeCutoutShader);
-        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-        RenderSystem.depthMask(true);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        vertex(consumer, pose1, 1.0F, -1.0F, u1, v1);
-        vertex(consumer, pose1, 1.0F, 1.0F, u1, v0);
-        vertex(consumer, pose1, -1.0F, 1.0F, u0, v0);
-        vertex(consumer, pose1, -1.0F, -1.0F, u0, v1);
-        RenderSystem.disableDepthTest();
-        RenderSystem.disableBlend();
-    }
-
-    private static void vertex(VertexConsumer consumer, PoseStack.Pose pose, float xOffset, float yOffset, float u, float v) {
-        consumer.addVertex(pose, xOffset, yOffset, 0.0F)
-                .setNormal(0.0F, 0.0F, 0.0F)
-                .setColor(-1)
-                .setUv(u, v)
-                .setLight(15728880);
-    }
-
     public static void refreshBarrierBlocks(ItemStack stack, ItemStack lastItemInMainHand) {
         if (stack.getItem() instanceof BlockItem blockItem && lastItemInMainHand.getItem() instanceof BlockItem lastBlockItem) {
             BlockState state = stack.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY).apply(blockItem.getBlock().defaultBlockState());
