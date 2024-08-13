@@ -61,6 +61,7 @@ public class BarricadeFabricClient implements ClientModInitializer {
 
         BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(),
                 Blocks.BARRIER,
+                Blocks.LIGHT,
                 BarricadeBlocks.ADVANCED_BARRIER,
                 BarricadeBlocks.UP_BARRIER,
                 BarricadeBlocks.DOWN_BARRIER,

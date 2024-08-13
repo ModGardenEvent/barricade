@@ -1,10 +1,10 @@
 {
   "loader": "barricade:creative_only",
-  "required_item": "#barricade:barriers",
+  "required_item": "minecraft:light",
   "model": {
     "parent": "minecraft:block/cube_all",
     "textures": {
-      "all": "barricade:block/barrier"
+      "all": "minecraft:item/light_13"
     },
     "render_type": "cutout"
   }

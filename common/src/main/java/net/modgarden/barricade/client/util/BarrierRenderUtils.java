@@ -26,7 +26,7 @@ public class BarrierRenderUtils {
         if (stack.getItem() instanceof BlockItem blockItem && lastItemInMainHand.getItem() instanceof BlockItem lastBlockItem) {
             BlockState state = stack.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY).apply(blockItem.getBlock().defaultBlockState());
             BlockState lastState = lastItemInMainHand.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY).apply(lastBlockItem.getBlock().defaultBlockState());
-            if (Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof CreativeOnlyBakedModelAccess currentModel && Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(lastState) instanceof CreativeOnlyBakedModelAccess previousModel && currentModel.requiredItem() != previousModel.requiredItem())
+            if (Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof CreativeOnlyBakedModelAccess currentModel && Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(lastState) instanceof CreativeOnlyBakedModelAccess previousModel && !currentModel.requiredItem().equals(previousModel.requiredItem()))
                 refreshBarrierSections(stack, lastItemInMainHand, currentModel.requiredItem(), previousModel.requiredItem());
         } else if (stack.getItem() instanceof BlockItem blockItem) {
             BlockState state = stack.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY).apply(blockItem.getBlock().defaultBlockState());
