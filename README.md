@@ -1,11 +1,13 @@
 # Barricade
 Barricade is a mod that implements more barrier types meant for use within Mod Garden events. Although it is free for other mapmakers to use too.
 
+This mod also changes barrier and light block rendering, to be friendlier to directional based barriers.
+
 ## The Barriers
-This mod adds two barrier types, Directional and Entity Type barriers.
+This mod adds three barrier types, Directional, Entity Type, and Advanced barriers.
 Directional barriers block movement from specific directions, whereas entity type barriers block specific types of entities.
 
-All items may be accessed through the /give command or the Operator Utilities creative menu tab.
+All items may be accessed through the /give command or through the Operator Utilities creative menu tab.
 
 ### Default Directional Barriers
 - `barricade:down_barrier` - Blocks out entities from below.
@@ -23,17 +25,19 @@ All items may be accessed through the /give command or the Operator Utilities cr
 - `barricade:passive_barrier` - Blocks out mobs considered passive, and neutral mobs that are more-so passive.
 - `barricade:player_barrier` - Exclusively blocks out players.
 
-You may access and modify either type of barrier by changing the components of one of the pre-existing barriers of said type.
+### Advanced Barrier
+The Advanced Barrier is a block entity based barrier that can be both an entity barrier and a directional barrier.
+What an Advanced Barrier will do can be modified through the `barricade:blocked_directions` and `barricade:blocked_entities` components on the associated item.
 
-### Example /give commands.
-`/give @s barricade:directional_barrier[barricade:blocked_directions={south:true,north:true}] - Blocks south and north.
-`
-`/give @s barricade:directional_barrier[barricade:blocked_directions={west:true,up:true}]` - Blocks west and up.
+#### Example /give commands.
+`/give @s barricade:advanced_barrier[barricade:blocked_directions=[south,north]]` - Blocks south and north.
 
-`/give @s barricade:directional_barrier[barricade:blocked_directions={west:true,north:true,south:true}]` - Blocks all horizontal directions besides east.
+`/give @s barricade:advanced_barrier[barricade:blocked_directions={west,up}]` - Blocks west and up.
 
-`/give @s barricade:entity_barrier[barricade:blocked_entities={entities:["#minecraft:skeletons"]}]` - Blocks all skeletons.
+`/give @s barricade:advanced_barrier[barricade:blocked_directions={west,north,south}]` - Blocks all horizontal directions besides east.
 
-`/give @s barricade:entity_barrier[barricade:blocked_entities={entities:["#minecraft:zombies","minecraft:player"],inverted:true}]` - Blocks everything but zombies and players.
+`/give @s barricade:advanced_barrier[barricade:blocked_entities={entities:["#minecraft:skeletons"]}]` - Blocks all skeletons.
 
-`/give @s barricade:entity_barrier[barricade:blocked_entities={backing_texture_location:"barricade:item/barricade/entity/player",entities:["minecraft:player"]},barricade:blocked_directions={west:true,north:true,south:true,east:true}]` - Blocks only players from all horizontal directions.
+`/give @s barricade:advanced_barrier[barricade:blocked_entities={entities:["#minecraft:zombies","minecraft:player"],inverted:true}]` - Blocks everything but zombies and players.
+
+`/give @s barricade:advanced_barrier[barricade:blocked_entities={backing_texture_location:"barricade:item/barricade/entity/player",entities:["minecraft:player"]},barricade:blocked_directions={west,north,south,east}]` - Blocks only players from all horizontal directions.
