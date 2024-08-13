@@ -12,5 +12,5 @@ object Properties {
     const val HOMEPAGE = "https://modrinth.com/project/barricade"
     const val MODRINTH_PROJECT_ID = "kRSR7ZEj"
     const val GITHUB_REPO = "ModGardenEvent/barricade"
-    const val GITHUB_COMMITISH = Versions.MINECRAFT
+    const val GITHUB_COMMITISH = "1.21"
 }
