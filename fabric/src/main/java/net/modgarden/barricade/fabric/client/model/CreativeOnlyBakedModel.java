@@ -20,10 +20,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.model.CreativeOnlyBakedModelAccess;
@@ -35,11 +34,11 @@ import java.util.function.Supplier;
 
 public class CreativeOnlyBakedModel implements BakedModel, CreativeOnlyBakedModelAccess {
     private final BakedModel model;
-    private final Either<TagKey<Block>, ResourceKey<Block>> tagOrBlock;
+    private final Either<TagKey<Item>, ResourceKey<Item>> requiredItem;
 
-    public CreativeOnlyBakedModel(BakedModel model, Either<TagKey<Block>, ResourceKey<Block>> tagOrBlock) {
+    public CreativeOnlyBakedModel(BakedModel model, Either<TagKey<Item>, ResourceKey<Item>> requiredItem) {
         this.model = model;
-        this.tagOrBlock = tagOrBlock;
+        this.requiredItem = requiredItem;
     }
 
     @Override
@@ -49,7 +48,7 @@ public class CreativeOnlyBakedModel implements BakedModel, CreativeOnlyBakedMode
 
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockGetter, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
-        if (BarricadeClient.terrainContext.get() != null && (!RendererAccess.INSTANCE.hasRenderer() || Minecraft.getInstance().gameMode.getPlayerMode() != GameType.CREATIVE || !Minecraft.getInstance().player.isHolding(stack -> stack.getItem() instanceof BlockItem blockItem && tagOrBlock.map(tagKey -> blockItem.getBlock().builtInRegistryHolder().is(tagKey), blockKey -> blockItem.getBlock().builtInRegistryHolder().is(blockKey)))))
+        if (BarricadeClient.terrainContext.get() != null && (!RendererAccess.INSTANCE.hasRenderer() || Minecraft.getInstance().gameMode.getPlayerMode() != GameType.CREATIVE || !Minecraft.getInstance().player.isHolding(stack -> requiredItem.map(stack::is, key -> stack.getItemHolder().is(key)))))
             return;
 
         QuadEmitter emitter = context.getEmitter();
@@ -112,7 +111,7 @@ public class CreativeOnlyBakedModel implements BakedModel, CreativeOnlyBakedMode
     }
 
     @Override
-    public Either<TagKey<Block>, ResourceKey<Block>> tagOrBlock() {
-        return tagOrBlock;
+    public Either<TagKey<Item>, ResourceKey<Item>> requiredItem() {
+        return requiredItem;
     }
 }

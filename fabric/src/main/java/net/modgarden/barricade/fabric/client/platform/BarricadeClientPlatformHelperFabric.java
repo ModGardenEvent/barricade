@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Item;
 import net.modgarden.barricade.client.platform.BarricadeClientPlatformHelper;
 import net.modgarden.barricade.fabric.client.model.CreativeOnlyBakedModel;
 
@@ -25,8 +25,8 @@ public class BarricadeClientPlatformHelperFabric implements BarricadeClientPlatf
     }
 
     @Override
-    public BakedModel createCreativeOnlyModel(BakedModel model, Either<TagKey<Block>, ResourceKey<Block>> tagOrBlock) {
-        return new CreativeOnlyBakedModel(model, tagOrBlock);
+    public BakedModel createCreativeOnlyModel(BakedModel model, Either<TagKey<Item>, ResourceKey<Item>> requiredItem) {
+        return new CreativeOnlyBakedModel(model, requiredItem);
     }
 
 }

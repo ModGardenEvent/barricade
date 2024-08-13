@@ -18,7 +18,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Item;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.BarricadeClient;
 import org.jetbrains.annotations.Nullable;
@@ -29,13 +29,13 @@ import java.util.function.Function;
 
 public class CreativeOnlyUnbakedModel implements UnbakedModel {
     protected final UnbakedModel sourceModel;
-    protected final Either<TagKey<Block>, ResourceKey<Block>> tagOrBlock;
+    protected final Either<TagKey<Item>, ResourceKey<Item>> requiredItem;
 
     public CreativeOnlyUnbakedModel(
             UnbakedModel model,
-            Either<TagKey<Block>, ResourceKey<Block>> tagOrBlock) {
+            Either<TagKey<Item>, ResourceKey<Item>> requiredItem) {
         this.sourceModel = model;
-        this.tagOrBlock = tagOrBlock;
+        this.requiredItem = requiredItem;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class CreativeOnlyUnbakedModel implements UnbakedModel {
     @Nullable
     @Override
     public BakedModel bake(ModelBaker modelBaker, Function<Material, TextureAtlasSprite> textureGetter, ModelState modelState) {
-        return BarricadeClient.getHelper().createCreativeOnlyModel(sourceModel.bake(modelBaker, textureGetter, modelState), tagOrBlock);
+        return BarricadeClient.getHelper().createCreativeOnlyModel(sourceModel.bake(modelBaker, textureGetter, modelState), requiredItem);
     }
 
     public static class Deserializer implements JsonDeserializer<CreativeOnlyUnbakedModel> {
@@ -65,21 +65,21 @@ public class CreativeOnlyUnbakedModel implements UnbakedModel {
 
             BlockModel model = BlockModel.fromString(jsonObject.get("model").toString());
 
-            if (!jsonObject.has("block"))
-                throw new JsonParseException("Cannot get 'block' field from 'barricade:creative_only' model.");
+            if (!jsonObject.has("required_item"))
+                throw new JsonParseException("Cannot get 'required_item' field from 'barricade:creative_only' model.");
 
-            Either<TagKey<Block>, ResourceKey<Block>> either = getEither(GsonHelper.getAsString(jsonObject, "block"));
+            Either<TagKey<Item>, ResourceKey<Item>> either = getEither(GsonHelper.getAsString(jsonObject, "required_item"));
 
             return new CreativeOnlyUnbakedModel(model, either);
         }
 
-        private static Either<TagKey<Block>, ResourceKey<Block>> getEither(String id) throws JsonParseException {
-            Either<TagKey<Block>, ResourceKey<Block>> either;
+        private static Either<TagKey<Item>, ResourceKey<Item>> getEither(String id) throws JsonParseException {
+            Either<TagKey<Item>, ResourceKey<Item>> either;
             try {
                 if (id.startsWith("#"))
-                    either = Either.left(TagKey.create(Registries.BLOCK, ResourceLocation.read(id.substring(1)).getOrThrow()));
+                    either = Either.left(TagKey.create(Registries.ITEM, ResourceLocation.read(id.substring(1)).getOrThrow()));
                 else
-                    either = Either.right(ResourceKey.create(Registries.BLOCK, ResourceLocation.read(id).getOrThrow()));
+                    either = Either.right(ResourceKey.create(Registries.ITEM, ResourceLocation.read(id).getOrThrow()));
             } catch (Exception ex) {
                 throw new JsonParseException("Failed to parse 'block' field from 'barricade:creative_only' model. Must be either a block id or a block tag.", ex);
             }

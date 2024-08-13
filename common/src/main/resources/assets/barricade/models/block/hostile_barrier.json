@@ -1,6 +1,6 @@
 {
   "loader": "barricade:creative_only",
-  "block": "#barricade:barriers",
+  "required_item": "#barricade:barriers",
   "model": {
     "parent": "barricade:block/entity_barrier",
     "textures": {

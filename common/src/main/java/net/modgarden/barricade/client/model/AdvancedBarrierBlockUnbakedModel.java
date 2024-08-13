@@ -64,6 +64,6 @@ public class AdvancedBarrierBlockUnbakedModel extends BlockModel {
     @Nullable
     @Override
     public BakedModel bake(ModelBaker modelBaker, Function<Material, TextureAtlasSprite> textureGetter, ModelState modelState) {
-        return BarricadeClient.getHelper().createCreativeOnlyModel(super.bake(modelBaker, textureGetter, modelState), Either.left(BarricadeTags.BlockTags.BARRIERS));
+        return BarricadeClient.getHelper().createCreativeOnlyModel(super.bake(modelBaker, textureGetter, modelState), Either.left(BarricadeTags.ItemTags.BARRIERS));
     }
 }

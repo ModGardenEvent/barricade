@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Item;
 
 import java.util.Collection;
 
@@ -17,6 +17,6 @@ public interface BarricadeClientPlatformHelper {
 
     BlockModel.Deserializer getBlockModelDeserializer();
 
-    BakedModel createCreativeOnlyModel(BakedModel model, Either<TagKey<Block>, ResourceKey<Block>> tagOrBlock);
+    BakedModel createCreativeOnlyModel(BakedModel model, Either<TagKey<Item>, ResourceKey<Item>> requiredItem);
 
 }

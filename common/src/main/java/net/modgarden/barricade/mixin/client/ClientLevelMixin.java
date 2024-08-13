@@ -15,8 +15,6 @@ import org.spongepowered.asm.mixin.injection.At;
 public class ClientLevelMixin {
     @ModifyReturnValue(method = "getMarkerParticleTarget", at = @At(value = "RETURN", ordinal = 0))
     private Block barricade$setMarkerParticleTarget(Block original, @Local ItemStack itemStack, @Local Item item) {
-        if (itemStack.is(BarricadeTags.ItemTags.BARRIERS) && item instanceof BlockItem)
-            return null;
-        return original;
+        return null;
     }
 }

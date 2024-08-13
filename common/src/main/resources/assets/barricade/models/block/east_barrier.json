@@ -1,6 +1,6 @@
 {
   "loader": "barricade:creative_only",
-  "block": "#barricade:barriers",
+  "required_item": "#barricade:barriers",
   "model": {
     "parent": "minecraft:cube/cube_all",
     "textures": {
