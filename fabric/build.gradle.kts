@@ -94,6 +94,7 @@ publishMods {
         projectId = Properties.MODRINTH_PROJECT_ID
         accessToken = providers.environmentVariable("MODRINTH_TOKEN")
 
+        displayName = "${Versions.MOD} (Fabric ${Versions.MINECRAFT})"
         minecraftVersions.add(Versions.MINECRAFT)
     }
 
