@@ -2,7 +2,7 @@
   "loader": "barricade:creative_only",
   "required_item": "#barricade:barriers",
   "model": {
-    "parent": "minecraft:cube/cube_all",
+    "parent": "minecraft:block/cube_all",
     "textures": {
       "all": "barricade:block/barrier"
     },
