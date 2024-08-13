@@ -4,8 +4,8 @@ Barricade is a mod that implements more barrier types meant for use within Mod G
 This mod also changes barrier and light block rendering, to be friendlier to directional based barriers.
 
 ## The Barriers
-This mod adds three barrier types, Directional, Entity Type, and Advanced barriers.
-Directional barriers block movement from specific directions, whereas entity type barriers block specific types of entities.
+This mod adds three barrier block types, Directional, Entity, and Advanced Barrier blocks.
+Directional barriers block movement from specific directions, whereas entity barriers block specific types of entities.
 
 All items may be accessed through the /give command or through the Operator Utilities creative menu tab.
 
@@ -19,7 +19,7 @@ All items may be accessed through the /give command or through the Operator Util
 - `barricade:horizontal_barrier` - Blocks out entities from all horizontal directions.
 - `barricade:vertical_barrier` - Blocks out entities from all vertical directions.
 
-### Default Entity Type Barriers
+### Default Entity Barriers
 - `barricade:hostile_barrier` - Blocks out mobs considered hostile, and neutral mobs that are more-so hostile.
 - `barricade:mob_barrier` - Blocks out all non player entities.
 - `barricade:passive_barrier` - Blocks out mobs considered passive, and neutral mobs that are more-so passive.
