@@ -8,7 +8,7 @@ plugins {
     `maven-publish`
 }
 
-base.archivesName.set(Properties.MOD_NAME)
+base.archivesName.set("${Properties.MOD_ID}-${project.name}")
 group = Properties.GROUP
 version = "${Versions.MOD}+${Versions.MINECRAFT}"
 
