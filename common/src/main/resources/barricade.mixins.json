@@ -5,10 +5,8 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "BarrierBlockMixin",
     "BlockBehaviourMixin",
     "BlockMixin",
-    "LightBlockMixin",
     "PlayerMixin"
   ],
   "client": [
@@ -20,7 +18,9 @@
     "client.MinecraftMixin",
     "client.ModelBakeryAccessor",
     "client.ModelManagerMixin",
-    "client.StructureBlockRendererMixin"
+    "client.StructureBlockRendererMixin",
+    "client.BarrierBlockMixin",
+    "client.LightBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1
