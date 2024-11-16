@@ -1,5 +1,5 @@
 {
-  "loader": "barricade:creative_only",
+  "loader": "barricade:operator",
   "required_item": "minecraft:light",
   "model": {
     "parent": "minecraft:block/cube_all",

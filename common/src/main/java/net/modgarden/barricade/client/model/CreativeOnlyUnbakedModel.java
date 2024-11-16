@@ -55,18 +55,18 @@ public class CreativeOnlyUnbakedModel implements UnbakedModel {
     }
 
     public static class Deserializer implements JsonDeserializer<CreativeOnlyUnbakedModel> {
-        public static final ResourceLocation ID = Barricade.asResource("creative_only");
+        public static final ResourceLocation ID = Barricade.asResource("operator");
 
         public CreativeOnlyUnbakedModel deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
             if (!json.isJsonObject())
-                throw new JsonParseException("Cannot deserialize non JsonObject 'barricade:creative_only' model.");
+                throw new JsonParseException("Cannot deserialize non JsonObject 'barricade:operator' model.");
 
             JsonObject jsonObject = json.getAsJsonObject();
 
             BlockModel model = BlockModel.fromString(jsonObject.get("model").toString());
 
             if (!jsonObject.has("required_item"))
-                throw new JsonParseException("Cannot get 'required_item' field from 'barricade:creative_only' model.");
+                throw new JsonParseException("Cannot get 'required_item' field from 'barricade:operator' model.");
 
             Either<TagKey<Item>, ResourceKey<Item>> either = getEither(GsonHelper.getAsString(jsonObject, "required_item"));
 
@@ -81,7 +81,7 @@ public class CreativeOnlyUnbakedModel implements UnbakedModel {
                 else
                     either = Either.right(ResourceKey.create(Registries.ITEM, ResourceLocation.read(id).getOrThrow()));
             } catch (Exception ex) {
-                throw new JsonParseException("Failed to parse 'block' field from 'barricade:creative_only' model. Must be either a block id or a block tag.", ex);
+                throw new JsonParseException("Failed to parse 'block' field from 'barricade:operator' model. Must be either a block id or a block tag.", ex);
             }
             return either;
         }

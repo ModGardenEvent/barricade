@@ -26,6 +26,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.model.CreativeOnlyBakedModelAccess;
+import net.modgarden.barricade.client.util.OperatorItemPsuedoTag;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -34,9 +35,9 @@ import java.util.function.Supplier;
 
 public class CreativeOnlyBakedModel implements BakedModel, CreativeOnlyBakedModelAccess {
     private final BakedModel model;
-    private final Either<TagKey<Item>, ResourceKey<Item>> requiredItem;
+    private final Either<OperatorItemPsuedoTag, ResourceKey<Item>> requiredItem;
 
-    public CreativeOnlyBakedModel(BakedModel model, Either<TagKey<Item>, ResourceKey<Item>> requiredItem) {
+    public CreativeOnlyBakedModel(BakedModel model, Either<OperatorItemPsuedoTag, ResourceKey<Item>> requiredItem) {
         this.model = model;
         this.requiredItem = requiredItem;
     }
@@ -48,7 +49,7 @@ public class CreativeOnlyBakedModel implements BakedModel, CreativeOnlyBakedMode
 
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockGetter, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
-        if (BarricadeClient.terrainContext.get() != null && (!RendererAccess.INSTANCE.hasRenderer() || Minecraft.getInstance().gameMode.getPlayerMode() != GameType.CREATIVE || !Minecraft.getInstance().player.isHolding(stack -> requiredItem.map(stack::is, key -> stack.getItemHolder().is(key)))))
+        if (!RendererAccess.INSTANCE.hasRenderer() || BarricadeClient.terrainContext.get() != null && (Minecraft.getInstance().player.canUseGameMasterBlocks() | !Minecraft.getInstance().player.isHolding(stack -> requiredItem.map(tag -> tag.contains(stack.getItemHolder()), key -> stack.getItemHolder().is(key)))))
             return;
 
         QuadEmitter emitter = context.getEmitter();
@@ -111,7 +112,7 @@ public class CreativeOnlyBakedModel implements BakedModel, CreativeOnlyBakedMode
     }
 
     @Override
-    public Either<TagKey<Item>, ResourceKey<Item>> requiredItem() {
+    public Either<OperatorItemPsuedoTag, ResourceKey<Item>> requiredItem() {
         return requiredItem;
     }
 }

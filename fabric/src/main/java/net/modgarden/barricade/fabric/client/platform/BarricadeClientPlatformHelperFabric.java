@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.modgarden.barricade.client.platform.BarricadeClientPlatformHelper;
+import net.modgarden.barricade.client.util.OperatorItemPsuedoTag;
 import net.modgarden.barricade.fabric.client.model.CreativeOnlyBakedModel;
 
 import java.util.Collection;
@@ -25,7 +26,7 @@ public class BarricadeClientPlatformHelperFabric implements BarricadeClientPlatf
     }
 
     @Override
-    public BakedModel createCreativeOnlyModel(BakedModel model, Either<TagKey<Item>, ResourceKey<Item>> requiredItem) {
+    public BakedModel createCreativeOnlyModel(BakedModel model, Either<OperatorItemPsuedoTag, ResourceKey<Item>> requiredItem) {
         return new CreativeOnlyBakedModel(model, requiredItem);
     }
 

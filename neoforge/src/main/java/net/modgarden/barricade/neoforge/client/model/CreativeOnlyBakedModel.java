@@ -14,6 +14,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.model.CreativeOnlyBakedModelAccess;
+import net.modgarden.barricade.client.util.OperatorItemPsuedoTag;
 import net.neoforged.neoforge.client.model.BakedModelWrapper;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
@@ -22,23 +23,23 @@ import java.util.Collections;
 import java.util.List;
 
 public class CreativeOnlyBakedModel extends BakedModelWrapper<BakedModel> implements CreativeOnlyBakedModelAccess {
-    private final Either<TagKey<Item>, ResourceKey<Item>> requiredItem;
+    private final Either<OperatorItemPsuedoTag, ResourceKey<Item>> requiredItem;
 
-    public CreativeOnlyBakedModel(BakedModel model, Either<TagKey<Item>, ResourceKey<Item>> requiredItem) {
+    public CreativeOnlyBakedModel(BakedModel model, Either<OperatorItemPsuedoTag, ResourceKey<Item>> requiredItem) {
         super(model);
         this.requiredItem = requiredItem;
     }
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData extraData, @Nullable RenderType renderType) {
-        if (BarricadeClient.terrainContext.get() != null && (Minecraft.getInstance().gameMode.getPlayerMode() != GameType.CREATIVE || !Minecraft.getInstance().player.isHolding(stack -> requiredItem.map(stack::is, blockKey -> stack.getItemHolder().is(blockKey)))))
+        if (BarricadeClient.terrainContext.get() != null && (Minecraft.getInstance().gameMode.getPlayerMode() != GameType.CREATIVE || !Minecraft.getInstance().player.isHolding(stack -> requiredItem.map(tag -> tag.contains(stack.getItemHolder()), blockKey -> stack.getItemHolder().is(blockKey)))))
             return Collections.emptyList();
 
         return originalModel.getQuads(state, side, rand, extraData, renderType);
     }
 
     @Override
-    public Either<TagKey<Item>, ResourceKey<Item>> requiredItem() {
+    public Either<OperatorItemPsuedoTag, ResourceKey<Item>> requiredItem() {
         return requiredItem;
     }
 }

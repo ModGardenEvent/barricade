@@ -8,6 +8,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.modgarden.barricade.client.util.OperatorItemPsuedoTag;
 
 import java.util.Collection;
 
@@ -17,6 +18,6 @@ public interface BarricadeClientPlatformHelper {
 
     BlockModel.Deserializer getBlockModelDeserializer();
 
-    BakedModel createCreativeOnlyModel(BakedModel model, Either<TagKey<Item>, ResourceKey<Item>> requiredItem);
+    BakedModel createCreativeOnlyModel(BakedModel model, Either<OperatorItemPsuedoTag, ResourceKey<Item>> requiredItem);
 
 }

@@ -1,5 +1,5 @@
 {
-  "loader": "barricade:creative_only",
+  "loader": "barricade:operator",
   "required_item": "#barricade:barriers",
   "model": {
     "parent": "minecraft:block/cube_all",
@@ -12,6 +12,13 @@
         "to": [16, 16, 16],
         "faces": {
           "south": {"uv": [0, 0, 16, 16], "texture": "#all", "cullface": "south"}
+        }
+      },
+      {
+        "from": [15.998, 0.002, 0.002],
+        "to": [0.002, 15.998, 15.998],
+        "faces": {
+          "south": {"uv": [16, 0, 0, 16], "texture": "#all", "cullface": "north"}
         }
       }
     ],

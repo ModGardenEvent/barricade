@@ -39,14 +39,14 @@ public class BarrierRenderUtils {
         }
     }
 
-    private static void refreshBarrierSections(ItemStack stack, ItemStack lastItemInHand, @Nullable Either<TagKey<Item>, ResourceKey<Item>> current, @Nullable Either<TagKey<Item>, ResourceKey<Item>> previous) {
+    private static void refreshBarrierSections(ItemStack stack, ItemStack lastItemInHand, @Nullable Either<OperatorItemPsuedoTag, ResourceKey<Item>> current, @Nullable Either<OperatorItemPsuedoTag, ResourceKey<Item>> previous) {
         Set<SectionPos> operatedSectionPos = new HashSet<>();
         var chunks = ((ClientChunkCacheStorageAccessor)(Object)((ClientChunkCacheAccessor) Minecraft.getInstance().level.getChunkSource()).getStorage()).getChunks();
         for (int i = 0; i < chunks.length(); ++i) {
             LevelChunk chunk = chunks.get(i);
             if (chunk == null)
                 continue;
-            chunk.findBlocks(state -> Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof CreativeOnlyBakedModelAccess model && (current != null && model.requiredItem().map(stack::is, key -> stack.getItemHolder().is(key)) || previous != null && model.requiredItem().map(lastItemInHand::is, key -> lastItemInHand.getItemHolder().is(key))), (pos, state) -> {
+            chunk.findBlocks(state -> Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof CreativeOnlyBakedModelAccess model && (current != null && model.requiredItem().map(tag -> tag.contains(stack.getItemHolder()), key -> stack.getItemHolder().is(key)) || previous != null && model.requiredItem().map(tag -> tag.contains(stack.getItemHolder()), key -> lastItemInHand.getItemHolder().is(key))), (pos, state) -> {
                 SectionPos section = SectionPos.of(pos);
                 if (operatedSectionPos.contains(section))
                     return;
