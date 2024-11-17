@@ -2,9 +2,14 @@ package net.modgarden.barricade.fabric;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Items;
+import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeComponents;
@@ -17,6 +22,10 @@ public class BarricadeFabric implements ModInitializer {
         BarricadeBlockEntityTypes.registerAll(Registry::register);
         BarricadeComponents.registerAll(Registry::register);
         BarricadeItems.registerAll(Registry::register);
+
+        FabricLoader.getInstance().getModContainer(Barricade.MOD_ID).ifPresent(modContainer -> {
+            ResourceManagerHelper.registerBuiltinResourcePack(Barricade.asResource("modded_rendering"), modContainer, Component.translatable("resourcePack.barricade.modded_rendering.name"), ResourcePackActivationType.NORMAL);
+        });
 
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.OP_BLOCKS).register(entries -> {
             if (!entries.shouldShowOpRestrictedItems())

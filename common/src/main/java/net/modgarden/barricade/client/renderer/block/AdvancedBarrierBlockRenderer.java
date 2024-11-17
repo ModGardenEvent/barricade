@@ -15,6 +15,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Blocks;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
 import net.modgarden.barricade.client.BarricadeClient;
@@ -31,7 +32,7 @@ public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<Advance
     @Override
     @SuppressWarnings("ConstantConditions")
     public void render(AdvancedBarrierBlockEntity blockEntity, float partialTick, PoseStack pose, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        if (!Minecraft.getInstance().player.canUseGameMasterBlocks() || !Minecraft.getInstance().player.isHolding(stack -> stack.is(BarricadeTags.ItemTags.BARRIERS)))
+        if (!Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState()) || !Minecraft.getInstance().player.canUseGameMasterBlocks() || !Minecraft.getInstance().player.isHolding(stack -> stack.is(BarricadeTags.ItemTags.BARRIERS)))
             return;
 
         AdvancedBarrierComponents components = new AdvancedBarrierComponents(blockEntity.getBlockedEntities(), blockEntity.getBlockedDirections());
@@ -55,8 +56,6 @@ public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<Advance
             variant = components.blockedEntities().backTextureLocation() + "," + String.join(",", components.blockedEntities().entities().stream().map(either -> either.map(tagKey -> "#" + tagKey.location(), holder -> holder.unwrapKey().map(ResourceKey::location).orElse(ResourceLocation.withDefaultNamespace("null")).toString())).toList());
 
         if (components.blockedDirections() != null && !components.blockedDirections().doesNotBlock()) {
-            if (!variant.isEmpty())
-                variant = variant + ",";
             variant = String.join(",", components.blockedDirections().directions().stream().map(Direction::getName).toList());
         }
         BlockModel blockModel = new AdvancedBarrierBlockUnbakedModel(components.blockedDirections(), components.blockedEntities());

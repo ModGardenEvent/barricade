@@ -1,27 +1,5 @@
 {
-  "loader": "barricade:operator",
-  "required_item": "#barricade:barriers",
-  "model": {
-    "parent": "minecraft:block/cube_all",
-    "textures": {
-      "all": "barricade:block/barrier"
-    },
-    "elements": [
-      {
-        "from": [0, 0, 0],
-        "to": [16, 16, 16],
-        "faces": {
-          "west": {"uv": [0, 0, 16, 16], "texture": "#all", "cullface": "west"}
-        }
-      },
-      {
-        "from": [15.998, 0.002, 0.002],
-        "to": [0.002, 15.998, 15.998],
-        "faces": {
-          "west": {"uv": [16, 0, 0, 16], "texture": "#all"}
-        }
-      }
-    ],
-    "render_type": "cutout"
+  "textures": {
+    "particle": "barricade:item/west_barrier"
   }
 }

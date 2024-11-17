@@ -15,17 +15,18 @@ import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public record BlockedDirectionsComponent(Set<Direction> directions) {
-    public static final Codec<BlockedDirectionsComponent> CODEC = StringRepresentable.fromEnum(Direction::values).listOf().flatXmap(directions -> DataResult.success(new BlockedDirectionsComponent(Set.copyOf(directions))), component -> DataResult.success(List.copyOf(component.directions)));
+public record BlockedDirectionsComponent(EnumSet<Direction> directions) {
+    public static final Codec<BlockedDirectionsComponent> CODEC = StringRepresentable.fromEnum(Direction::values).listOf().flatXmap(directions -> DataResult.success(BlockedDirectionsComponent.of(directions.toArray(Direction[]::new))), component -> DataResult.success(List.copyOf(component.directions)));
     public static final StreamCodec<ByteBuf, BlockedDirectionsComponent> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
     public static BlockedDirectionsComponent of(Direction... directions) {
-        return new BlockedDirectionsComponent(Arrays.stream(directions).collect(Collectors.toUnmodifiableSet()));
+        return new BlockedDirectionsComponent(EnumSet.copyOf(Arrays.stream(directions).toList()));
     }
 
     public Direction blockingDirection(BlockPos pos, CollisionContext context) {
@@ -70,10 +71,13 @@ public record BlockedDirectionsComponent(Set<Direction> directions) {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (!(other instanceof BlockedDirectionsComponent component))
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (!(obj instanceof BlockedDirectionsComponent other))
             return false;
-        return component.directions.equals(directions);
+        // Why do I have to do this?...
+        return other.directions.size() == directions.size() && other.directions.containsAll(directions);
     }
 
     @Override

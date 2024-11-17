@@ -11,6 +11,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleRenderEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
@@ -33,15 +35,18 @@ import net.minecraft.world.level.block.Blocks;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.model.OperatorUnbakedModel;
+import net.modgarden.barricade.client.particle.AdvancedBarrierParticle;
 import net.modgarden.barricade.client.util.BarrierRenderUtils;
 import net.modgarden.barricade.client.util.OperatorItemPseudoTag;
 import net.modgarden.barricade.fabric.BarricadeFabric;
 import net.modgarden.barricade.fabric.client.platform.BarricadeClientPlatformHelperFabric;
 import net.modgarden.barricade.client.renderer.block.AdvancedBarrierBlockRenderer;
 import net.modgarden.barricade.client.renderer.item.AdvancedBarrierItemRenderer;
+import net.modgarden.barricade.particle.AdvancedBarrierParticleOptions;
 import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeItems;
+import net.modgarden.barricade.registry.BarricadeParticleTypes;
 
 import java.io.Reader;
 import java.util.ArrayList;
@@ -65,6 +70,8 @@ public class BarricadeFabricClient implements ClientModInitializer {
         BarricadeClient.init(new BarricadeClientPlatformHelperFabric());
         BlockEntityRenderers.register(BarricadeBlockEntityTypes.ADVANCED_BARRIER, context -> new AdvancedBarrierBlockRenderer());
         BuiltinItemRendererRegistry.INSTANCE.register(BarricadeItems.ADVANCED_BARRIER, AdvancedBarrierItemRenderer::renderItem);
+
+        ParticleFactoryRegistry.getInstance().register(AdvancedBarrierParticleOptions.Type.INSTANCE, new AdvancedBarrierParticle.Provider());
 
         PreparableModelLoadingPlugin.register(BarricadeFabricClient::getCreativeUnbakedModels, (data, pluginContext) -> {
             pluginContext.resolveModel().register((context) -> {

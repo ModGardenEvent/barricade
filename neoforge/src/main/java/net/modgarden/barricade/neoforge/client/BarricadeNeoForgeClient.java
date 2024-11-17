@@ -10,12 +10,14 @@ import net.minecraft.world.item.ItemStack;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.model.OperatorUnbakedModel;
+import net.modgarden.barricade.client.particle.AdvancedBarrierParticle;
 import net.modgarden.barricade.client.util.BarrierRenderUtils;
 import net.modgarden.barricade.client.util.OperatorItemPseudoTag;
 import net.modgarden.barricade.neoforge.client.bewlr.BarricadeBEWLR;
 import net.modgarden.barricade.client.renderer.block.AdvancedBarrierBlockRenderer;
 import net.modgarden.barricade.neoforge.client.model.CreativeOnlyUnbakedModelGeometry;
 import net.modgarden.barricade.neoforge.client.platform.BarricadeClientPlatformHelperNeoForge;
+import net.modgarden.barricade.particle.AdvancedBarrierParticleOptions;
 import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeItems;
 import net.neoforged.api.distmarker.Dist;
@@ -26,6 +28,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -91,6 +94,11 @@ public class BarricadeNeoForgeClient {
                     return BarricadeBEWLR.INSTANCE;
                 }
             }, BarricadeItems.ADVANCED_BARRIER);
+        }
+
+        @SubscribeEvent
+        public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
+            event.registerSpecial(AdvancedBarrierParticleOptions.Type.INSTANCE, new AdvancedBarrierParticle.Provider());
         }
     }
 

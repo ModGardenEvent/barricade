@@ -49,4 +49,9 @@ public class BarricadeClientPlatformHelperFabric implements BarricadeClientPlatf
         return new CreativeOnlyBakedModel(model, requiredItem);
     }
 
+    @Override
+    public String getPackName(String name) {
+        return name;
+    }
+
 }

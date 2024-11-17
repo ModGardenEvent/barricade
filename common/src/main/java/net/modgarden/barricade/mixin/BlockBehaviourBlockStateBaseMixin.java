@@ -1,9 +1,6 @@
 package net.modgarden.barricade.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.BarrierBlock;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -19,8 +16,15 @@ public abstract class BlockBehaviourBlockStateBaseMixin {
 
     @ModifyReturnValue(method = "getRenderShape", at = @At("RETURN"))
     private RenderShape barricade$setRenderShapeDependingOnModel(RenderShape original) {
-        if (Barricade.isOperatorModel(asState().getBlock()))
+        if (Barricade.isOperatorModel(asState()))
             return RenderShape.MODEL;
+        return original;
+    }
+
+    @ModifyReturnValue(method = "shouldSpawnTerrainParticles", at = @At("RETURN"))
+    private boolean barricade$setRenderShapeDependingOnModel(boolean original) {
+        if (Barricade.isOperatorModel(asState()))
+            return false;
         return original;
     }
 }

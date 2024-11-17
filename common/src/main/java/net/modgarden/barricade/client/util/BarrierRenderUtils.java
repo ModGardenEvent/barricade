@@ -4,28 +4,39 @@ import com.mojang.datafixers.util.Either;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.BlockItemStateProperties;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.lighting.LightEngine;
+import net.minecraft.world.phys.Vec3;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
+import net.modgarden.barricade.component.BlockedDirectionsComponent;
 import net.modgarden.barricade.item.AdvancedBarrierBlockItem;
 import net.modgarden.barricade.mixin.client.ClientChunkCacheAccessor;
 import net.modgarden.barricade.mixin.client.ClientChunkCacheStorageAccessor;
 import net.modgarden.barricade.mixin.client.LevelRendererInvoker;
+import net.modgarden.barricade.particle.AdvancedBarrierParticleOptions;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class BarrierRenderUtils {
     public static void refreshOperatorBlocks(ItemStack stack, ItemStack previousStack, ItemStack otherHandStack) {
@@ -127,5 +138,112 @@ public class BarrierRenderUtils {
             }
         }
         return false;
+    }
+
+    public static void createAdvancedParticle(BlockedDirectionsComponent directions, @Nullable ResourceLocation backTexture, Consumer<ParticleOptions> optionsConsumer, BlockPos pos) {
+        if (directions.doesNotBlock())
+            optionsConsumer.accept(new AdvancedBarrierParticleOptions(new BlockedDirectionsComponent(EnumSet.noneOf(Direction.class)), null, Optional.of(pos)));
+        else if (directions.blocksAll())
+            optionsConsumer.accept(new BlockParticleOption(ParticleTypes.BLOCK_MARKER, Blocks.BARRIER.defaultBlockState()));
+        else {
+            optionsConsumer.accept(new AdvancedBarrierParticleOptions(directions, backTexture, Optional.of(pos)));
+        }
+    }
+
+    public static BlockedDirectionsComponent relativeDirectionsComponent(BlockedDirectionsComponent directions, BlockPos pos) {
+        Set<Direction> directionSet = new HashSet<>();
+        Direction relativeHorizontal = getRelativeHorizontalDirectionToPlayer();
+        Direction relativeVertical = getRelativeVerticalDirectionToPlayer(pos);
+
+        Direction relativeNorth;
+        Direction relativeSouth;
+        Direction relativeWest;
+        Direction relativeEast;
+        Direction relativeUp;
+        Direction relativeDown;
+
+        switch (relativeHorizontal) {
+            case SOUTH -> {
+                relativeSouth = Direction.NORTH;
+                relativeNorth = Direction.SOUTH;
+                relativeWest = Direction.EAST;
+                relativeEast = Direction.WEST;
+            }
+            case WEST -> {
+                relativeSouth = Direction.EAST;
+                relativeNorth = Direction.WEST;
+                relativeWest = Direction.SOUTH;
+                relativeEast = Direction.NORTH;
+            }
+            case EAST -> {
+                relativeSouth = Direction.WEST;
+                relativeNorth = Direction.EAST;
+                relativeWest = Direction.NORTH;
+                relativeEast = Direction.SOUTH;
+            }
+            default -> {
+                relativeSouth = Direction.SOUTH;
+                relativeNorth = Direction.NORTH;
+                relativeWest = Direction.WEST;
+                relativeEast = Direction.EAST;
+            }
+        }
+
+        switch (relativeVertical) {
+            case UP -> {
+                relativeSouth = Direction.UP;
+                relativeNorth = Direction.DOWN;
+                relativeUp = Direction.SOUTH;
+                relativeDown = Direction.NORTH;
+            }
+            case DOWN -> {
+                relativeSouth = Direction.DOWN;
+                relativeNorth = Direction.UP;
+                relativeUp = Direction.NORTH;
+                relativeDown = Direction.SOUTH;
+            }
+            case null, default -> {
+                relativeUp = Direction.UP;
+                relativeDown = Direction.DOWN;
+            }
+        }
+
+        if (directions.blocks(Direction.NORTH))
+            directionSet.add(relativeNorth);
+        if (directions.blocks(Direction.SOUTH))
+            directionSet.add(relativeSouth);
+        if (directions.blocks(Direction.WEST))
+            directionSet.add(relativeWest);
+        if (directions.blocks(Direction.EAST))
+            directionSet.add(relativeEast);
+        if (directions.blocks(Direction.UP))
+            directionSet.add(relativeUp);
+        if (directions.blocks(Direction.DOWN))
+            directionSet.add(relativeDown);
+
+        return BlockedDirectionsComponent.of(directionSet.toArray(Direction[]::new));
+    }
+
+    private static Direction getRelativeHorizontalDirectionToPlayer() {
+        Player player = Minecraft.getInstance().player;
+        return player.getDirection();
+    }
+
+    private static Direction getRelativeVerticalDirectionToPlayer(BlockPos pos) {
+        Player player = Minecraft.getInstance().player;
+
+        if (player == null)
+            return null;
+
+        Vec3 direction = new Vec3(0, 1, 0);
+        double dot = direction.dot(player.position().subtract(pos.getCenter()));
+
+        if (dot >= (0.5 * (player.position().subtract(pos.getCenter()).length())))
+            return Direction.UP;
+
+        if (dot <= (-0.9 * (player.position().subtract(pos.getCenter()).length())))
+            return Direction.DOWN;
+
+        return null;
     }
 }

@@ -1,3 +1,6 @@
+## Changes
+- Added vanilla rendering mode. Accessible by turning off the automatically enabled Barricade resource pack.
+
 ## Bugfixes
 - Fixed fences connecting to directional and advanced barrier blocks.
 - Fixed operator models not updating upon gamemode switch.

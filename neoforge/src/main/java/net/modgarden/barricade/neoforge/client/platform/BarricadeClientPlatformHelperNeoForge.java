@@ -53,4 +53,9 @@ public class BarricadeClientPlatformHelperNeoForge implements BarricadeClientPla
         return new CreativeOnlyBakedModel(model, requiredItem);
     }
 
+    @Override
+    public String getPackName(String name) {
+        return "mod/" + name;
+    }
+
 }

@@ -1,5 +1,9 @@
 package net.modgarden.barricade.neoforge;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -15,6 +19,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
@@ -75,6 +80,27 @@ public class BarricadeNeoForge {
                     startItem = stack;
                 }
             }
+        }
+
+        @SubscribeEvent
+        public static void addPackFinders(AddPackFindersEvent event) {
+            if (event.getPackType() == PackType.CLIENT_RESOURCES) {
+                event.addPackFinders(Barricade.asResource("resourcepacks/modded_rendering"), PackType.CLIENT_RESOURCES, Component.translatable("resourcePack.barricade.modded_rendering.name"), createSource(true), false, Pack.Position.TOP);
+            }
+        }
+
+        private static PackSource createSource(boolean enabledByDefault) {
+            return new PackSource() {
+                @Override
+                public Component decorate(Component component) {
+                    return Component.translatable("pack.barricade.builtin", component);
+                }
+
+                @Override
+                public boolean shouldAddAutomatically() {
+                    return enabledByDefault;
+                }
+            };
         }
     }
 }

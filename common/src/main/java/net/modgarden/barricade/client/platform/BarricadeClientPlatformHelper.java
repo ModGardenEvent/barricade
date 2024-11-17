@@ -25,4 +25,5 @@ public interface BarricadeClientPlatformHelper {
 
     BakedModel createCreativeOnlyModel(BakedModel model, Either<ResourceLocation, ResourceKey<Item>> requiredItem);
 
+    String getPackName(String name);
 }

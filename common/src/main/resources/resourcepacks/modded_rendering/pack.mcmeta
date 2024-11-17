@@ -1,0 +1,8 @@
+{
+    "pack": {
+        "description": {
+          "translate": "resourcePack.barricade.modded_rendering.description"
+        },
+        "pack_format": 34
+    }
+}
