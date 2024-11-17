@@ -31,7 +31,7 @@ public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<Advance
     @Override
     @SuppressWarnings("ConstantConditions")
     public void render(AdvancedBarrierBlockEntity blockEntity, float partialTick, PoseStack pose, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        if (Minecraft.getInstance().gameMode.getPlayerMode() != GameType.CREATIVE || !Minecraft.getInstance().player.isHolding(stack -> stack.is(BarricadeTags.ItemTags.BARRIERS)))
+        if (!Minecraft.getInstance().player.canUseGameMasterBlocks() || !Minecraft.getInstance().player.isHolding(stack -> stack.is(BarricadeTags.ItemTags.BARRIERS)))
             return;
 
         AdvancedBarrierComponents components = new AdvancedBarrierComponents(blockEntity.getBlockedEntities(), blockEntity.getBlockedDirections());
