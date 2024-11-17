@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(BlockBehaviour.class)
-public class BlockBehaviourMixin {
+public abstract class BlockBehaviourMixin {
     @ModifyReturnValue(method = "skipRendering", at = @At("RETURN"))
     private boolean barricade$skipRenderingFaces(boolean original, BlockState state, BlockState adjacentState, Direction direction) {
         if (((BlockBehaviour)(Object)this) instanceof Block block && block instanceof BarrierBlock) {

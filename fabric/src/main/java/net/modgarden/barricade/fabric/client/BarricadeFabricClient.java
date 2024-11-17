@@ -35,6 +35,7 @@ import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.model.OperatorUnbakedModel;
 import net.modgarden.barricade.client.util.BarrierRenderUtils;
 import net.modgarden.barricade.client.util.OperatorItemPseudoTag;
+import net.modgarden.barricade.fabric.BarricadeFabric;
 import net.modgarden.barricade.fabric.client.platform.BarricadeClientPlatformHelperFabric;
 import net.modgarden.barricade.client.renderer.block.AdvancedBarrierBlockRenderer;
 import net.modgarden.barricade.client.renderer.item.AdvancedBarrierItemRenderer;

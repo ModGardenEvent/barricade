@@ -5,10 +5,9 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "BarrierBlockMixin",
+    "BlockBehaviourBlockStateBaseMixin",
     "BlockBehaviourMixin",
-    "BlockMixin",
-    "LightBlockMixin"
+    "BlockMixin"
   ],
   "client": [
     "client.ClientChunkCacheAccessor",

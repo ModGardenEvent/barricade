@@ -12,6 +12,6 @@ import org.spongepowered.asm.mixin.injection.At;
 public class BlockMixin {
     @ModifyReturnValue(method = "isExceptionForConnection", at = @At("RETURN"))
     private static boolean barricade$exceptionForConnection(boolean original, BlockState state) {
-        return original || state.is(BarricadeTags.BlockTags.ENTITY_BARRIERS);
+        return original || state.is(BarricadeTags.BlockTags.BARRIERS);
     }
 }

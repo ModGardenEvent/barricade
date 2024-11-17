@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -14,6 +15,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.BlockItemStateProperties;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.lighting.LightEngine;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
 import net.modgarden.barricade.item.AdvancedBarrierBlockItem;
@@ -115,5 +117,15 @@ public class BarrierRenderUtils {
             return;
         ((LevelRendererInvoker)Minecraft.getInstance().levelRenderer).barricade$invokeSetBlockDirty(pos,true);
         operatedSectionPos.add(sectionPos);
+    }
+
+    public static boolean isLightBlockId(ResourceLocation location) {
+        if (location.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE)) {
+            for (int i = 0; i < LightEngine.MAX_LEVEL + 1; ++i) {
+                if (location.getPath().equals("light_" + (i < 10 ? ("0" + i) : i)))
+                    return true;
+            }
+        }
+        return false;
     }
 }
