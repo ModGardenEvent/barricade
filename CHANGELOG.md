@@ -4,5 +4,5 @@
 - Fixed operator models not switching when swapping to an advanced barrier.
 - Fixed operator model swapping when updating to the offhand.
 - Fixed directional barrier rendering.
-- Fixed incompatibility with Axiom light blocks.
+- Fixed incompatibility with Axiom light block models.
 - [NEOFORGE] Fixed advanced barrier always being visible.
