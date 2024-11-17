@@ -13,6 +13,13 @@
         "faces": {
           "north": {"uv": [0, 0, 16, 16], "texture": "#all", "cullface": "north"}
         }
+      },
+      {
+        "from": [15.998, 0.002, 0.002],
+        "to": [0.002, 15.998, 15.998],
+        "faces": {
+          "south": {"uv": [16, 0, 0, 16], "texture": "#all"}
+        }
       }
     ],
     "render_type": "cutout"

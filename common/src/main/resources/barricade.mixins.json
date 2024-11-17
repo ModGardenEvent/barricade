@@ -6,11 +6,9 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "BarrierBlockMixin",
-    "BlockBehaviour$BlockStateBaseMixin",
     "BlockBehaviourMixin",
     "BlockMixin",
-    "LightBlockMixin",
-    "PlayerMixin"
+    "LightBlockMixin"
   ],
   "client": [
     "client.ClientChunkCacheAccessor",

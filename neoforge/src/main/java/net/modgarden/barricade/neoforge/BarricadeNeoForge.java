@@ -6,6 +6,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.modgarden.barricade.Barricade;
+import net.modgarden.barricade.neoforge.platform.BarricadePlatformHelperNeoForge;
 import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeComponents;
@@ -24,6 +25,7 @@ import java.util.function.Consumer;
 @Mod(Barricade.MOD_ID)
 public class BarricadeNeoForge {
     public BarricadeNeoForge(IEventBus eventBus) {
+        Barricade.init(new BarricadePlatformHelperNeoForge());
     }
 
     @EventBusSubscriber(modid = Barricade.MOD_ID, bus = EventBusSubscriber.Bus.MOD)

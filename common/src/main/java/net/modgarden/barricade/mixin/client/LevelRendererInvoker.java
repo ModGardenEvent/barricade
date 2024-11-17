@@ -1,11 +1,12 @@
 package net.modgarden.barricade.mixin.client;
 
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.core.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(LevelRenderer.class)
 public interface LevelRendererInvoker {
-    @Invoker("setSectionDirty")
-    void invokeSetSectionDirty(int sectionX, int sectionY, int sectionZ, boolean reRenderOnMainThread);
+    @Invoker("setBlockDirty")
+    void barricade$invokeSetBlockDirty(BlockPos pos, boolean reRenderOnMainThread);
 }

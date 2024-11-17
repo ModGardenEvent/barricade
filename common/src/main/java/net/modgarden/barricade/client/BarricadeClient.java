@@ -12,8 +12,6 @@ public class BarricadeClient {
     public static ModelBakery modelBakery;
     public static BarricadeClientPlatformHelper helper;
 
-    public static ThreadLocal<Unit> terrainContext = new ThreadLocal<>();
-
     public static void init(BarricadeClientPlatformHelper helper) {
         if (BarricadeClient.helper != null)
             return;

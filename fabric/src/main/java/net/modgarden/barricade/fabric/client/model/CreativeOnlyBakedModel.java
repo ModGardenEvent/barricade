@@ -18,26 +18,27 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.TagKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.modgarden.barricade.client.BarricadeClient;
-import net.modgarden.barricade.client.model.CreativeOnlyBakedModelAccess;
-import net.modgarden.barricade.client.util.OperatorItemPsuedoTag;
+import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
+import net.modgarden.barricade.client.util.OperatorItemPseudoTag;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class CreativeOnlyBakedModel implements BakedModel, CreativeOnlyBakedModelAccess {
+public class CreativeOnlyBakedModel implements BakedModel, OperatorBakedModelAccess {
     private final BakedModel model;
-    private final Either<OperatorItemPsuedoTag, ResourceKey<Item>> requiredItem;
+    private final Either<ResourceLocation, ResourceKey<Item>> requiredItem;
+    private OperatorItemPseudoTag cachedPseudoTag;
 
-    public CreativeOnlyBakedModel(BakedModel model, Either<OperatorItemPsuedoTag, ResourceKey<Item>> requiredItem) {
+    public CreativeOnlyBakedModel(BakedModel model, Either<ResourceLocation, ResourceKey<Item>> requiredItem) {
         this.model = model;
         this.requiredItem = requiredItem;
     }
@@ -49,7 +50,7 @@ public class CreativeOnlyBakedModel implements BakedModel, CreativeOnlyBakedMode
 
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockGetter, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
-        if (!RendererAccess.INSTANCE.hasRenderer() || BarricadeClient.terrainContext.get() != null && (Minecraft.getInstance().player.canUseGameMasterBlocks() | !Minecraft.getInstance().player.isHolding(stack -> requiredItem.map(tag -> tag.contains(stack.getItemHolder()), key -> stack.getItemHolder().is(key)))))
+        if (!RendererAccess.INSTANCE.hasRenderer() || (!Minecraft.getInstance().player.canUseGameMasterBlocks() || !Minecraft.getInstance().player.isHolding(stack -> requiredItem().map(tag -> tag.contains(stack.getItemHolder()), key -> stack.getItemHolder().is(key)))))
             return;
 
         QuadEmitter emitter = context.getEmitter();
@@ -72,8 +73,9 @@ public class CreativeOnlyBakedModel implements BakedModel, CreativeOnlyBakedMode
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState blockState, @Nullable Direction direction, RandomSource randomSource) {
-        return Collections.emptyList();
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, RandomSource random) {
+        // Workaround for block display entities.
+        return model.getQuads(state, direction, random);
     }
 
     @Override
@@ -112,7 +114,11 @@ public class CreativeOnlyBakedModel implements BakedModel, CreativeOnlyBakedMode
     }
 
     @Override
-    public Either<OperatorItemPsuedoTag, ResourceKey<Item>> requiredItem() {
-        return requiredItem;
+    public Either<OperatorItemPseudoTag, ResourceKey<Item>> requiredItem() {
+        return requiredItem.mapBoth(id -> {
+            if (cachedPseudoTag == null)
+                cachedPseudoTag = OperatorItemPseudoTag.Registry.get(id);
+            return cachedPseudoTag;
+        }, Function.identity());
     }
 }

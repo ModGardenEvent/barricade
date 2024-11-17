@@ -16,6 +16,16 @@
           "south": {"uv": [16, 0, 0, 16], "texture": "#all", "cullface": "north"},
           "west": {"uv": [16, 0, 0, 16], "texture": "#all", "cullface": "east"}
         }
+      },
+      {
+        "from": [15.998, 0.002, 0.002],
+        "to": [0.002, 15.998, 15.998],
+        "faces": {
+          "south": {"uv": [16, 0, 0, 16], "texture": "#all"},
+          "west": {"uv": [16, 0, 0, 16], "texture": "#all"},
+          "north": {"uv": [16, 0, 0, 16], "texture": "#all"},
+          "east": {"uv": [16, 0, 0, 16], "texture": "#all"}
+        }
       }
     ],
     "render_type": "cutout"

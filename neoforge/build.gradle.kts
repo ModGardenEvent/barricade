@@ -9,6 +9,22 @@ plugins {
     id("me.modmuss50.mod-publish-plugin")
 }
 
+repositories {
+    maven {
+        name = "Modrinth"
+        url = uri("https://api.modrinth.com/maven")
+    }
+    maven {
+        name = "Su5ed"
+        url = uri("https://maven.su5ed.dev/releases")
+    }
+}
+
+dependencies {
+//    runtimeOnly("maven.modrinth:sodium:${Versions.SODIUM}-neoforge")
+//    runtimeOnly("org.sinytra.forgified-fabric-api:forgified-fabric-api:${Versions.FORGIFIED_FABRIC_API}")
+}
+
 neoForge {
     version = Versions.NEOFORGE
     parchment {

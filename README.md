@@ -3,6 +3,12 @@ Barricade is a mod that implements more barrier types meant for use within Mod G
 
 This mod also changes barrier and light block rendering, to be friendlier to directional based barriers.
 
+## Client-side Only
+This mod is able to run on clients without having it on the server. When run like this, the mod will only apply the rendering functionalities to any block with the `barricade:operator` loader json.
+If you wish to implement this model type for your own barriers in a resource pack, copy from the models found in the mod's source.
+
+You may specify which items activate rendering by adding/modifying json found in `assets/<namespace>/barricade/operator_items`.
+
 ## The Barriers
 This mod adds three barrier block types, Directional, Entity, and Advanced Barrier blocks.
 Directional barriers block movement from specific directions, whereas entity barriers block specific types of entities.

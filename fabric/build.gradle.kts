@@ -10,6 +10,10 @@ plugins {
 
 repositories {
     maven {
+        name = "Modrinth"
+        url = uri("https://api.modrinth.com/maven")
+    }
+    maven {
         name = "TerraformersMC"
         url = uri("https://maven.terraformersmc.com/")
     }
@@ -34,6 +38,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${Versions.FABRIC_LOADER}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${Versions.FABRIC_API}")
     modLocalRuntime("com.terraformersmc:modmenu:${Versions.MOD_MENU}")
+    modLocalRuntime("maven.modrinth:sodium:${Versions.SODIUM}-fabric")
 }
 
 loom {

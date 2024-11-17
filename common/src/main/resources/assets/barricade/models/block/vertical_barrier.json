@@ -19,8 +19,8 @@
         "from": [15.998, 0.002, 0.002],
         "to": [0.002, 15.998, 15.998],
         "faces": {
-          "up": {"uv": [16, 0, 0, 16], "texture": "#all", "cullface": "up"},
-          "down": {"uv": [16, 0, 0, 16], "texture": "#all", "cullface": "down"}
+          "up": {"uv": [16, 0, 0, 16], "texture": "#all"},
+          "down": {"uv": [16, 0, 0, 16], "texture": "#all"}
         }
       }
     ],

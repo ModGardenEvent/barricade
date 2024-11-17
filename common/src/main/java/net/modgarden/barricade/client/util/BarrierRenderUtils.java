@@ -2,17 +2,20 @@ package net.modgarden.barricade.client.util;
 
 import com.mojang.datafixers.util.Either;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.TagKey;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.BlockItemStateProperties;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.modgarden.barricade.client.model.CreativeOnlyBakedModelAccess;
+import net.modgarden.barricade.client.BarricadeClient;
+import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
 import net.modgarden.barricade.mixin.client.ClientChunkCacheAccessor;
 import net.modgarden.barricade.mixin.client.ClientChunkCacheStorageAccessor;
 import net.modgarden.barricade.mixin.client.LevelRendererInvoker;
@@ -26,33 +29,41 @@ public class BarrierRenderUtils {
         if (stack.getItem() instanceof BlockItem blockItem && lastItemInMainHand.getItem() instanceof BlockItem lastBlockItem) {
             BlockState state = stack.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY).apply(blockItem.getBlock().defaultBlockState());
             BlockState lastState = lastItemInMainHand.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY).apply(lastBlockItem.getBlock().defaultBlockState());
-            if (Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof CreativeOnlyBakedModelAccess currentModel && Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(lastState) instanceof CreativeOnlyBakedModelAccess previousModel && !currentModel.requiredItem().equals(previousModel.requiredItem()))
-                refreshBarrierSections(stack, lastItemInMainHand, currentModel.requiredItem(), previousModel.requiredItem());
+            BakedModel model = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state);
+            BakedModel previousModel = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(lastState);
+            if (!(model instanceof OperatorBakedModelAccess) && (!(previousModel instanceof OperatorBakedModelAccess)))
+                return;
+            if ((model instanceof OperatorBakedModelAccess && !(previousModel instanceof OperatorBakedModelAccess)) || (!(model instanceof OperatorBakedModelAccess) && (previousModel instanceof OperatorBakedModelAccess)) || !((OperatorBakedModelAccess)model).requiredItem().equals(((OperatorBakedModelAccess)previousModel).requiredItem()))
+                refreshBarrierSections(stack, lastItemInMainHand, model instanceof OperatorBakedModelAccess operatorModel ? operatorModel.requiredItem() : null, previousModel instanceof OperatorBakedModelAccess operatorModel ? operatorModel.requiredItem() : null);
         } else if (stack.getItem() instanceof BlockItem blockItem) {
             BlockState state = stack.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY).apply(blockItem.getBlock().defaultBlockState());
-            if (Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof CreativeOnlyBakedModelAccess model)
+            if (Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof OperatorBakedModelAccess model)
                 refreshBarrierSections(stack, lastItemInMainHand, model.requiredItem(), null);
         } else if (lastItemInMainHand.getItem() instanceof BlockItem blockItem) {
             BlockState state = lastItemInMainHand.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY).apply(blockItem.getBlock().defaultBlockState());
-            if (Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof CreativeOnlyBakedModelAccess model)
+            if (Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof OperatorBakedModelAccess model)
                 refreshBarrierSections(stack, lastItemInMainHand, null, model.requiredItem());
         }
     }
 
-    private static void refreshBarrierSections(ItemStack stack, ItemStack lastItemInHand, @Nullable Either<OperatorItemPsuedoTag, ResourceKey<Item>> current, @Nullable Either<OperatorItemPsuedoTag, ResourceKey<Item>> previous) {
+    private static void refreshBarrierSections(ItemStack stack, ItemStack lastItemInHand, @Nullable Either<OperatorItemPseudoTag, ResourceKey<Item>> current, @Nullable Either<OperatorItemPseudoTag, ResourceKey<Item>> previous) {
         Set<SectionPos> operatedSectionPos = new HashSet<>();
         var chunks = ((ClientChunkCacheStorageAccessor)(Object)((ClientChunkCacheAccessor) Minecraft.getInstance().level.getChunkSource()).getStorage()).getChunks();
         for (int i = 0; i < chunks.length(); ++i) {
             LevelChunk chunk = chunks.get(i);
             if (chunk == null)
                 continue;
-            chunk.findBlocks(state -> Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof CreativeOnlyBakedModelAccess model && (current != null && model.requiredItem().map(tag -> tag.contains(stack.getItemHolder()), key -> stack.getItemHolder().is(key)) || previous != null && model.requiredItem().map(tag -> tag.contains(stack.getItemHolder()), key -> lastItemInHand.getItemHolder().is(key))), (pos, state) -> {
-                SectionPos section = SectionPos.of(pos);
-                if (operatedSectionPos.contains(section))
-                    return;
-                ((LevelRendererInvoker)Minecraft.getInstance().levelRenderer).invokeSetSectionDirty(section.getX(), section.getY(), section.getZ(), true);
-                operatedSectionPos.add(section);
+            chunk.findBlocks(state -> Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof OperatorBakedModelAccess model && (current != null && model.requiredItem().map(tag -> tag.contains(stack.getItemHolder()), key -> stack.getItemHolder().is(key)) || previous != null && model.requiredItem().map(tag -> tag.contains(lastItemInHand.getItemHolder()), key -> lastItemInHand.getItemHolder().is(key))), (pos, state) -> {
+                setBlockDirty(pos, operatedSectionPos);
             });
         }
+    }
+
+    private static void setBlockDirty(BlockPos pos, Set<SectionPos> operatedSectionPos) {
+        var sectionPos = SectionPos.of(pos);
+        if (operatedSectionPos.contains(sectionPos))
+            return;
+        ((LevelRendererInvoker)Minecraft.getInstance().levelRenderer).barricade$invokeSetBlockDirty(pos,true);
+        operatedSectionPos.add(sectionPos);
     }
 }

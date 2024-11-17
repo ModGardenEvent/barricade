@@ -47,23 +47,33 @@ public class AdvancedBarrierBlockUnbakedModel extends BlockModel {
             return List.of();
         Map<Direction, BlockElementFace> faces = new HashMap<>();
         Map<Direction, BlockElementFace> innerFaces = new HashMap<>();
+        Map<Direction, BlockElementFace> exteriorFaces = new HashMap<>();
+        Map<Direction, BlockElementFace> exteriorInnerFaces = new HashMap<>();
         for (Direction direction : Direction.values()) {
             if (directions == null || directions.blocks(direction)) {
-                if (entities != null)
+                if (entities != null) {
                     innerFaces.put(direction, new BlockElementFace(direction, BlockElementFace.NO_TINT, "inner", new BlockFaceUV(null, 0)));
+                    if (directions != null && !directions.blocksAll())
+                        exteriorInnerFaces.put(direction.getOpposite(), new BlockElementFace(null, BlockElementFace.NO_TINT, "inner", new BlockFaceUV(null, 0)));
+                }
                 faces.put(direction, new BlockElementFace(direction, BlockElementFace.NO_TINT, "barrier", new BlockFaceUV(null, 0)));
+                if (directions != null && !directions.blocksAll())
+                    exteriorFaces.put(direction.getOpposite(), new BlockElementFace(null, BlockElementFace.NO_TINT, "barrier", new BlockFaceUV(null, 0)));
             }
         }
         List<BlockElement> returnValue = new ArrayList<>();
         returnValue.add(new BlockElement(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 16.0F, 16.0F), faces, null, true));
         if (!innerFaces.isEmpty())
             returnValue.add(new BlockElement(new Vector3f(0.002F, 0.002F, 0.002F), new Vector3f(15.998F, 15.998F, 15.998F), innerFaces, null, true));
+        if (!exteriorFaces.isEmpty())
+            returnValue.add(new BlockElement(new Vector3f(15.996F, 15.996F, 15.996F), new Vector3f(0.004F, 0.004F, 0.004F), exteriorFaces, null, true));
+        if (!exteriorInnerFaces.isEmpty())
+            returnValue.add(new BlockElement(new Vector3f(15.994F, 15.994F, 15.994F), new Vector3f(0.006F, 0.006F, 0.006F), exteriorInnerFaces, null, true));
         return returnValue;
     }
 
-    @Nullable
     @Override
     public BakedModel bake(ModelBaker modelBaker, Function<Material, TextureAtlasSprite> textureGetter, ModelState modelState) {
-        return BarricadeClient.getHelper().createCreativeOnlyModel(super.bake(modelBaker, textureGetter, modelState), Either.left(BarricadeTags.ItemTags.BARRIERS));
+        return BarricadeClient.getHelper().createCreativeOnlyModel(super.bake(modelBaker, textureGetter, modelState), Either.left(Barricade.asResource("barriers")));
     }
 }

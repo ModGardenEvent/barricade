@@ -6,16 +6,16 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
-import net.modgarden.barricade.client.model.CreativeOnlyUnbakedModel;
+import net.modgarden.barricade.client.model.OperatorUnbakedModel;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 
 import java.util.function.Function;
 
 public class CreativeOnlyUnbakedModelGeometry implements IUnbakedGeometry<CreativeOnlyUnbakedModelGeometry> {
-    private final CreativeOnlyUnbakedModel model;
+    private final OperatorUnbakedModel model;
 
-    public CreativeOnlyUnbakedModelGeometry(CreativeOnlyUnbakedModel model) {
+    public CreativeOnlyUnbakedModelGeometry(OperatorUnbakedModel model) {
         this.model = model;
     }
 

@@ -5,6 +5,8 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Items;
+import net.modgarden.barricade.Barricade;
+import net.modgarden.barricade.fabric.platform.BarricadePlatformHelperFabric;
 import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeComponents;
@@ -13,6 +15,8 @@ import net.modgarden.barricade.registry.BarricadeItems;
 public class BarricadeFabric implements ModInitializer {
     @Override
     public void onInitialize() {
+        Barricade.init(new BarricadePlatformHelperFabric());
+
         BarricadeBlocks.registerAll(Registry::register);
         BarricadeBlockEntityTypes.registerAll(Registry::register);
         BarricadeComponents.registerAll(Registry::register);
