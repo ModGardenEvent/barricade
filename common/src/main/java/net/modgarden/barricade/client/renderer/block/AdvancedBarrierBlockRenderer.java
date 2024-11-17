@@ -36,7 +36,7 @@ public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<Advance
 
         AdvancedBarrierComponents components = new AdvancedBarrierComponents(blockEntity.getBlockedEntities(), blockEntity.getBlockedDirections());
 
-        Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateBlock(
+        BarricadeClient.getHelper().tessellateBlock(
                 Minecraft.getInstance().level,
                 MODEL_MAP.computeIfAbsent(components, AdvancedBarrierBlockRenderer::createModel),
                 blockEntity.getBlockState(),

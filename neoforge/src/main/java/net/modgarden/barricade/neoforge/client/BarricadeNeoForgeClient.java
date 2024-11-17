@@ -6,8 +6,6 @@ import com.google.gson.JsonParseException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.util.Unit;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.BarricadeClient;
@@ -32,7 +30,6 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
-import net.neoforged.neoforge.event.level.ChunkEvent;
 
 @Mod(value = Barricade.MOD_ID, dist = Dist.CLIENT)
 public class BarricadeNeoForgeClient {
@@ -42,6 +39,7 @@ public class BarricadeNeoForgeClient {
 
     @EventBusSubscriber(bus = EventBusSubscriber.Bus.GAME, modid = Barricade.MOD_ID, value = Dist.CLIENT)
     public static class GameEvents {
+        private static boolean previousGameMasterBlockState = false;
         private static ItemStack lastItemInMainHand = ItemStack.EMPTY;
         private static ItemStack lastItemInOffHand = ItemStack.EMPTY;
 
@@ -51,12 +49,17 @@ public class BarricadeNeoForgeClient {
                 LocalPlayer player = Minecraft.getInstance().player;
                 if (player == null)
                     return;
+                if (previousGameMasterBlockState != player.canUseGameMasterBlocks()) {
+                    BarrierRenderUtils.refreshAllOperatorBlocks();
+                    previousGameMasterBlockState = player.canUseGameMasterBlocks();
+                    return;
+                }
                 if (!ItemStack.isSameItemSameComponents(player.getMainHandItem(), lastItemInMainHand)) {
-                    BarrierRenderUtils.refreshBarrierBlocks(player.getMainHandItem(), lastItemInMainHand);
+                    BarrierRenderUtils.refreshOperatorBlocks(player.getMainHandItem(), lastItemInMainHand);
                     lastItemInMainHand = player.getMainHandItem();
                 }
                 if (!ItemStack.isSameItemSameComponents(player.getOffhandItem(), lastItemInOffHand)) {
-                    BarrierRenderUtils.refreshBarrierBlocks(player.getOffhandItem(), lastItemInOffHand);
+                    BarrierRenderUtils.refreshOperatorBlocks(player.getOffhandItem(), lastItemInOffHand);
                     lastItemInOffHand = player.getOffhandItem();
                 }
             }

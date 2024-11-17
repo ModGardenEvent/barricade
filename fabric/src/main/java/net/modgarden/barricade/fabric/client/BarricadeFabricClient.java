@@ -51,6 +51,7 @@ import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 public class BarricadeFabricClient implements ClientModInitializer {
+    private static boolean previousGameMasterBlockState = false;
     private static ItemStack lastItemInMainHand = ItemStack.EMPTY;
     private static ItemStack lastItemInOffHand = ItemStack.EMPTY;
 
@@ -90,12 +91,17 @@ public class BarricadeFabricClient implements ClientModInitializer {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player == null)
                 return;
+            if (previousGameMasterBlockState != player.canUseGameMasterBlocks()) {
+                BarrierRenderUtils.refreshAllOperatorBlocks();
+                previousGameMasterBlockState = player.canUseGameMasterBlocks();
+                return;
+            }
             if (!ItemStack.isSameItemSameComponents(player.getMainHandItem(), lastItemInMainHand)) {
-                BarrierRenderUtils.refreshBarrierBlocks(player.getMainHandItem(), lastItemInMainHand);
+                BarrierRenderUtils.refreshOperatorBlocks(player.getMainHandItem(), lastItemInMainHand);
                 lastItemInMainHand = player.getMainHandItem();
             }
             if (!ItemStack.isSameItemSameComponents(player.getOffhandItem(), lastItemInOffHand)) {
-                BarrierRenderUtils.refreshBarrierBlocks(player.getOffhandItem(), lastItemInOffHand);
+                BarrierRenderUtils.refreshOperatorBlocks(player.getOffhandItem(), lastItemInOffHand);
                 lastItemInOffHand = player.getOffhandItem();
             }
         });
