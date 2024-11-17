@@ -97,11 +97,11 @@ public class BarricadeFabricClient implements ClientModInitializer {
                 return;
             }
             if (!ItemStack.isSameItemSameComponents(player.getMainHandItem(), lastItemInMainHand)) {
-                BarrierRenderUtils.refreshOperatorBlocks(player.getMainHandItem(), lastItemInMainHand);
+                BarrierRenderUtils.refreshOperatorBlocks(player.getMainHandItem(), lastItemInMainHand, player.getOffhandItem());
                 lastItemInMainHand = player.getMainHandItem();
             }
             if (!ItemStack.isSameItemSameComponents(player.getOffhandItem(), lastItemInOffHand)) {
-                BarrierRenderUtils.refreshOperatorBlocks(player.getOffhandItem(), lastItemInOffHand);
+                BarrierRenderUtils.refreshOperatorBlocks(player.getOffhandItem(), lastItemInOffHand, player.getMainHandItem());
                 lastItemInOffHand = player.getOffhandItem();
             }
         });
