@@ -1,2 +1,2 @@
 ## Bugfixes
-- Fix NeoForge mixin crash.
+- Fixed east and west barrier models having an incorrect face.
