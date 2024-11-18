@@ -1,7 +1,8 @@
 # Barricade
 Barricade is a mod that implements more barrier types meant for use within Mod Garden events. Although it is free for other mapmakers to use too.
 
-This mod also changes barrier and light block rendering, to be friendlier to directional based barriers.
+This mod may also change barrier and light block rendering, to be friendlier to directional based barriers.
+You can enable the above by applying the Barricade Rendering resource pack.
 
 ## Client-side Only
 This mod is able to run on clients without having it on the server. When run like this, the mod will only apply the rendering functionalities to any block with the `barricade:operator` loader json.

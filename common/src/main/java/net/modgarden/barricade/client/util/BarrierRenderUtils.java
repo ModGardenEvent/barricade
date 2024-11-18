@@ -20,7 +20,6 @@ import net.minecraft.world.item.component.BlockItemStateProperties;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.lighting.LightEngine;
 import net.minecraft.world.phys.Vec3;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
@@ -130,16 +129,6 @@ public class BarrierRenderUtils {
         operatedSectionPos.add(sectionPos);
     }
 
-    public static boolean isLightBlockId(ResourceLocation location) {
-        if (location.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE)) {
-            for (int i = 0; i < LightEngine.MAX_LEVEL + 1; ++i) {
-                if (location.getPath().equals("light_" + (i < 10 ? ("0" + i) : i)))
-                    return true;
-            }
-        }
-        return false;
-    }
-
     public static void createAdvancedParticle(BlockedDirectionsComponent directions, @Nullable ResourceLocation backTexture, Consumer<ParticleOptions> optionsConsumer, BlockPos pos) {
         if (directions.doesNotBlock())
             optionsConsumer.accept(new AdvancedBarrierParticleOptions(new BlockedDirectionsComponent(EnumSet.noneOf(Direction.class)), null, Optional.of(pos)));
@@ -170,16 +159,16 @@ public class BarrierRenderUtils {
                 relativeEast = Direction.WEST;
             }
             case WEST -> {
-                relativeSouth = Direction.EAST;
-                relativeNorth = Direction.WEST;
-                relativeWest = Direction.SOUTH;
-                relativeEast = Direction.NORTH;
-            }
-            case EAST -> {
                 relativeSouth = Direction.WEST;
                 relativeNorth = Direction.EAST;
                 relativeWest = Direction.NORTH;
                 relativeEast = Direction.SOUTH;
+            }
+            case EAST -> {
+                relativeSouth = Direction.EAST;
+                relativeNorth = Direction.WEST;
+                relativeWest = Direction.SOUTH;
+                relativeEast = Direction.NORTH;
             }
             default -> {
                 relativeSouth = Direction.SOUTH;

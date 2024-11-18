@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.modgarden.barricade.neoforge.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "OptionsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
+

@@ -1,5 +1,7 @@
 ## Changes
-- Added vanilla rendering mode. Accessible by turning off the automatically enabled Barricade resource pack.
+- Added vanilla rendering mode.
+  - Accessible by turning off the automatically enabled resource pack on Fabric.
+  - Accessible by turning on the Barricade Rendering resource pack on NeoForge.
 
 ## Bugfixes
 - Fixed fences connecting to directional and advanced barrier blocks.

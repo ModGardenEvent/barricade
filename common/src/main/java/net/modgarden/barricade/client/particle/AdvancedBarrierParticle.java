@@ -27,7 +27,6 @@ public class AdvancedBarrierParticle extends TextureSheetParticle {
     private final BlockedDirectionsComponent relative;
     private final ResourceLocation backTextureLocation;
     private final Optional<BlockPos> origin;
-    private int removeTicks = 0;
 
     AdvancedBarrierParticle(BlockedDirectionsComponent blockedDirections, @Nullable ResourceLocation backTextureLocation, Optional<BlockPos> origin, ClientLevel level, double x, double y, double z) {
         super(level, x, y, z);
@@ -43,13 +42,10 @@ public class AdvancedBarrierParticle extends TextureSheetParticle {
     @Override
     public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
         if (blockedDirections != null && origin.isPresent() && !blockedDirections.blocksAll() && !blockedDirections.doesNotBlock() && !relative.equals(BarrierRenderUtils.relativeDirectionsComponent(blockedDirections, origin.get()))) {
-            if (removeTicks > 4) {
-                remove();
-            }
-            removeTicks++;
+            if (age < 60)
+                age = 60;
             return;
         }
-        removeTicks = 0;
 
         Quaternionf quaternionf = new Quaternionf();
         this.getFacingCameraMode().setRotation(quaternionf, renderInfo, partialTicks);
