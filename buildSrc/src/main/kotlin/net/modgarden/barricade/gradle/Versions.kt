@@ -1,7 +1,7 @@
 package net.modgarden.barricade.gradle
 
 object Versions {
-    const val MOD = "1.2.1"
+    const val MOD = "1.2.2"
 
     const val MINECRAFT = "1.21.1"
     const val PARCHMENT_MINECRAFT = "1.21"
