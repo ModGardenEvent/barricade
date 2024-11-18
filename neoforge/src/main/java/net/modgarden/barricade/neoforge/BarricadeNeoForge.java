@@ -84,9 +84,8 @@ public class BarricadeNeoForge {
 
         @SubscribeEvent
         public static void addPackFinders(AddPackFindersEvent event) {
-            if (event.getPackType() == PackType.CLIENT_RESOURCES) {
+            if (event.getPackType() == PackType.CLIENT_RESOURCES)
                 event.addPackFinders(Barricade.asResource("resourcepacks/modded_rendering"), PackType.CLIENT_RESOURCES, Component.translatable("resourcePack.barricade.modded_rendering.name"), createSource(true), false, Pack.Position.TOP);
-            }
         }
 
         private static PackSource createSource(boolean enabledByDefault) {
