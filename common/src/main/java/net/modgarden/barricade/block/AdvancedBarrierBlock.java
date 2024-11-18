@@ -36,15 +36,14 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity) {
             if (blockEntity.getBlockedEntities() == null || !blockEntity.getBlockedEntities().canPass(context)) {
-                if (blockEntity.getBlockedDirections() != null && blockEntity.getBlockedDirections().doesNotBlock()) {
+                if (blockEntity.getBlockedDirections() != null && blockEntity.getBlockedDirections().doesNotBlock())
                     return Shapes.empty();
-                } else if (blockEntity.getBlockedDirections() == null || blockEntity.getBlockedDirections().blocksAll()) {
+                else if (blockEntity.getBlockedDirections() == null || blockEntity.getBlockedDirections().blocksAll())
                     return super.getCollisionShape(state, level, pos, context);
-                } else {
+                else {
                     Direction direction = blockEntity.getBlockedDirections().blockingDirection(pos, context);
-                    if (direction == null) {
+                    if (direction == null)
                         return Shapes.empty();
-                    }
                     return super.getCollisionShape(state, level, pos, context);
                 }
             }

@@ -7,9 +7,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -17,9 +18,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public record BlockedDirectionsComponent(EnumSet<Direction> directions) {
     public static final Codec<BlockedDirectionsComponent> CODEC = StringRepresentable.fromEnum(Direction::values).listOf().flatXmap(directions -> DataResult.success(BlockedDirectionsComponent.of(directions.toArray(Direction[]::new))), component -> DataResult.success(List.copyOf(component.directions)));
@@ -34,25 +32,35 @@ public record BlockedDirectionsComponent(EnumSet<Direction> directions) {
             return null;
         Entity entity = entityContext.getEntity();
         for (Direction direction : directions) {
-            Direction.Axis axis = direction.getAxis();
-
-            // Prevents the entity from colliding horizontally with vertical blocks.
-            double verticalDiff = Mth.abs((float) (entity.getY() + entity.getDeltaMovement().y - (pos.getY() + 0.6)));
-            if (axis.isVertical() && (direction == Direction.DOWN && verticalDiff < entity.getBoundingBox().getYsize() + 0.2 || (direction == Direction.UP && verticalDiff > Math.max(0.4, entity.getBoundingBox().getYsize() / 3))))
-                continue;
-
-            // Prevents the entity from colliding vertically on horizontal blocks.
-            double horizontalDiff = entity.position().multiply(1.0F, 0.0F, 1.0F).add(entity.getDeltaMovement().multiply(1.0F, 0.0F, 1.0F)).distanceTo(pos.getCenter().add(direction.getStepX() * -0.3, direction.getStepY() * -0.3, direction.getStepZ() * -0.3).multiply(1.0F, 0.0F, 1.0F));
-            if (axis.isHorizontal() && (horizontalDiff < 0.6 || !entity.getBoundingBox().inflate(1.5, 0.5, 1.5).contains(pos.getCenter().add(direction.getStepX() * 0.3, direction.getStepY() * 0.3, direction.getStepZ() * 0.3)) || verticalDiff < 0.3 || verticalDiff > 2))
-                continue;
-
-            if (direction.getAxisDirection() == Direction.AxisDirection.POSITIVE && entity.position().get(axis) > (double) pos.get(axis) + Shapes.block().max(axis) - 1.0E-5F)
+            if (direction == Direction.DOWN && entity.getBoundingBox().maxY < pos.getY() + 1.0E-5F)
                 return direction;
-
-            if (entity.position().get(axis) < (double) pos.get(axis) + Shapes.block().min(axis) + 1.0E-5F)
+            if (direction == Direction.UP && context.isAbove(Shapes.block(), pos, false))
+                return direction;
+            if (intersectsHorizontal(direction, entity.getBoundingBox(), entity.getDeltaMovement(), pos))
                 return direction;
         }
         return null;
+    }
+
+    public static boolean intersectsHorizontal(Direction direction, AABB box, Vec3 deltaMovement, BlockPos pos) {
+        Vec3 startPos = new Vec3(pos.getX(), pos.getY(), pos.getZ()).add(getPoint(direction, Direction.Axis.X, 0, -0.1), getPoint(direction, Direction.Axis.Y, 0.5, -0.1), getPoint(direction, Direction.Axis.Z, 0, -0.1));
+        Vec3 endPos = startPos.add(getPoint(direction, Direction.Axis.X, 1, 0.2), getPoint(direction, Direction.Axis.Y, 0, 0.2), getPoint(direction, Direction.Axis.Z, 1, 0.2));
+        Vec3 boxDotPos = new Vec3(box.getCenter().x() - (pos.getX() + (direction.getAxis() == Direction.Axis.X ? Math.max(direction.getAxisDirection().getStep(), 0) : 0.5)), 0, box.getCenter().z() - (pos.getZ() + (direction.getAxis() == Direction.Axis.Z ? Math.max(direction.getAxisDirection().getStep(), 0) : 0.5))).normalize();
+        return box.expandTowards(deltaMovement.x(), 0, deltaMovement.z()).intersects(startPos, endPos) && boxDotPos.dot(new Vec3(direction.getStepX(), 0, direction.getStepZ())) > 0.2;
+    }
+
+    public static double getPoint(Direction direction, Direction.Axis axis, double defaultValue, double offset) {
+       if (direction.getAxis() == axis)
+           defaultValue = Math.max(direction.getAxisDirection().getStep(), 0) + offset;
+       return defaultValue;
+    }
+
+    public boolean isHorizontal() {
+        return directions.stream().anyMatch(direction -> direction.getAxis().isHorizontal());
+    }
+
+    public boolean isVertical() {
+        return directions.stream().anyMatch(direction -> direction.getAxis().isVertical());
     }
 
     public boolean doesNotBlock() {
@@ -76,12 +84,6 @@ public record BlockedDirectionsComponent(EnumSet<Direction> directions) {
             return true;
         if (!(obj instanceof BlockedDirectionsComponent other))
             return false;
-        // Why do I have to do this?...
-        return other.directions.size() == directions.size() && other.directions.containsAll(directions);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(directions);
+        return other.directions.equals(directions);
     }
 }
