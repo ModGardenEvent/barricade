@@ -20,7 +20,12 @@ import java.util.EnumSet;
 import java.util.List;
 
 public record BlockedDirectionsComponent(EnumSet<Direction> directions) {
-    public static final Codec<BlockedDirectionsComponent> CODEC = StringRepresentable.fromEnum(Direction::values).listOf().flatXmap(directions -> DataResult.success(BlockedDirectionsComponent.of(directions.toArray(Direction[]::new))), component -> DataResult.success(List.copyOf(component.directions)));
+    public static final Codec<BlockedDirectionsComponent> CODEC = StringRepresentable.fromEnum(Direction::values).listOf().flatXmap(directions -> {
+        if (directions.isEmpty()) {
+            return DataResult.error(() -> "Must specify at least one direction.");
+        }
+        return DataResult.success(BlockedDirectionsComponent.of(directions.toArray(Direction[]::new)));
+    }, component -> DataResult.success(List.copyOf(component.directions)));
     public static final StreamCodec<ByteBuf, BlockedDirectionsComponent> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
     public static BlockedDirectionsComponent of(Direction... directions) {
