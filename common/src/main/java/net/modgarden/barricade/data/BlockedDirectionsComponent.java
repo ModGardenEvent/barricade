@@ -1,4 +1,4 @@
-package net.modgarden.barricade.component;
+package net.modgarden.barricade.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -30,18 +30,18 @@ public record BlockedDirectionsComponent(EnumSet<Direction> directions) {
         return new BlockedDirectionsComponent(EnumSet.copyOf(Arrays.stream(directions).toList()));
     }
 
-    public Direction blockingDirection(BlockPos pos, CollisionContext context) {
+    public boolean test(BlockPos pos, CollisionContext context) {
         if (!(context instanceof EntityCollisionContext entityContext) || entityContext.getEntity() == null)
-            return null;
+            return false;
         Entity entity = entityContext.getEntity();
         for (Direction direction : directions) {
-            if (isOnOtherSideOfFace(direction, entity.getBoundingBox(), pos))
-                return direction;
+            if (test(direction, entity.getBoundingBox(), pos))
+                return true;
         }
-        return null;
+        return false;
     }
 
-    public static boolean isOnOtherSideOfFace(Direction direction, AABB box, BlockPos pos) {
+    private static boolean test(Direction direction, AABB box, BlockPos pos) {
         double boxPoint = (direction.getAxisDirection() == Direction.AxisDirection.POSITIVE ? box.min(direction.getAxis()) : box.max(direction.getAxis()));
         double blockPoint = pos.get(direction.getAxis());
         if (direction.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
@@ -50,14 +50,6 @@ public record BlockedDirectionsComponent(EnumSet<Direction> directions) {
         }
         blockPoint = blockPoint + 1.0E-5F;
         return boxPoint < blockPoint;
-    }
-
-    public boolean isHorizontal() {
-        return directions.stream().anyMatch(direction -> direction.getAxis().isHorizontal());
-    }
-
-    public boolean isVertical() {
-        return directions.stream().anyMatch(direction -> direction.getAxis().isVertical());
     }
 
     public boolean doesNotBlock() {

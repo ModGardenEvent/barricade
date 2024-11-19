@@ -1,6 +1,7 @@
 package net.modgarden.barricade.fabric;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
@@ -10,10 +11,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Items;
 import net.modgarden.barricade.Barricade;
+import net.modgarden.barricade.data.AdvancedBarrier;
 import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeComponents;
 import net.modgarden.barricade.registry.BarricadeItems;
+import net.modgarden.barricade.registry.BarricadeRegistries;
 
 public class BarricadeFabric implements ModInitializer {
     @Override
@@ -26,6 +29,7 @@ public class BarricadeFabric implements ModInitializer {
         FabricLoader.getInstance().getModContainer(Barricade.MOD_ID).ifPresent(modContainer -> {
             ResourceManagerHelper.registerBuiltinResourcePack(Barricade.asResource("modded_rendering"), modContainer, Component.translatable("resourcePack.barricade.modded_rendering.name"), ResourcePackActivationType.NORMAL);
         });
+        DynamicRegistries.registerSynced(BarricadeRegistries.ADVANCED_BARRIER, AdvancedBarrier.DIRECT_CODEC);
 
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.OP_BLOCKS).register(entries -> {
             if (!entries.shouldShowOpRestrictedItems())

@@ -12,8 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.BarricadeClient;
-import net.modgarden.barricade.component.BlockedDirectionsComponent;
-import net.modgarden.barricade.component.BlockedEntitiesComponent;
+import net.modgarden.barricade.data.BlockedDirectionsComponent;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -26,18 +25,18 @@ import java.util.function.Function;
 public class AdvancedBarrierBlockUnbakedModel extends BlockModel {
     public static final Material BARRIER = new Material(TextureAtlas.LOCATION_BLOCKS, Barricade.asResource("block/barrier"));
 
-    public AdvancedBarrierBlockUnbakedModel(@Nullable BlockedDirectionsComponent directions, @Nullable BlockedEntitiesComponent entities) {
-        super(null, constructElements(directions, entities), createTextureMap(entities), false, GuiLight.SIDE, ItemTransforms.NO_TRANSFORMS, List.of());
+    public AdvancedBarrierBlockUnbakedModel(BlockedDirectionsComponent directions, @Nullable ResourceLocation icon) {
+        super(null, constructElements(directions, icon), createTextureMap(icon), false, GuiLight.SIDE, ItemTransforms.NO_TRANSFORMS, List.of());
     }
 
-    private static Map<String, Either<Material, String>> createTextureMap(@Nullable BlockedEntitiesComponent entities) {
+    private static Map<String, Either<Material, String>> createTextureMap(@Nullable ResourceLocation icon) {
         Material innerMaterial = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.withDefaultNamespace("missingno"));
-        if (entities != null)
-            innerMaterial = new Material(TextureAtlas.LOCATION_BLOCKS, entities.icon());
+        if (icon != null)
+            innerMaterial = new Material(TextureAtlas.LOCATION_BLOCKS, icon);
         return Map.of("particle", Either.left(BARRIER), "barrier", Either.left(BARRIER), "inner", Either.left(innerMaterial));
     }
 
-    private static List<BlockElement> constructElements(@Nullable BlockedDirectionsComponent directions, @Nullable BlockedEntitiesComponent entities) {
+    private static List<BlockElement> constructElements(@Nullable BlockedDirectionsComponent directions, @Nullable ResourceLocation icon) {
         if (directions != null && directions.doesNotBlock()) {
             Map<Direction, BlockElementFace> faces = new HashMap<>();
             for (Direction direction : Direction.values()) {
@@ -51,14 +50,14 @@ public class AdvancedBarrierBlockUnbakedModel extends BlockModel {
         Map<Direction, BlockElementFace> exteriorInnerFaces = new HashMap<>();
         for (Direction direction : Direction.values()) {
             if (directions == null || directions.blocks(direction)) {
-                if (entities != null) {
+                if (icon != null) {
                     innerFaces.put(direction, new BlockElementFace(direction, BlockElementFace.NO_TINT, "inner", new BlockFaceUV(null, 0)));
                     if (directions != null && !directions.blocksAll())
-                        exteriorInnerFaces.put(direction == Direction.WEST || direction == Direction.EAST ? direction.getOpposite() : direction, new BlockElementFace(null, BlockElementFace.NO_TINT, "inner", new BlockFaceUV(null, 0)));
+                        exteriorInnerFaces.put(direction.getOpposite(), new BlockElementFace(null, BlockElementFace.NO_TINT, "inner", new BlockFaceUV(null, 0)));
                 }
                 faces.put(direction, new BlockElementFace(direction, BlockElementFace.NO_TINT, "barrier", new BlockFaceUV(null, 0)));
                 if (directions != null && !directions.blocksAll())
-                    exteriorFaces.put(direction == Direction.WEST || direction == Direction.EAST ? direction.getOpposite() : direction, new BlockElementFace(null, BlockElementFace.NO_TINT, "barrier", new BlockFaceUV(null, 0)));
+                    exteriorFaces.put(direction.getOpposite(), new BlockElementFace(null, BlockElementFace.NO_TINT, "barrier", new BlockFaceUV(null, 0)));
             }
         }
         List<BlockElement> returnValue = new ArrayList<>();

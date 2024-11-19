@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.util.BarrierRenderUtils;
-import net.modgarden.barricade.component.BlockedDirectionsComponent;
+import net.modgarden.barricade.data.BlockedDirectionsComponent;
 import net.modgarden.barricade.particle.AdvancedBarrierParticleOptions;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;

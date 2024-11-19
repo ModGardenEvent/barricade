@@ -9,7 +9,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.modgarden.barricade.component.BlockedDirectionsComponent;
+import net.modgarden.barricade.data.BlockedDirectionsComponent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;

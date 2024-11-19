@@ -12,14 +12,15 @@ import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.BarricadeClient;
-import net.modgarden.barricade.client.util.AdvancedBarrierComponents;
+import net.modgarden.barricade.client.util.AdvancedBarrierModelValues;
+import net.modgarden.barricade.data.AdvancedBarrier;
 import net.modgarden.barricade.mixin.client.ModelBakeryAccessor;
 import net.modgarden.barricade.registry.BarricadeComponents;
 
@@ -28,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AdvancedBarrierItemRenderer {
-    private static final Map<AdvancedBarrierComponents, BakedModel> MODEL_MAP = new HashMap<>();
+    private static final Map<AdvancedBarrierModelValues, BakedModel> MODEL_MAP = new HashMap<>();
 
     public static final ResourceLocation NO_BARRIER_TEXTURE = Barricade.asResource("item/barricade/no_barrier");
     public static final ResourceLocation BARRIER_TEXTURE = ResourceLocation.withDefaultNamespace("item/barrier");
@@ -50,8 +51,10 @@ public class AdvancedBarrierItemRenderer {
     );
 
     public static void renderItem(ItemStack stack, ItemDisplayContext context, PoseStack pose, MultiBufferSource buffer, int light, int overlay) {
-        AdvancedBarrierComponents components = new AdvancedBarrierComponents(stack.get(BarricadeComponents.BLOCKED_ENTITIES), stack.get(BarricadeComponents.BLOCKED_DIRECTIONS));
-        BakedModel model = MODEL_MAP.computeIfAbsent(components, AdvancedBarrierItemRenderer::createModel);
+        Holder<AdvancedBarrier> component = stack.getOrDefault(BarricadeComponents.ADVANCED_BARRIER, Holder.direct(AdvancedBarrier.DEFAULT));
+        AdvancedBarrierModelValues key = new AdvancedBarrierModelValues(component.value().directions(), component.value().icon().orElse(null));
+
+        BakedModel model = MODEL_MAP.computeIfAbsent(key, AdvancedBarrierItemRenderer::createModel);
 
         boolean left = context == ItemDisplayContext.THIRD_PERSON_LEFT_HAND || context == ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
         pose.translate(0.5F, 0.5F, 0.5F);
@@ -72,44 +75,36 @@ public class AdvancedBarrierItemRenderer {
         }
     }
 
-    public static BakedModel createModel(AdvancedBarrierComponents components) {
+    public static BakedModel createModel(AdvancedBarrierModelValues values) {
         Map<String, Either<Material, String>> textureMap = new HashMap<>();
         int i = 0;
-        if (components.blockedEntities() != null) {
-            textureMap.put("barricade_layer" + i, Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, components.blockedEntities().icon())));
+
+        if (values.icon() != null) {
+            textureMap.put("barricade_layer" + i, Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, values.icon())));
             ++i;
         }
 
-        if (components.blockedDirections() == null || components.blockedDirections().blocksAll()) {
+        if (values.directions().blocksAll()) {
             textureMap.put("barricade_layer" + i, Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, BARRIER_TEXTURE)));
             ++i;
-        } else if (components.blockedDirections().doesNotBlock()) {
+        } else if (values.directions().doesNotBlock()) {
             textureMap.put("barricade_layer" + i, Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, NO_BARRIER_TEXTURE)));
             ++i;
         } else {
             textureMap.put("barricade_layer" + i, Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, NO_BARRIER_TEXTURE)));
             ++i;
 
-            for (Direction entry : components.blockedDirections().directions()) {
+            for (Direction entry : values.directions().directions()) {
                 textureMap.put("barricade_layer" + i, Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, DIRECTION_TO_MATERIAL_LOCATION.get(entry))));
                 ++i;
             }
         }
 
-        String variant = "";
-        if (components.blockedEntities() != null)
-            variant = components.blockedEntities().icon() + "," + String.join(",", components.blockedEntities().entities().stream().map(either -> either.map(tagKey -> "#" + tagKey.location(), holder -> holder.unwrapKey().map(ResourceKey::location).orElse(ResourceLocation.withDefaultNamespace("null")).toString())).toList());
-
-        if (components.blockedDirections() != null && !components.blockedDirections().doesNotBlock()) {
-            if (!variant.isEmpty())
-                variant = variant + ",";
-            variant = String.join(",", components.blockedDirections().directions().stream().map(Direction::getName).toList());
-        }
         BlockModel blockModel = new BlockModel(ResourceLocation.withDefaultNamespace("builtin/generated"), List.of(), textureMap, false, BlockModel.GuiLight.FRONT, Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(Items.BARRIER).getTransforms(), List.of());
         return ModelBakeryAccessor.getItemModelGenerator()
                 .generateBlockModel(Material::sprite, blockModel)
                 .bake(
-                        BarricadeClient.getModelBakery().new ModelBakerImpl((modelLocation, material) -> material.sprite(), new ModelResourceLocation(Barricade.asResource("advanced_barrier_item_renderer"), variant)),
+                        BarricadeClient.getModelBakery().new ModelBakerImpl((modelLocation, material) -> material.sprite(), new ModelResourceLocation(Barricade.asResource("advanced_barrier_item_renderer"), values.getVariant())),
                         blockModel,
                         Material::sprite,
                         BlockModelRotation.X0_Y0,

@@ -48,7 +48,7 @@ public class PredicateBarrierBlock extends BarrierBlock {
 					})
 					.forGetter(PredicateBarrierBlock::conditions)
 	).apply(instance, PredicateBarrierBlock::new));
-	private static final LootContextParamSet PARAM_SET = LootContextParamSet.builder()
+	public static final LootContextParamSet PARAM_SET = LootContextParamSet.builder()
 			.required(LootContextParams.THIS_ENTITY)
 			.required(LootContextParams.BLOCK_STATE)
 			.required(LootContextParams.ORIGIN)
@@ -131,9 +131,8 @@ public class PredicateBarrierBlock extends BarrierBlock {
 				serverLevel = (ServerLevel) level;
 			}
 			
-			if (entityContext.getEntity() != null && test(serverLevel, entityContext.getEntity(), state, pos)) {
+			if (entityContext.getEntity() != null && !test(serverLevel, entityContext.getEntity(), state, pos))
 				return Shapes.empty();
-			}
 		}
 		return super.getCollisionShape(state, level, pos, context);
 	}

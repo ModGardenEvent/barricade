@@ -8,8 +8,8 @@
     "BlockBehaviourBlockStateBaseMixin",
     "BlockBehaviourMixin",
     "BlockMixin",
+    "LootContextBuilderMixin",
     "LootContextInvoker",
-    "Mixin_LootContext\$Builder",
     "PlayerPredicateMixin"
   ],
   "client": [

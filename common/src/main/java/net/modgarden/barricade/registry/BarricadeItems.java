@@ -5,11 +5,12 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.modgarden.barricade.Barricade;
+import net.modgarden.barricade.item.AdvancedBarrierBlockItem;
 import net.modgarden.barricade.registry.internal.RegistrationCallback;
 import org.jetbrains.annotations.NotNull;
 
 public class BarricadeItems {
-    public static final BlockItem ADVANCED_BARRIER = new BlockItem(BarricadeBlocks.ADVANCED_BARRIER, barrierProps());
+    public static final BlockItem ADVANCED_BARRIER = new AdvancedBarrierBlockItem(BarricadeBlocks.ADVANCED_BARRIER, barrierProps());
 
     public static final BlockItem HORIZONTAL_BARRIER = new BlockItem(BarricadeBlocks.HORIZONTAL_BARRIER, barrierProps());
     public static final BlockItem VERTICAL_BARRIER = new BlockItem(BarricadeBlocks.VERTICAL_BARRIER, barrierProps());

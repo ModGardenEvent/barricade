@@ -33,18 +33,8 @@ All items may be accessed through the /give command or through the Operator Util
 - `barricade:player_barrier` - Exclusively blocks out players.
 
 ### Advanced Barrier
+
 The Advanced Barrier is a block entity based barrier that can be both an entity barrier and a directional barrier.
-What an Advanced Barrier will do can be modified through the `barricade:blocked_directions` and `barricade:blocked_entities` components on the associated item.
+What an Advanced Barrier will do can be modified by specifying an Advanced Barrier JSON inside `/data/<namespace>/barricade/advanced_barrier/<path>.json`.
 
-#### Example /give commands.
-`/give @s barricade:advanced_barrier[barricade:blocked_directions=[south,north]]` - Blocks south and north.
-
-`/give @s barricade:advanced_barrier[barricade:blocked_directions={west,up}]` - Blocks west and up.
-
-`/give @s barricade:advanced_barrier[barricade:blocked_directions={west,north,south}]` - Blocks all horizontal directions besides east.
-
-`/give @s barricade:advanced_barrier[barricade:blocked_entities={entities:["#minecraft:skeletons"]}]` - Blocks all skeletons.
-
-`/give @s barricade:advanced_barrier[barricade:blocked_entities={entities:["#minecraft:zombies","minecraft:player"],inverted:true}]` - Blocks everything but zombies and players.
-
-`/give @s barricade:advanced_barrier[barricade:blocked_entities={backing_texture_location:"barricade:item/barricade/entity/player",entities:["minecraft:player"]},barricade:blocked_directions={west,north,south,east}]` - Blocks only players from all horizontal directions.
+You may add this advanced barrier to your JSON with the id as the value of the `barricade:advanced_barrier` component.

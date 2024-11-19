@@ -10,10 +10,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.modgarden.barricade.Barricade;
+import net.modgarden.barricade.data.AdvancedBarrier;
 import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeComponents;
 import net.modgarden.barricade.registry.BarricadeItems;
+import net.modgarden.barricade.registry.BarricadeRegistries;
 import net.modgarden.barricade.registry.internal.RegistrationCallback;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -21,6 +23,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import java.util.List;
@@ -42,6 +45,11 @@ public class BarricadeNeoForge {
 
         private static <T> void register(RegisterEvent event, Consumer<RegistrationCallback<T>> consumer) {
             consumer.accept((registry, id, object) -> event.register(registry.key(), id, () -> object));
+        }
+
+        @SubscribeEvent
+        public static void newDataPackRegistry(DataPackRegistryEvent.NewRegistry event) {
+            event.dataPackRegistry(BarricadeRegistries.ADVANCED_BARRIER, AdvancedBarrier.DIRECT_CODEC, AdvancedBarrier.DIRECT_CODEC);
         }
 
         @SubscribeEvent

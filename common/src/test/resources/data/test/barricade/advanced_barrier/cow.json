@@ -1,0 +1,11 @@
+{
+  "name": "Cow Barrier",
+  "icon": "barricade:cow",
+  "condition": {
+    "condition": "minecraft:entity_properties",
+    "entity": "this",
+    "predicate": {
+      "type": "minecraft:cow"
+    }
+  }
+}

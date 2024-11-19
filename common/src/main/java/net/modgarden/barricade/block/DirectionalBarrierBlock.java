@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.modgarden.barricade.component.BlockedDirectionsComponent;
+import net.modgarden.barricade.data.BlockedDirectionsComponent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,8 +63,7 @@ public class DirectionalBarrierBlock extends BarrierBlock {
             return Shapes.empty();
         if (directions.blocksAll())
             return super.getCollisionShape(state, level, pos, context);
-        Direction direction = directions.blockingDirection(pos, context);
-        if (direction == null)
+        if (!directions.test(pos, context))
             return Shapes.empty();
         return super.getCollisionShape(state, level, pos, context);
     }

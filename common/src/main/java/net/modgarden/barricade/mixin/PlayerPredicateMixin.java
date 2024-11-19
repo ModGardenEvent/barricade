@@ -48,43 +48,35 @@ public abstract class PlayerPredicateMixin implements EntitySubPredicate {
 			Vec3 position,
 			CallbackInfoReturnable<Boolean> cir
 	) {
-		if (!(p_entity instanceof LocalPlayer localPlayer)) {
+		if (!(p_entity instanceof LocalPlayer localPlayer))
 			return;
-		}
 		
 		MultiPlayerGameMode gameMode = Minecraft.getInstance().gameMode;
-		if (gameMode == null) {
+		if (gameMode == null)
 			Barricade.LOG.error("LocalPlayer has no MultiPlayerGameMode!");
-		}
 		
-		if (gameMode != null && !this.gameType.matches(gameMode.getPlayerMode())) {
+		if (gameMode != null && !this.gameType.matches(gameMode.getPlayerMode()))
 			cir.setReturnValue(false);
-		} else if (!this.level.matches(localPlayer.experienceLevel)) {
+		else if (!this.level.matches(localPlayer.experienceLevel))
 			cir.setReturnValue(false);
-		} else {
+		else {
 			StatsCounter statsCounter = localPlayer.getStats();
 
-			for (PlayerPredicate.StatMatcher<?> statMatcher : this.stats) {
-				if (!statMatcher.matches(statsCounter)) {
+			for (PlayerPredicate.StatMatcher<?> statMatcher : this.stats)
+				if (!statMatcher.matches(statsCounter))
 					cir.setReturnValue(false);
-				}
-			}
 
 			RecipeBook recipeBook = localPlayer.getRecipeBook();
 
-			for (Object2BooleanMap.Entry<ResourceLocation> entry : this.recipes.object2BooleanEntrySet()) {
-				if (recipeBook.contains(entry.getKey()) != entry.getBooleanValue()) {
+			for (Object2BooleanMap.Entry<ResourceLocation> entry : this.recipes.object2BooleanEntrySet())
+				if (recipeBook.contains(entry.getKey()) != entry.getBooleanValue())
 					cir.setReturnValue(false);
-				}
-			}
 
-			if (!this.advancements.isEmpty()) {
+			if (!this.advancements.isEmpty())
 				Barricade.LOG.error("Advancements are unsupported in client-side LootContext checks.");
-			}
 
-			if (this.lookingAt.isPresent()) {
+			if (this.lookingAt.isPresent())
 				Barricade.LOG.error("LookingAt conditions are unsupported in client-side LootContext checks.");
-			}
 
 			cir.setReturnValue(true);
 		}
