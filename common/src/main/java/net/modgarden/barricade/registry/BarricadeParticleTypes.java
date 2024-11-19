@@ -9,6 +9,6 @@ import net.modgarden.barricade.registry.internal.RegistrationCallback;
 public class BarricadeParticleTypes {
 
     public static void registerAll(RegistrationCallback<ParticleType<?>> callback) {
-        callback.register(BuiltInRegistries.PARTICLE_TYPE, Barricade.asResource("directional_barrier"), AdvancedBarrierParticleOptions.Type.INSTANCE);
+        callback.register(BuiltInRegistries.PARTICLE_TYPE, Barricade.asResource("advanced_barrier"), AdvancedBarrierParticleOptions.Type.INSTANCE);
     }
 }

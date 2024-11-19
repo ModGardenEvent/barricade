@@ -23,7 +23,7 @@ import net.modgarden.barricade.block.PredicateBarrierBlock;
 import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
 import net.modgarden.barricade.client.util.BarrierRenderUtils;
 import net.modgarden.barricade.client.util.OperatorItemPseudoTag;
-import net.modgarden.barricade.data.BlockedDirectionsComponent;
+import net.modgarden.barricade.data.BlockedDirections;
 import net.modgarden.barricade.registry.BarricadeItems;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -87,7 +87,7 @@ public class ClientLevelMixin {
                 BarrierRenderUtils.createAdvancedParticle(blockEntity.getData().directions(), blockEntity.getData().icon().orElse(null), particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
                 return;
             } else if (blockState.getBlock() instanceof PredicateBarrierBlock predicateBarrierBlock) {
-                BarrierRenderUtils.createAdvancedParticle(BlockedDirectionsComponent.of(Direction.values()), predicateBarrierBlock.icon(), particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
+                BarrierRenderUtils.createAdvancedParticle(BlockedDirections.of(Direction.values()), predicateBarrierBlock.icon(), particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
             }
             original.call(instance, new BlockParticleOption(ParticleTypes.BLOCK_MARKER, blockState), x, y, z, xSpeed, ySpeed, zSpeed);
             return;

@@ -18,6 +18,7 @@ import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.model.AdvancedBarrierBlockUnbakedModel;
 import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
 import net.modgarden.barricade.client.util.AdvancedBarrierModelValues;
+import net.modgarden.barricade.registry.BarricadeBlocks;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<Advance
         if (!Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState()) || !Minecraft.getInstance().player.canUseGameMasterBlocks() || !Minecraft.getInstance().player.isHolding(stack -> ((OperatorBakedModelAccess)Minecraft.getInstance().getBlockRenderer().getBlockModel(Blocks.BARRIER.defaultBlockState())).requiredItem().map(tag -> tag.contains(stack.getItemHolder()), key -> stack.getItemHolder().is(key))))
             return;
 
-        AdvancedBarrierModelValues components = new AdvancedBarrierModelValues(blockEntity.getData().directions(), blockEntity.getData().icon().orElse(null));
+        AdvancedBarrierModelValues components = new AdvancedBarrierModelValues(BarricadeBlocks.ADVANCED_BARRIER.directions(blockEntity.getBlockState()), blockEntity.getData().icon().orElse(null));
 
         BarricadeClient.getHelper().tessellateBlock(
                 Minecraft.getInstance().level,

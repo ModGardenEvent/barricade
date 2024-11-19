@@ -2,12 +2,12 @@ package net.modgarden.barricade.client.util;
 
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.modgarden.barricade.data.BlockedDirectionsComponent;
+import net.modgarden.barricade.data.BlockedDirections;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public record AdvancedBarrierModelValues(BlockedDirectionsComponent directions, @Nullable ResourceLocation icon) {
+public record AdvancedBarrierModelValues(BlockedDirections directions, @Nullable ResourceLocation icon) {
     public String getVariant() {
         String variant = "";
         if (icon() != null)

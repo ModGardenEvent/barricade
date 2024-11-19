@@ -67,7 +67,7 @@ public class PredicateBarrierBlock extends BarrierBlock {
 		this.conditions.forEach(PredicateBarrierBlock::validateCondition);
 	}
 	
-	private PredicateBarrierBlock(Properties properties, ResourceLocation icon,  List<LootItemCondition> conditions) {
+	private PredicateBarrierBlock(Properties properties, ResourceLocation icon, List<LootItemCondition> conditions) {
 		super(properties);
 		this.icon = icon;
 		this.conditions = conditions;

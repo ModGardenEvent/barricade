@@ -12,7 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.BarricadeClient;
-import net.modgarden.barricade.data.BlockedDirectionsComponent;
+import net.modgarden.barricade.data.BlockedDirections;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -25,7 +25,7 @@ import java.util.function.Function;
 public class AdvancedBarrierBlockUnbakedModel extends BlockModel {
     public static final Material BARRIER = new Material(TextureAtlas.LOCATION_BLOCKS, Barricade.asResource("block/barrier"));
 
-    public AdvancedBarrierBlockUnbakedModel(BlockedDirectionsComponent directions, @Nullable ResourceLocation icon) {
+    public AdvancedBarrierBlockUnbakedModel(BlockedDirections directions, @Nullable ResourceLocation icon) {
         super(null, constructElements(directions, icon), createTextureMap(icon), false, GuiLight.SIDE, ItemTransforms.NO_TRANSFORMS, List.of());
     }
 
@@ -36,7 +36,7 @@ public class AdvancedBarrierBlockUnbakedModel extends BlockModel {
         return Map.of("particle", Either.left(BARRIER), "barrier", Either.left(BARRIER), "inner", Either.left(innerMaterial));
     }
 
-    private static List<BlockElement> constructElements(@Nullable BlockedDirectionsComponent directions, @Nullable ResourceLocation icon) {
+    private static List<BlockElement> constructElements(@Nullable BlockedDirections directions, @Nullable ResourceLocation icon) {
         if (directions != null && directions.doesNotBlock()) {
             Map<Direction, BlockElementFace> faces = new HashMap<>();
             for (Direction direction : Direction.values()) {

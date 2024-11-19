@@ -29,20 +29,20 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
-public record AdvancedBarrier(Optional<Component> name, BlockedDirectionsComponent directions, Optional<ResourceLocation> icon, Optional<LootItemCondition> condition) {
-    public static final AdvancedBarrier DEFAULT = new AdvancedBarrier(Optional.empty(), BlockedDirectionsComponent.of(Direction.values()), Optional.empty(), Optional.empty());
+public record AdvancedBarrier(Optional<Component> name, BlockedDirections directions, Optional<ResourceLocation> icon, Optional<LootItemCondition> condition) {
+    public static final AdvancedBarrier DEFAULT = new AdvancedBarrier(Optional.empty(), BlockedDirections.of(Direction.values()), Optional.empty(), Optional.empty());
     public static final ResourceLocation UNKNOWN_ICON = Barricade.asResource("barricade/icon/unknown");
 
     public static final Codec<AdvancedBarrier> DIRECT_CODEC = RecordCodecBuilder.create(inst -> inst.group(
             ComponentSerialization.CODEC.optionalFieldOf("name").forGetter(AdvancedBarrier::name),
-            BlockedDirectionsComponent.CODEC.optionalFieldOf("directions", BlockedDirectionsComponent.of(Direction.values())).forGetter(AdvancedBarrier::directions),
+            BlockedDirections.CODEC.optionalFieldOf("directions", BlockedDirections.of(Direction.values())).forGetter(AdvancedBarrier::directions),
             ResourceLocation.CODEC.optionalFieldOf("icon").forGetter(AdvancedBarrier::icon),
             LootItemCondition.DIRECT_CODEC.optionalFieldOf("condition").forGetter(AdvancedBarrier::condition)
     ).apply(inst, AdvancedBarrier::new));
     public static final Codec<Holder<AdvancedBarrier>> CODEC = RegistryFixedCodec.create(BarricadeRegistries.ADVANCED_BARRIER);
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<AdvancedBarrier>> STREAM_CODEC = ByteBufCodecs.holderRegistry(BarricadeRegistries.ADVANCED_BARRIER);
 
-    public AdvancedBarrier(Optional<Component> name, BlockedDirectionsComponent directions, Optional<ResourceLocation> icon, Optional<LootItemCondition> condition) {
+    public AdvancedBarrier(Optional<Component> name, BlockedDirections directions, Optional<ResourceLocation> icon, Optional<LootItemCondition> condition) {
         this.name = name;
         this.directions = directions;
         Optional<ResourceLocation> finalIcon = icon.map(resourceLocation -> resourceLocation.withPath(s -> "barricade/icon/" + s));

@@ -9,29 +9,29 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.modgarden.barricade.data.BlockedDirectionsComponent;
+import net.modgarden.barricade.data.BlockedDirections;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public record AdvancedBarrierParticleOptions(BlockedDirectionsComponent blockedDirections,
-                                             ResourceLocation backTextureLocation,
+public record AdvancedBarrierParticleOptions(BlockedDirections blockedDirections,
+                                             ResourceLocation icon,
                                              Optional<BlockPos> origin) implements ParticleOptions {
     private static final MapCodec<AdvancedBarrierParticleOptions> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            BlockedDirectionsComponent.CODEC.fieldOf("blocked_directions").forGetter(AdvancedBarrierParticleOptions::blockedDirections),
-            ResourceLocation.CODEC.fieldOf("back_texture_location").forGetter(AdvancedBarrierParticleOptions::backTextureLocation),
+            BlockedDirections.CODEC.fieldOf("default_directions").forGetter(AdvancedBarrierParticleOptions::blockedDirections),
+            ResourceLocation.CODEC.fieldOf("icon").forGetter(AdvancedBarrierParticleOptions::icon),
             BlockPos.CODEC.optionalFieldOf("origin").forGetter(AdvancedBarrierParticleOptions::origin)
     ).apply(inst, AdvancedBarrierParticleOptions::new));
     private static final StreamCodec<RegistryFriendlyByteBuf, AdvancedBarrierParticleOptions> STREAM_CODEC = StreamCodec.composite(
-            BlockedDirectionsComponent.STREAM_CODEC, AdvancedBarrierParticleOptions::blockedDirections,
-            ResourceLocation.STREAM_CODEC, AdvancedBarrierParticleOptions::backTextureLocation,
+            BlockedDirections.STREAM_CODEC, AdvancedBarrierParticleOptions::blockedDirections,
+            ResourceLocation.STREAM_CODEC, AdvancedBarrierParticleOptions::icon,
             ByteBufCodecs.optional(BlockPos.STREAM_CODEC), AdvancedBarrierParticleOptions::origin,
             AdvancedBarrierParticleOptions::new
     );
 
-    public AdvancedBarrierParticleOptions(BlockedDirectionsComponent blockedDirections, @Nullable ResourceLocation backTextureLocation, Optional<BlockPos> origin) {
+    public AdvancedBarrierParticleOptions(BlockedDirections blockedDirections, @Nullable ResourceLocation icon, Optional<BlockPos> origin) {
         this.blockedDirections = blockedDirections;
-        this.backTextureLocation = backTextureLocation;
+        this.icon = icon;
         this.origin = origin;
     }
 

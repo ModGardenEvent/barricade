@@ -12,14 +12,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.modgarden.barricade.data.BlockedDirectionsComponent;
+import net.modgarden.barricade.data.BlockedDirections;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class DirectionalBarrierBlock extends BarrierBlock {
     public static final MapCodec<DirectionalBarrierBlock> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            BlockedDirectionsComponent.CODEC.fieldOf("directions").forGetter(DirectionalBarrierBlock::directions),
+            BlockedDirections.CODEC.fieldOf("directions").forGetter(DirectionalBarrierBlock::directions),
             propertiesCodec()
     ).apply(inst, DirectionalBarrierBlock::new));
     private static final Map<Direction, DirectionalBarrierBlock> DIRECTION_MAP = new HashMap<>() {
@@ -38,16 +38,16 @@ public class DirectionalBarrierBlock extends BarrierBlock {
         }
     };
 
-    public BlockedDirectionsComponent directions;
+    private final BlockedDirections directions;
 
-    public DirectionalBarrierBlock(BlockedDirectionsComponent directions, Properties properties) {
+    public DirectionalBarrierBlock(BlockedDirections directions, Properties properties) {
         super(properties);
         this.directions = directions;
         if (directions.directions().size() == 1)
             DIRECTION_MAP.put(directions.directions().stream().findFirst().get(), this);
     }
 
-    public BlockedDirectionsComponent directions() {
+    public BlockedDirections directions() {
         return directions;
     }
 

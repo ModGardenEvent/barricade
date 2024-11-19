@@ -15,6 +15,6 @@ public class EntityCheckBarrierBlockItem extends BlockItem {
     @Override
     protected boolean canPlace(BlockPlaceContext context, BlockState state) {
         return (!mustSurvive() || state.canSurvive(context.getLevel(), context.getClickedPos())) && context.getLevel().getEntities(null, Shapes.block().move(context.getClickedPos().getX(), context.getClickedPos().getY(), context.getClickedPos().getZ()).bounds()).stream().allMatch(entity ->
-                !state.getCollisionShape(context.getLevel(), context.getClickedPos(), CollisionContext.of(entity)).isEmpty());
+                state.getCollisionShape(context.getLevel(), context.getClickedPos(), CollisionContext.of(entity)).isEmpty());
     }
 }

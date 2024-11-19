@@ -23,7 +23,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
-import net.modgarden.barricade.data.BlockedDirectionsComponent;
+import net.modgarden.barricade.data.BlockedDirections;
 import net.modgarden.barricade.mixin.client.ClientChunkCacheAccessor;
 import net.modgarden.barricade.mixin.client.ClientChunkCacheStorageAccessor;
 import net.modgarden.barricade.mixin.client.LevelRendererInvoker;
@@ -129,17 +129,17 @@ public class BarrierRenderUtils {
         operatedSectionPos.add(sectionPos);
     }
 
-    public static void createAdvancedParticle(BlockedDirectionsComponent directions, @Nullable ResourceLocation backTexture, Consumer<ParticleOptions> optionsConsumer, BlockPos pos) {
+    public static void createAdvancedParticle(BlockedDirections directions, @Nullable ResourceLocation icon, Consumer<ParticleOptions> optionsConsumer, BlockPos pos) {
         if (directions.doesNotBlock())
-            optionsConsumer.accept(new AdvancedBarrierParticleOptions(new BlockedDirectionsComponent(EnumSet.noneOf(Direction.class)), null, Optional.of(pos)));
-        else if (directions.blocksAll())
+            optionsConsumer.accept(new AdvancedBarrierParticleOptions(new BlockedDirections(EnumSet.noneOf(Direction.class)), icon, Optional.of(pos)));
+        else if (directions.blocksAll() && icon == null)
             optionsConsumer.accept(new BlockParticleOption(ParticleTypes.BLOCK_MARKER, Blocks.BARRIER.defaultBlockState()));
         else {
-            optionsConsumer.accept(new AdvancedBarrierParticleOptions(directions, backTexture, Optional.of(pos)));
+            optionsConsumer.accept(new AdvancedBarrierParticleOptions(directions, icon, Optional.of(pos)));
         }
     }
 
-    public static BlockedDirectionsComponent relativeDirectionsComponent(BlockedDirectionsComponent directions, BlockPos pos) {
+    public static BlockedDirections relativeDirectionsComponent(BlockedDirections directions, BlockPos pos) {
         Set<Direction> directionSet = new HashSet<>();
         Direction relativeHorizontal = getRelativeHorizontalDirectionToPlayer();
         Direction relativeVertical = getRelativeVerticalDirectionToPlayer(pos);
@@ -210,7 +210,7 @@ public class BarrierRenderUtils {
         if (directions.blocks(Direction.DOWN))
             directionSet.add(relativeDown);
 
-        return BlockedDirectionsComponent.of(directionSet.toArray(Direction[]::new));
+        return BlockedDirections.of(directionSet.toArray(Direction[]::new));
     }
 
     private static Direction getRelativeHorizontalDirectionToPlayer() {

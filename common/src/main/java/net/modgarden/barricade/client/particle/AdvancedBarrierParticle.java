@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.util.BarrierRenderUtils;
-import net.modgarden.barricade.data.BlockedDirectionsComponent;
+import net.modgarden.barricade.data.BlockedDirections;
 import net.modgarden.barricade.particle.AdvancedBarrierParticleOptions;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
@@ -23,18 +23,18 @@ import org.joml.Quaternionf;
 import java.util.Optional;
 
 public class AdvancedBarrierParticle extends TextureSheetParticle {
-    private final BlockedDirectionsComponent blockedDirections;
-    private final BlockedDirectionsComponent relative;
-    private final ResourceLocation backTextureLocation;
+    private final BlockedDirections blockedDirections;
+    private final BlockedDirections relative;
+    private final ResourceLocation icon;
     private final Optional<BlockPos> origin;
 
-    AdvancedBarrierParticle(BlockedDirectionsComponent blockedDirections, @Nullable ResourceLocation backTextureLocation, Optional<BlockPos> origin, ClientLevel level, double x, double y, double z) {
+    AdvancedBarrierParticle(BlockedDirections blockedDirections, @Nullable ResourceLocation icon, Optional<BlockPos> origin, ClientLevel level, double x, double y, double z) {
         super(level, x, y, z);
         this.gravity = 0.0F;
         this.lifetime = 80;
         this.hasPhysics = false;
         this.blockedDirections = blockedDirections;
-        this.backTextureLocation = backTextureLocation;
+        this.icon = icon;
         this.origin = origin;
         this.relative = origin.map(pos -> BarrierRenderUtils.relativeDirectionsComponent(blockedDirections, pos)).orElse(blockedDirections);
     }
@@ -57,9 +57,9 @@ public class AdvancedBarrierParticle extends TextureSheetParticle {
             this.setSprite(Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(Barricade.asResource("item/barricade/no_barrier")));
             this.renderRotatedQuad(buffer, renderInfo, quaternionf, partialTicks);
         }
-        if (backTextureLocation != null) {
+        if (icon != null) {
             try {
-                this.setSprite(Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(backTextureLocation));
+                this.setSprite(Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(icon));
             } catch (IllegalStateException ex) {
                 this.setSprite(Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(ResourceLocation.withDefaultNamespace("missingno")));
             }
@@ -93,7 +93,7 @@ public class AdvancedBarrierParticle extends TextureSheetParticle {
         @Override
         public @Nullable Particle createParticle(AdvancedBarrierParticleOptions type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 
-            return new AdvancedBarrierParticle(type.blockedDirections(), type.backTextureLocation(), type.origin(), level, x, y, z);
+            return new AdvancedBarrierParticle(type.blockedDirections(), type.icon(), type.origin(), level, x, y, z);
         }
     }
 }
