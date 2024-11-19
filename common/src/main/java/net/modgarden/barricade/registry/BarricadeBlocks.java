@@ -53,7 +53,7 @@ public class BarricadeBlocks {
     public static final PredicateBarrierBlock PLAYER_BARRIER = new PredicateBarrierBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
                     .dynamicShape(),
-            Barricade.asResource("item/barricade/icon/player"),
+            Barricade.asResource("item/barricade/icon/steve"),
             InvertedLootItemCondition.invert(
                     LootItemEntityPropertyCondition.hasProperties(
                             LootContext.EntityTarget.THIS,
