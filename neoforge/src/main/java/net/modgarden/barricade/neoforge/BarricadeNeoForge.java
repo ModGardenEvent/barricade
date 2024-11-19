@@ -71,7 +71,8 @@ public class BarricadeNeoForge {
                         BarricadeItems.PLAYER_BARRIER,
                         BarricadeItems.MOB_BARRIER,
                         BarricadeItems.PASSIVE_BARRIER,
-                        BarricadeItems.HOSTILE_BARRIER
+                        BarricadeItems.HOSTILE_BARRIER,
+                        BarricadeItems.CREATIVE_ONLY_BARRIER
                 );
 
                 for (Item item : items) {

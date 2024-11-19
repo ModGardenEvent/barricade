@@ -134,7 +134,8 @@ public class BarricadeFabricClient implements ClientModInitializer {
                 BarricadeBlocks.PLAYER_BARRIER,
                 BarricadeBlocks.MOB_BARRIER,
                 BarricadeBlocks.PASSIVE_BARRIER,
-                BarricadeBlocks.HOSTILE_BARRIER
+                BarricadeBlocks.HOSTILE_BARRIER,
+                BarricadeBlocks.CREATIVE_ONLY_BARRIER
         );
     }
 
