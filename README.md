@@ -33,7 +33,7 @@ All items may be accessed through the /give command or through the Operator Util
 - `barricade:mob_barrier` - Blocks out all non player entities.
 - `barricade:passive_barrier` - Blocks out mobs considered passive, and neutral mobs that are more-so passive.
 - `barricade:player_barrier` - Exclusively blocks out players.
-- `barricade:creative_only_barrier` - Blocks out non-creative players and entities that can't be in creative.
+- `barricade:creative_only_barrier` - Blocks out non-creative players.
 
 ### Advanced Barrier
 
