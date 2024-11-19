@@ -39,7 +39,6 @@ public class DirectionalBarrierBlock extends BarrierBlock {
     };
 
     public BlockedDirectionsComponent directions;
-    private VoxelShape cachedShape;
 
     public DirectionalBarrierBlock(BlockedDirectionsComponent directions, Properties properties) {
         super(properties);
@@ -59,13 +58,9 @@ public class DirectionalBarrierBlock extends BarrierBlock {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        if (directions.doesNotBlock())
-            return Shapes.empty();
-        if (directions.blocksAll())
+        if (!directions.doesNotBlock() && (directions.blocksAll() || directions.shouldBlock(pos, context)))
             return super.getCollisionShape(state, level, pos, context);
-        if (!directions.test(pos, context))
-            return Shapes.empty();
-        return super.getCollisionShape(state, level, pos, context);
+        return Shapes.empty();
     }
 
     @Override

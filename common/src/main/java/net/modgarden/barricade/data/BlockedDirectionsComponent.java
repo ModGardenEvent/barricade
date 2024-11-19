@@ -30,7 +30,7 @@ public record BlockedDirectionsComponent(EnumSet<Direction> directions) {
         return new BlockedDirectionsComponent(EnumSet.copyOf(Arrays.stream(directions).toList()));
     }
 
-    public boolean test(BlockPos pos, CollisionContext context) {
+    public boolean shouldBlock(BlockPos pos, CollisionContext context) {
         if (!(context instanceof EntityCollisionContext entityContext) || entityContext.getEntity() == null)
             return false;
         Entity entity = entityContext.getEntity();

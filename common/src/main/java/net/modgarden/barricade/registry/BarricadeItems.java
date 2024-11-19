@@ -6,6 +6,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.item.AdvancedBarrierBlockItem;
+import net.modgarden.barricade.item.EntityCheckBarrierBlockItem;
 import net.modgarden.barricade.registry.internal.RegistrationCallback;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,10 +22,10 @@ public class BarricadeItems {
     public static final BlockItem EAST_BARRIER = new BlockItem(BarricadeBlocks.EAST_BARRIER, barrierProps());
     public static final BlockItem WEST_BARRIER = new BlockItem(BarricadeBlocks.WEST_BARRIER, barrierProps());
 
-    public static final BlockItem PLAYER_BARRIER = new BlockItem(BarricadeBlocks.PLAYER_BARRIER, barrierProps());
-    public static final BlockItem MOB_BARRIER = new BlockItem(BarricadeBlocks.MOB_BARRIER, barrierProps());
-    public static final BlockItem PASSIVE_BARRIER = new BlockItem(BarricadeBlocks.PASSIVE_BARRIER, barrierProps());
-    public static final BlockItem HOSTILE_BARRIER = new BlockItem(BarricadeBlocks.HOSTILE_BARRIER, barrierProps());
+    public static final BlockItem PLAYER_BARRIER = new EntityCheckBarrierBlockItem(BarricadeBlocks.PLAYER_BARRIER, barrierProps());
+    public static final BlockItem MOB_BARRIER = new EntityCheckBarrierBlockItem(BarricadeBlocks.MOB_BARRIER, barrierProps());
+    public static final BlockItem PASSIVE_BARRIER = new EntityCheckBarrierBlockItem(BarricadeBlocks.PASSIVE_BARRIER, barrierProps());
+    public static final BlockItem HOSTILE_BARRIER = new EntityCheckBarrierBlockItem(BarricadeBlocks.HOSTILE_BARRIER, barrierProps());
     
     // Predicate Barriers
     public static final BlockItem CREATIVE_ONLY_BARRIER = new BlockItem(

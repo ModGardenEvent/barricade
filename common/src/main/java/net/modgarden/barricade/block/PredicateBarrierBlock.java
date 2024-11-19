@@ -126,30 +126,30 @@ public class PredicateBarrierBlock extends BarrierBlock {
 			@NotNull BlockPos pos,
 			@NotNull CollisionContext context
 	) {
-		if (context instanceof EntityCollisionContext entityContext) {
+		if (context instanceof EntityCollisionContext entityContext && entityContext.getEntity() != null) {
 			ServerLevel serverLevel = null;
 			if (level instanceof ServerLevel) {
 				serverLevel = (ServerLevel) level;
 			}
 			
-			if (entityContext.getEntity() != null && !test(serverLevel, entityContext.getEntity(), state, pos))
-				return Shapes.empty();
+			if (test(serverLevel, entityContext.getEntity(), state, pos))
+				return Shapes.block();
 		}
-		return super.getCollisionShape(state, level, pos, context);
+		return Shapes.empty();
 	}
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        if (context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player && !player.canUseGameMasterBlocks()) {
+        if (context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player) {
             ServerLevel serverLevel = null;
             if (level instanceof ServerLevel) {
                 serverLevel = (ServerLevel) level;
             }
 
-            if (entityContext.getEntity() != null && !test(serverLevel, entityContext.getEntity(), state, pos))
-                return Shapes.empty();
+            if (player.canUseGameMasterBlocks() || entityContext.getEntity() != null && test(serverLevel, entityContext.getEntity(), state, pos))
+                return super.getShape(state, level, pos, context);
         }
-        return super.getShape(state, level, pos, context);
+        return Shapes.empty();
     }
 
 	private static void validateCondition(LootItemCondition condition) throws IllegalArgumentException {

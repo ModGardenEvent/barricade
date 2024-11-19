@@ -39,31 +39,29 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        if (level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity && context instanceof EntityCollisionContext entityContext) {
+        if (level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity) {
             ServerLevel serverLevel = null;
             if (level instanceof ServerLevel)
                 serverLevel = (ServerLevel) level;
-            if (!(blockEntity.getData().directions().doesNotBlock() || entityContext.getEntity() != null && blockEntity.getData().test(serverLevel, entityContext.getEntity(), state, pos)) && (blockEntity.getData().directions().blocksAll() || !blockEntity.getData().directions().test(pos, context)))
-                return Shapes.empty();
+            if ((blockEntity.getData().condition().isEmpty() || context instanceof EntityCollisionContext entityContext && entityContext.getEntity() != null && blockEntity.getData().test(serverLevel, entityContext.getEntity(), state, pos)) && (blockEntity.getData().directions().blocksAll() || blockEntity.getData().directions().shouldBlock(pos, context)))
+                return Shapes.block();
         }
-        return super.getCollisionShape(state, level, pos, context);
+        return Shapes.empty();
     }
+
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        if (
-                level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity &&
-                context instanceof EntityCollisionContext entityContext &&
-                entityContext.getEntity() instanceof Player player &&
-                !player.canUseGameMasterBlocks()
-        ) {
+        if (level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity && context instanceof EntityCollisionContext entityContext) {
             ServerLevel serverLevel = null;
-            if (level instanceof ServerLevel)
+            if (level instanceof ServerLevel) {
                 serverLevel = (ServerLevel) level;
-            if (!blockEntity.getData().test(serverLevel, entityContext.getEntity(), state, pos))
-                return Shapes.empty();
+            }
+
+            if (entityContext.getEntity() instanceof Player player && player.canUseGameMasterBlocks() || entityContext.getEntity() != null && blockEntity.getData().test(serverLevel, entityContext.getEntity(), state, pos))
+                return super.getShape(state, level, pos, context);
         }
-        return super.getShape(state, level, pos, context);
+        return Shapes.empty();
     }
 
     @Override

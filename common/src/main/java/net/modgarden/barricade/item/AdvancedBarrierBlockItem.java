@@ -1,12 +1,11 @@
 package net.modgarden.barricade.item;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.modgarden.barricade.registry.BarricadeComponents;
 
-public class AdvancedBarrierBlockItem extends BlockItem {
+public class AdvancedBarrierBlockItem extends EntityCheckBarrierBlockItem {
     public AdvancedBarrierBlockItem(Block block, Properties properties) {
         super(block, properties);
     }
