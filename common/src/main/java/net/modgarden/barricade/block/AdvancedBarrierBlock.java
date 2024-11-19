@@ -4,7 +4,9 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BarrierBlock;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
@@ -15,6 +17,7 @@ import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
+import net.modgarden.barricade.registry.BarricadeComponents;
 import org.jetbrains.annotations.Nullable;
 
 public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
@@ -61,6 +64,14 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
                 return Shapes.empty();
         }
         return super.getShape(state, level, pos, context);
+    }
+
+    @Override
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+        ItemStack stack = new ItemStack(this);
+        if (level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity)
+            stack.set(BarricadeComponents.ADVANCED_BARRIER, blockEntity.getHolder());
+        return stack;
     }
 
     @Nullable

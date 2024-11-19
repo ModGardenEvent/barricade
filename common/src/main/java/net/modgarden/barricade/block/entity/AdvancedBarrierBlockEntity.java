@@ -32,6 +32,10 @@ public class AdvancedBarrierBlockEntity extends BlockEntity implements Nameable 
         return data.value();
     }
 
+    public Holder<AdvancedBarrier> getHolder() {
+        return data;
+    }
+
     @Override
     protected void applyImplicitComponents(BlockEntity.DataComponentInput components) {
         data = components.get(BarricadeComponents.ADVANCED_BARRIER);
