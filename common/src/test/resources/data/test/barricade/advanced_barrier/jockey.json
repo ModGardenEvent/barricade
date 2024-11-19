@@ -1,14 +1,16 @@
 {
   "name": "Jockey Barrier",
   "icon": "barricade:horse",
-  "condition": {
-    "condition": "minecraft:entity_properties",
-    "entity": "this",
-    "predicate": {
-      "vehicle": {
-        "entity": "this",
-        "predicate": {}
+  "condition": [
+    {
+      "condition": "minecraft:entity_properties",
+      "entity": "this",
+      "predicate": {
+        "passenger": {
+          "entity": "this",
+          "predicate": {}
+        }
       }
     }
-  }
+  ]
 }
