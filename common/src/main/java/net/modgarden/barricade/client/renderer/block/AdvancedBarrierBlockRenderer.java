@@ -53,7 +53,7 @@ public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<Advance
     private static BakedModel createModel(AdvancedBarrierComponents components) {
         String variant = "";
         if (components.blockedEntities() != null)
-            variant = components.blockedEntities().backTextureLocation() + "," + String.join(",", components.blockedEntities().entities().stream().map(either -> either.map(tagKey -> "#" + tagKey.location(), holder -> holder.unwrapKey().map(ResourceKey::location).orElse(ResourceLocation.withDefaultNamespace("null")).toString())).toList());
+            variant = components.blockedEntities().icon() + "," + String.join(",", components.blockedEntities().entities().stream().map(either -> either.map(tagKey -> "#" + tagKey.location(), holder -> holder.unwrapKey().map(ResourceKey::location).orElse(ResourceLocation.withDefaultNamespace("null")).toString())).toList());
 
         if (components.blockedDirections() != null && !components.blockedDirections().doesNotBlock()) {
             variant = String.join(",", components.blockedDirections().directions().stream().map(Direction::getName).toList());

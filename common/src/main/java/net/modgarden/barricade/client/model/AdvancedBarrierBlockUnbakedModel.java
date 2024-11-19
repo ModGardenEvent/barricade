@@ -18,7 +18,6 @@ import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.component.BlockedDirectionsComponent;
 import net.modgarden.barricade.component.BlockedEntitiesComponent;
-import net.modgarden.barricade.registry.BarricadeTags;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -38,13 +37,18 @@ public class AdvancedBarrierBlockUnbakedModel extends BlockModel {
     private static Map<String, Either<Material, String>> createTextureMap(@Nullable BlockedEntitiesComponent entities) {
         Material innerMaterial = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.withDefaultNamespace("missingno"));
         if (entities != null)
-            innerMaterial = new Material(TextureAtlas.LOCATION_BLOCKS, entities.backTextureLocation());
+            innerMaterial = new Material(TextureAtlas.LOCATION_BLOCKS, entities.icon());
         return Map.of("particle", Either.left(BARRIER), "barrier", Either.left(BARRIER), "inner", Either.left(innerMaterial));
     }
 
     private static List<BlockElement> constructElements(@Nullable BlockedDirectionsComponent directions, @Nullable BlockedEntitiesComponent entities) {
-        if (directions != null && directions.doesNotBlock())
-            return List.of();
+        if (directions != null && directions.doesNotBlock()) {
+            Map<Direction, BlockElementFace> faces = new HashMap<>();
+            for (Direction direction : Direction.values()) {
+                faces.put(direction, new BlockElementFace(direction, BlockElementFace.NO_TINT, "barrier", new BlockFaceUV(null, 0)));
+            }
+            return List.of(new BlockElement(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 16.0F, 16.0F), faces, null, true));
+        }
         Map<Direction, BlockElementFace> faces = new HashMap<>();
         Map<Direction, BlockElementFace> innerFaces = new HashMap<>();
         Map<Direction, BlockElementFace> exteriorFaces = new HashMap<>();
@@ -54,11 +58,11 @@ public class AdvancedBarrierBlockUnbakedModel extends BlockModel {
                 if (entities != null) {
                     innerFaces.put(direction, new BlockElementFace(direction, BlockElementFace.NO_TINT, "inner", new BlockFaceUV(null, 0)));
                     if (directions != null && !directions.blocksAll())
-                        exteriorInnerFaces.put(direction.getOpposite(), new BlockElementFace(null, BlockElementFace.NO_TINT, "inner", new BlockFaceUV(null, 0)));
+                        exteriorInnerFaces.put(direction == Direction.WEST || direction == Direction.EAST ? direction.getOpposite() : direction, new BlockElementFace(null, BlockElementFace.NO_TINT, "inner", new BlockFaceUV(null, 0)));
                 }
                 faces.put(direction, new BlockElementFace(direction, BlockElementFace.NO_TINT, "barrier", new BlockFaceUV(null, 0)));
                 if (directions != null && !directions.blocksAll())
-                    exteriorFaces.put(direction.getOpposite(), new BlockElementFace(null, BlockElementFace.NO_TINT, "barrier", new BlockFaceUV(null, 0)));
+                    exteriorFaces.put(direction == Direction.WEST || direction == Direction.EAST ? direction.getOpposite() : direction, new BlockElementFace(null, BlockElementFace.NO_TINT, "barrier", new BlockFaceUV(null, 0)));
             }
         }
         List<BlockElement> returnValue = new ArrayList<>();

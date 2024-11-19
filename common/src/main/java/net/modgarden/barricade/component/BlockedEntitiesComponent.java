@@ -21,18 +21,18 @@ import net.modgarden.barricade.Barricade;
 import java.util.List;
 import java.util.Objects;
 
-public record BlockedEntitiesComponent(ResourceLocation backTextureLocation, List<Either<TagKey<EntityType<?>>, Holder<EntityType<?>>>> entities, boolean inverted) {
-    public static final ResourceLocation DEFAULT_TEXTURE_ID = Barricade.asResource("item/barricade/entity/unknown");
+public record BlockedEntitiesComponent(ResourceLocation icon, List<Either<TagKey<EntityType<?>>, Holder<EntityType<?>>>> entities, boolean inverted) {
+    public static final ResourceLocation DEFAULT_TEXTURE_ID = Barricade.asResource("item/barricade/icon/unknown");
     public static final BlockedEntitiesComponent EMPTY = new BlockedEntitiesComponent(DEFAULT_TEXTURE_ID, List.of(), false);
 
     public static final Codec<BlockedEntitiesComponent> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-            ResourceLocation.CODEC.optionalFieldOf("backing_texture_location", DEFAULT_TEXTURE_ID).forGetter(BlockedEntitiesComponent::backTextureLocation),
+            ResourceLocation.CODEC.optionalFieldOf("icon", DEFAULT_TEXTURE_ID).forGetter(BlockedEntitiesComponent::icon),
             Codec.either(TagKey.hashedCodec(Registries.ENTITY_TYPE), RegistryFixedCodec.create(Registries.ENTITY_TYPE)).listOf().fieldOf("entities").forGetter(BlockedEntitiesComponent::entities),
             Codec.BOOL.optionalFieldOf("inverted", false).forGetter(BlockedEntitiesComponent::inverted)
     ).apply(inst, BlockedEntitiesComponent::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, BlockedEntitiesComponent> STREAM_CODEC = StreamCodec.composite(
             ResourceLocation.STREAM_CODEC,
-            BlockedEntitiesComponent::backTextureLocation,
+            BlockedEntitiesComponent::icon,
             ByteBufCodecs.either(ByteBufCodecs.fromCodec(TagKey.hashedCodec(Registries.ENTITY_TYPE)), ByteBufCodecs.holderRegistry(Registries.ENTITY_TYPE)).apply(ByteBufCodecs.list()),
             BlockedEntitiesComponent::entities,
             ByteBufCodecs.BOOL,
@@ -70,11 +70,11 @@ public record BlockedEntitiesComponent(ResourceLocation backTextureLocation, Lis
     public boolean equals(Object other) {
         if (!(other instanceof BlockedEntitiesComponent component))
             return false;
-        return component.backTextureLocation.equals(backTextureLocation) && component.entities.equals(entities) && component.inverted == inverted;
+        return component.icon.equals(icon) && component.entities.equals(entities) && component.inverted == inverted;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(backTextureLocation, entities, inverted);
+        return Objects.hash(icon, entities, inverted);
     }
 }

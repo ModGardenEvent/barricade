@@ -76,7 +76,7 @@ public class AdvancedBarrierItemRenderer {
         Map<String, Either<Material, String>> textureMap = new HashMap<>();
         int i = 0;
         if (components.blockedEntities() != null) {
-            textureMap.put("barricade_layer" + i, Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, components.blockedEntities().backTextureLocation())));
+            textureMap.put("barricade_layer" + i, Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, components.blockedEntities().icon())));
             ++i;
         }
 
@@ -98,7 +98,7 @@ public class AdvancedBarrierItemRenderer {
 
         String variant = "";
         if (components.blockedEntities() != null)
-            variant = components.blockedEntities().backTextureLocation() + "," + String.join(",", components.blockedEntities().entities().stream().map(either -> either.map(tagKey -> "#" + tagKey.location(), holder -> holder.unwrapKey().map(ResourceKey::location).orElse(ResourceLocation.withDefaultNamespace("null")).toString())).toList());
+            variant = components.blockedEntities().icon() + "," + String.join(",", components.blockedEntities().entities().stream().map(either -> either.map(tagKey -> "#" + tagKey.location(), holder -> holder.unwrapKey().map(ResourceKey::location).orElse(ResourceLocation.withDefaultNamespace("null")).toString())).toList());
 
         if (components.blockedDirections() != null && !components.blockedDirections().doesNotBlock()) {
             if (!variant.isEmpty())

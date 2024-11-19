@@ -5,7 +5,7 @@
     "parent": "barricade:block/entity_barrier",
     "textures": {
       "all": "barricade:block/barrier",
-      "inner": "barricade:item/barricade/entity/player"
+      "inner": "barricade:item/barricade/icon/player"
     },
     "render_type": "cutout"
   }
