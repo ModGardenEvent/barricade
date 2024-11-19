@@ -52,18 +52,21 @@ public class BarricadeNeoForgeClient {
                 LocalPlayer player = Minecraft.getInstance().player;
                 if (player == null)
                     return;
+
+                ItemStack mainHand = player.getInventory().items.get(player.getInventory().selected);
+                ItemStack offHand = player.getInventory().offhand.getFirst();
+
                 if (previousGameMasterBlockState != player.canUseGameMasterBlocks()) {
                     BarrierRenderUtils.refreshAllOperatorBlocks();
                     previousGameMasterBlockState = player.canUseGameMasterBlocks();
-                    return;
                 }
-                if (!ItemStack.isSameItemSameComponents(player.getMainHandItem(), lastItemInMainHand)) {
-                    BarrierRenderUtils.refreshOperatorBlocks(player.getMainHandItem(), lastItemInMainHand, player.getOffhandItem());
-                    lastItemInMainHand = player.getMainHandItem();
+                if (!ItemStack.isSameItemSameComponents(mainHand, lastItemInMainHand)) {
+                    BarrierRenderUtils.refreshOperatorBlocks(mainHand, lastItemInMainHand, offHand);
+                    lastItemInMainHand = mainHand.copy();
                 }
-                if (!ItemStack.isSameItemSameComponents(player.getOffhandItem(), lastItemInOffHand)) {
-                    BarrierRenderUtils.refreshOperatorBlocks(player.getOffhandItem(), lastItemInOffHand, player.getMainHandItem());
-                    lastItemInOffHand = player.getOffhandItem();
+                if (!ItemStack.isSameItemSameComponents(offHand, lastItemInOffHand)) {
+                    BarrierRenderUtils.refreshOperatorBlocks(offHand, lastItemInOffHand, mainHand);
+                    lastItemInOffHand = offHand.copy();
                 }
             }
         }
