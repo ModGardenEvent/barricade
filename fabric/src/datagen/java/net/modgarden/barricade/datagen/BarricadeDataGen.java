@@ -52,22 +52,25 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
                             BarricadeBlocks.PASSIVE_BARRIER,
                             BarricadeBlocks.HOSTILE_BARRIER
                     );
+            getOrCreateTagBuilder(BarricadeTags.BlockTags.PREDICATE_BARRIERS)
+                    .forceAddTag(BarricadeTags.BlockTags.ENTITY_BARRIERS)
+                    .add(BarricadeBlocks.CREATIVE_ONLY_BARRIER);
             getOrCreateTagBuilder(BarricadeTags.BlockTags.BARRIERS)
                     .add(Blocks.BARRIER)
                     .forceAddTag(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS)
-                    .forceAddTag(BarricadeTags.BlockTags.ENTITY_BARRIERS);
+                    .forceAddTag(BarricadeTags.BlockTags.PREDICATE_BARRIERS);
             getOrCreateTagBuilder(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS)
                     .forceAddTag(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS)
-                    .forceAddTag(BarricadeTags.BlockTags.ENTITY_BARRIERS);
+                    .forceAddTag(BarricadeTags.BlockTags.PREDICATE_BARRIERS);
             getOrCreateTagBuilder(BlockTags.SNOW_LAYER_CANNOT_SURVIVE_ON)
                     .forceAddTag(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS)
-                    .forceAddTag(BarricadeTags.BlockTags.ENTITY_BARRIERS);
+                    .forceAddTag(BarricadeTags.BlockTags.PREDICATE_BARRIERS);
             getOrCreateTagBuilder(BlockTags.DRAGON_IMMUNE)
                     .forceAddTag(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS)
-                    .forceAddTag(BarricadeTags.BlockTags.ENTITY_BARRIERS);
+                    .forceAddTag(BarricadeTags.BlockTags.PREDICATE_BARRIERS);
             getOrCreateTagBuilder(BlockTags.WITHER_IMMUNE)
                     .forceAddTag(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS)
-                    .forceAddTag(BarricadeTags.BlockTags.ENTITY_BARRIERS);
+                    .forceAddTag(BarricadeTags.BlockTags.PREDICATE_BARRIERS);
         }
     }
 

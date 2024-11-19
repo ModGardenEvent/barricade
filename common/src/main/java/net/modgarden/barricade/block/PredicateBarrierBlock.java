@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.BarrierBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -136,6 +137,20 @@ public class PredicateBarrierBlock extends BarrierBlock {
 		}
 		return super.getCollisionShape(state, level, pos, context);
 	}
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        if (context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player && !player.canUseGameMasterBlocks()) {
+            ServerLevel serverLevel = null;
+            if (level instanceof ServerLevel) {
+                serverLevel = (ServerLevel) level;
+            }
+
+            if (entityContext.getEntity() != null && !test(serverLevel, entityContext.getEntity(), state, pos))
+                return Shapes.empty();
+        }
+        return super.getShape(state, level, pos, context);
+    }
 
 	private static void validateCondition(LootItemCondition condition) throws IllegalArgumentException {
 		var problemReporter = new ProblemReporter.Collector();

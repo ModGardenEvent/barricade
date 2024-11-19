@@ -1,4 +1,4 @@
-package net.modgarden.barricade.mixin;
+package net.modgarden.barricade.mixin.client;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.advancements.critereon.*;

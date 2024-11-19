@@ -11,8 +11,8 @@ If you wish to implement this model type for your own barriers in a resource pac
 You may specify which items activate rendering by adding/modifying json found in `assets/<namespace>/barricade/operator_items`.
 
 ## The Barriers
-This mod adds three barrier block types, Directional, Entity, and Advanced Barrier blocks.
-Directional barriers block movement from specific directions, whereas entity barriers block specific types of entities.
+This mod adds three barrier block types, Directional, Predicate, and Advanced Barrier blocks.
+Directional barriers block movement from specific directions, whereas entity barriers block entities that meet the predicate specified by the block.
 
 All items may be accessed through the /give command or through the Operator Utilities creative menu tab.
 
@@ -26,11 +26,12 @@ All items may be accessed through the /give command or through the Operator Util
 - `barricade:horizontal_barrier` - Blocks out entities from all horizontal directions.
 - `barricade:vertical_barrier` - Blocks out entities from all vertical directions.
 
-### Default Entity Barriers
+### Default Predicate Barriers
 - `barricade:hostile_barrier` - Blocks out mobs considered hostile, and neutral mobs that are more-so hostile.
 - `barricade:mob_barrier` - Blocks out all non player entities.
 - `barricade:passive_barrier` - Blocks out mobs considered passive, and neutral mobs that are more-so passive.
 - `barricade:player_barrier` - Exclusively blocks out players.
+- `barricade:creative_only_barrier` - Blocks out non-creative players and entities that can't be in creative.
 
 ### Advanced Barrier
 

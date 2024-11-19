@@ -1,5 +1,6 @@
 ## Changes
 - Added Creative Only Barrier.
+- Non creative players may now reach through predicated barriers that do not apply to them.
 - Renamed /assets/barricade/textures/item/barricade/entity/ directory to /assets/barricade/textures/item/barricade/icon/.
 
 ## Bugfixes

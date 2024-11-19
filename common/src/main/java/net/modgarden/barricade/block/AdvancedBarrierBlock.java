@@ -3,6 +3,7 @@ package net.modgarden.barricade.block;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.BarrierBlock;
 import net.minecraft.world.level.block.EntityBlock;
@@ -43,6 +44,23 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
                 return Shapes.empty();
         }
         return super.getCollisionShape(state, level, pos, context);
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        if (
+                level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity &&
+                context instanceof EntityCollisionContext entityContext &&
+                entityContext.getEntity() instanceof Player player &&
+                !player.canUseGameMasterBlocks()
+        ) {
+            ServerLevel serverLevel = null;
+            if (level instanceof ServerLevel)
+                serverLevel = (ServerLevel) level;
+            if (!blockEntity.getData().test(serverLevel, entityContext.getEntity(), state, pos))
+                return Shapes.empty();
+        }
+        return super.getShape(state, level, pos, context);
     }
 
     @Nullable

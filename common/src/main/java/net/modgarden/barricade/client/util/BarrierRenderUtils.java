@@ -60,7 +60,7 @@ public class BarrierRenderUtils {
             if (stack.is(BarricadeItems.ADVANCED_BARRIER))
                 current = Either.left(OperatorItemPseudoTag.Registry.get(Barricade.asResource("barriers")));
             if (previousStack.is(BarricadeItems.ADVANCED_BARRIER))
-                current = Either.left(OperatorItemPseudoTag.Registry.get(Barricade.asResource("barriers")));
+                previous = Either.left(OperatorItemPseudoTag.Registry.get(Barricade.asResource("barriers")));
 
             refreshOperatorSections(stack, previousStack, current, previous);
         } else if (stack.getItem() instanceof BlockItem blockItem && previousStack.getItem() instanceof BlockItem lastBlockItem) {

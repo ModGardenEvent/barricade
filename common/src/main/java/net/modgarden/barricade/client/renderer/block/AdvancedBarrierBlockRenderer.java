@@ -16,8 +16,8 @@ import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
 import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.model.AdvancedBarrierBlockUnbakedModel;
+import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
 import net.modgarden.barricade.client.util.AdvancedBarrierModelValues;
-import net.modgarden.barricade.registry.BarricadeTags;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,7 @@ public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<Advance
     @Override
     @SuppressWarnings("ConstantConditions")
     public void render(AdvancedBarrierBlockEntity blockEntity, float partialTick, PoseStack pose, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        if (!Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState()) || !Minecraft.getInstance().player.canUseGameMasterBlocks() || !Minecraft.getInstance().player.isHolding(stack -> stack.is(BarricadeTags.ItemTags.BARRIERS)))
+        if (!Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState()) || !Minecraft.getInstance().player.canUseGameMasterBlocks() || !Minecraft.getInstance().player.isHolding(stack -> ((OperatorBakedModelAccess)Minecraft.getInstance().getBlockRenderer().getBlockModel(Blocks.BARRIER.defaultBlockState())).requiredItem().map(tag -> tag.contains(stack.getItemHolder()), key -> stack.getItemHolder().is(key))))
             return;
 
         AdvancedBarrierModelValues components = new AdvancedBarrierModelValues(blockEntity.getData().directions(), blockEntity.getData().icon().orElse(null));

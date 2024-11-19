@@ -12,6 +12,7 @@ public class BarricadeTags {
         public static final TagKey<Block> BARRIERS = TagKey.create(Registries.BLOCK, Barricade.asResource("barriers"));
         public static final TagKey<Block> DIRECTIONAL_BARRIERS = TagKey.create(Registries.BLOCK, Barricade.asResource("directional_barriers"));
         public static final TagKey<Block> ENTITY_BARRIERS = TagKey.create(Registries.BLOCK, Barricade.asResource("entity_barriers"));
+        public static final TagKey<Block> PREDICATE_BARRIERS = TagKey.create(Registries.BLOCK, Barricade.asResource("predicate_barriers"));
     }
 
     public static class EntityTags {

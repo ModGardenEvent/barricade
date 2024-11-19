@@ -9,8 +9,7 @@
     "BlockBehaviourMixin",
     "BlockMixin",
     "LootContextBuilderMixin",
-    "LootContextInvoker",
-    "PlayerPredicateMixin"
+    "LootContextInvoker"
   ],
   "client": [
     "client.ClientChunkCacheAccessor",
@@ -21,6 +20,7 @@
     "client.MinecraftMixin",
     "client.ModelBakeryAccessor",
     "client.ModelManagerMixin",
+    "client.PlayerPredicateMixin",
     "client.StructureBlockRendererMixin"
   ],
   "injectors": {
