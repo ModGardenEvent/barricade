@@ -37,10 +37,6 @@ public record BlockedDirectionsComponent(EnumSet<Direction> directions) {
             return null;
         Entity entity = entityContext.getEntity();
         for (Direction direction : directions) {
-            if (direction == Direction.DOWN && entity.getBoundingBox().maxY < pos.getY() + 1.0E-5F)
-                return direction;
-            if (direction == Direction.UP && context.isAbove(Shapes.block(), pos, false))
-                return direction;
             if (isOnOtherSideOfFace(direction, entity.getBoundingBox(), pos))
                 return direction;
         }
@@ -48,8 +44,14 @@ public record BlockedDirectionsComponent(EnumSet<Direction> directions) {
     }
 
     public static boolean isOnOtherSideOfFace(Direction direction, AABB box, BlockPos pos) {
-        Vec3 boxDotPos = new Vec3(box.getCenter().x() - (pos.getX() + (direction.getAxis() == Direction.Axis.X ? Math.max(direction.getAxisDirection().getStep(), 0) : 0.5)), 0, box.getCenter().z() - (pos.getZ() + (direction.getAxis() == Direction.Axis.Z ? Math.max(direction.getAxisDirection().getStep(), 0) : 0.5))).normalize();
-        return boxDotPos.dot(new Vec3(direction.getStepX(), 0, direction.getStepZ())) > box.getSize() * 0.3;
+        double boxPoint = (direction.getAxisDirection() == Direction.AxisDirection.POSITIVE ? box.min(direction.getAxis()) : box.max(direction.getAxis()));
+        double blockPoint = pos.get(direction.getAxis());
+        if (direction.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
+            blockPoint = blockPoint + 1 - 1.0E-5F;
+            return boxPoint > blockPoint;
+        }
+        blockPoint = blockPoint + 1.0E-5F;
+        return boxPoint < blockPoint;
     }
 
     public boolean isHorizontal() {
