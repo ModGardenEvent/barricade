@@ -6,12 +6,10 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.multiplayer.prediction.BlockStatePredictionHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,8 +19,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.AdvancedBarrierBlock;
 import net.modgarden.barricade.block.DirectionalBarrierBlock;
+import net.modgarden.barricade.block.PredicateBarrierBlock;
 import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
-import net.modgarden.barricade.client.particle.AdvancedBarrierParticle;
 import net.modgarden.barricade.client.util.BarrierRenderUtils;
 import net.modgarden.barricade.client.util.OperatorItemPseudoTag;
 import net.modgarden.barricade.component.BlockedDirectionsComponent;
@@ -59,6 +57,7 @@ public class ClientLevelMixin {
         set.add(BarricadeItems.MOB_BARRIER);
         set.add(BarricadeItems.PASSIVE_BARRIER);
         set.add(BarricadeItems.HOSTILE_BARRIER);
+        set.add(BarricadeItems.CREATIVE_ONLY_BARRIER);
         MARKER_PARTICLE_ITEMS = Set.copyOf(set);
     }
 
@@ -87,6 +86,8 @@ public class ClientLevelMixin {
             } else if (instance.getBlockEntity(blockPos.immutable()) instanceof AdvancedBarrierBlockEntity blockEntity) {
                 BarrierRenderUtils.createAdvancedParticle(blockEntity.getBlockedDirections() == null ? BlockedDirectionsComponent.of(Direction.values()) : blockEntity.getBlockedDirections(), blockEntity.getBlockedEntities() == null ? null : blockEntity.getBlockedEntities().icon(), particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
                 return;
+            } else if (blockState.getBlock() instanceof PredicateBarrierBlock predicateBarrierBlock) {
+                BarrierRenderUtils.createAdvancedParticle(BlockedDirectionsComponent.of(Direction.values()), predicateBarrierBlock.icon(), particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
             }
             original.call(instance, new BlockParticleOption(ParticleTypes.BLOCK_MARKER, blockState), x, y, z, xSpeed, ySpeed, zSpeed);
             return;

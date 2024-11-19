@@ -8,23 +8,30 @@ import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.item.AdvancedBarrierBlockItem;
 import net.modgarden.barricade.item.EntityBarrierBlockItem;
 import net.modgarden.barricade.registry.internal.RegistrationCallback;
+import org.jetbrains.annotations.NotNull;
 
 public class BarricadeItems {
-    public static final BlockItem ADVANCED_BARRIER = new AdvancedBarrierBlockItem(BarricadeBlocks.ADVANCED_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
+    public static final BlockItem ADVANCED_BARRIER = new AdvancedBarrierBlockItem(BarricadeBlocks.ADVANCED_BARRIER, barrierProps());
 
-    public static final BlockItem HORIZONTAL_BARRIER = new BlockItem(BarricadeBlocks.HORIZONTAL_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
-    public static final BlockItem VERTICAL_BARRIER = new BlockItem(BarricadeBlocks.VERTICAL_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
-    public static final BlockItem DOWN_BARRIER = new BlockItem(BarricadeBlocks.DOWN_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
-    public static final BlockItem UP_BARRIER = new BlockItem(BarricadeBlocks.UP_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
-    public static final BlockItem SOUTH_BARRIER = new BlockItem(BarricadeBlocks.SOUTH_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
-    public static final BlockItem NORTH_BARRIER = new BlockItem(BarricadeBlocks.NORTH_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
-    public static final BlockItem EAST_BARRIER = new BlockItem(BarricadeBlocks.EAST_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
-    public static final BlockItem WEST_BARRIER = new BlockItem(BarricadeBlocks.WEST_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
+    public static final BlockItem HORIZONTAL_BARRIER = new BlockItem(BarricadeBlocks.HORIZONTAL_BARRIER, barrierProps());
+    public static final BlockItem VERTICAL_BARRIER = new BlockItem(BarricadeBlocks.VERTICAL_BARRIER, barrierProps());
+    public static final BlockItem DOWN_BARRIER = new BlockItem(BarricadeBlocks.DOWN_BARRIER, barrierProps());
+    public static final BlockItem UP_BARRIER = new BlockItem(BarricadeBlocks.UP_BARRIER, barrierProps());
+    public static final BlockItem SOUTH_BARRIER = new BlockItem(BarricadeBlocks.SOUTH_BARRIER, barrierProps());
+    public static final BlockItem NORTH_BARRIER = new BlockItem(BarricadeBlocks.NORTH_BARRIER, barrierProps());
+    public static final BlockItem EAST_BARRIER = new BlockItem(BarricadeBlocks.EAST_BARRIER, barrierProps());
+    public static final BlockItem WEST_BARRIER = new BlockItem(BarricadeBlocks.WEST_BARRIER, barrierProps());
 
-    public static final BlockItem PLAYER_BARRIER = new EntityBarrierBlockItem(BarricadeBlocks.PLAYER_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
-    public static final BlockItem MOB_BARRIER = new EntityBarrierBlockItem(BarricadeBlocks.MOB_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
-    public static final BlockItem PASSIVE_BARRIER = new EntityBarrierBlockItem(BarricadeBlocks.PASSIVE_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
-    public static final BlockItem HOSTILE_BARRIER = new EntityBarrierBlockItem(BarricadeBlocks.HOSTILE_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
+    public static final BlockItem PLAYER_BARRIER = new EntityBarrierBlockItem(BarricadeBlocks.PLAYER_BARRIER, barrierProps());
+    public static final BlockItem MOB_BARRIER = new EntityBarrierBlockItem(BarricadeBlocks.MOB_BARRIER, barrierProps());
+    public static final BlockItem PASSIVE_BARRIER = new EntityBarrierBlockItem(BarricadeBlocks.PASSIVE_BARRIER, barrierProps());
+    public static final BlockItem HOSTILE_BARRIER = new EntityBarrierBlockItem(BarricadeBlocks.HOSTILE_BARRIER, barrierProps());
+    
+    // Predicate Barriers
+    public static final BlockItem CREATIVE_ONLY_BARRIER = new BlockItem(
+            BarricadeBlocks.CREATIVE_ONLY_BARRIER,
+            barrierProps()
+    );
 
     public static void registerAll(RegistrationCallback<Item> callback) {
         callback.register(BuiltInRegistries.ITEM, Barricade.asResource("advanced_barrier"), ADVANCED_BARRIER);
@@ -42,5 +49,11 @@ public class BarricadeItems {
         callback.register(BuiltInRegistries.ITEM, Barricade.asResource("mob_barrier"), MOB_BARRIER);
         callback.register(BuiltInRegistries.ITEM, Barricade.asResource("passive_barrier"), PASSIVE_BARRIER);
         callback.register(BuiltInRegistries.ITEM, Barricade.asResource("hostile_barrier"), HOSTILE_BARRIER);
+        
+        callback.register(BuiltInRegistries.ITEM, Barricade.asResource("creative_only_barrier"), CREATIVE_ONLY_BARRIER);
+    }
+
+    private static Item.@NotNull Properties barrierProps() {
+        return new Item.Properties().rarity(Rarity.EPIC);
     }
 }

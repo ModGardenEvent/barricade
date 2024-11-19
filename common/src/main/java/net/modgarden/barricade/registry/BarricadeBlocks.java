@@ -1,15 +1,22 @@
 package net.modgarden.barricade.registry;
 
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.GameTypePredicate;
+import net.minecraft.advancements.critereon.PlayerPredicate;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.modgarden.barricade.Barricade;
-import net.modgarden.barricade.block.DirectionalBarrierBlock;
 import net.modgarden.barricade.block.AdvancedBarrierBlock;
+import net.modgarden.barricade.block.DirectionalBarrierBlock;
 import net.modgarden.barricade.block.EntityBarrierBlock;
+import net.modgarden.barricade.block.PredicateBarrierBlock;
 import net.modgarden.barricade.component.BlockedDirectionsComponent;
 import net.modgarden.barricade.component.BlockedEntitiesComponent;
 import net.modgarden.barricade.registry.internal.RegistrationCallback;
@@ -27,6 +34,24 @@ public class BarricadeBlocks {
     public static final DirectionalBarrierBlock WEST_BARRIER = new DirectionalBarrierBlock(BlockedDirectionsComponent.of(Direction.WEST), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
     public static final DirectionalBarrierBlock HORIZONTAL_BARRIER = new DirectionalBarrierBlock(BlockedDirectionsComponent.of(Direction.WEST, Direction.EAST, Direction.NORTH, Direction.SOUTH), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
     public static final DirectionalBarrierBlock VERTICAL_BARRIER = new DirectionalBarrierBlock(BlockedDirectionsComponent.of(Direction.UP, Direction.DOWN), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
+    
+    // Predicate Barriers
+    public static final PredicateBarrierBlock CREATIVE_ONLY_BARRIER = new PredicateBarrierBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
+                    .dynamicShape(),
+            Barricade.asResource("item/barricade/icon/iron_sword"),
+            LootItemEntityPropertyCondition.hasProperties(
+                    LootContext.EntityTarget.THIS,
+                    EntityPredicate.Builder.entity()
+                            .of(EntityType.PLAYER)
+                            .subPredicate(
+                                    PlayerPredicate.Builder.player()
+                                            .setGameType(GameTypePredicate.of(GameType.CREATIVE))
+                                            .build()
+                            )
+                            .build()
+            ).build()
+    );
 
     public static final EntityBarrierBlock PLAYER_BARRIER = new EntityBarrierBlock(BlockedEntitiesComponent.fromHolders(Barricade.asResource("item/barricade/icon/player"), List.of(EntityType.PLAYER.builtInRegistryHolder()), false), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
     public static final EntityBarrierBlock MOB_BARRIER = new EntityBarrierBlock(BlockedEntitiesComponent.fromHolders(Barricade.asResource("item/barricade/icon/pig"), List.of(EntityType.PLAYER.builtInRegistryHolder()), true), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
@@ -49,5 +74,7 @@ public class BarricadeBlocks {
         callback.register(BuiltInRegistries.BLOCK, Barricade.asResource("mob_barrier"), MOB_BARRIER);
         callback.register(BuiltInRegistries.BLOCK, Barricade.asResource("passive_barrier"), PASSIVE_BARRIER);
         callback.register(BuiltInRegistries.BLOCK, Barricade.asResource("hostile_barrier"), HOSTILE_BARRIER);
+        
+        callback.register(BuiltInRegistries.BLOCK, Barricade.asResource("creative_only_barrier"), CREATIVE_ONLY_BARRIER);
     }
 }
