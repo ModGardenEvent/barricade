@@ -24,11 +24,11 @@ import net.minecraft.world.phys.Vec3;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
 import net.modgarden.barricade.component.BlockedDirectionsComponent;
-import net.modgarden.barricade.item.AdvancedBarrierBlockItem;
 import net.modgarden.barricade.mixin.client.ClientChunkCacheAccessor;
 import net.modgarden.barricade.mixin.client.ClientChunkCacheStorageAccessor;
 import net.modgarden.barricade.mixin.client.LevelRendererInvoker;
 import net.modgarden.barricade.particle.AdvancedBarrierParticleOptions;
+import net.modgarden.barricade.registry.BarricadeItems;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -42,7 +42,7 @@ public class BarrierRenderUtils {
         if (testOtherStack(stack, otherHandStack) || testOtherStack(previousStack, otherHandStack))
             return;
 
-        if ((stack.getItem() instanceof AdvancedBarrierBlockItem && !OperatorItemPseudoTag.Registry.get(Barricade.asResource("barriers")).contains(previousStack.getItemHolder())) || (previousStack.getItem() instanceof AdvancedBarrierBlockItem && !OperatorItemPseudoTag.Registry.get(Barricade.asResource("barriers")).contains(stack.getItemHolder()))) {
+        if ((stack.is(BarricadeItems.ADVANCED_BARRIER) && !OperatorItemPseudoTag.Registry.get(Barricade.asResource("barriers")).contains(previousStack.getItemHolder())) || (previousStack.is(BarricadeItems.ADVANCED_BARRIER) && !OperatorItemPseudoTag.Registry.get(Barricade.asResource("barriers")).contains(stack.getItemHolder()))) {
             Either<OperatorItemPseudoTag, ResourceKey<Item>> current = null;
             Either<OperatorItemPseudoTag, ResourceKey<Item>> previous = null;
             if (stack.getItem() instanceof BlockItem blockItem) {
@@ -57,9 +57,9 @@ public class BarrierRenderUtils {
                     previous = model.requiredItem();
             }
 
-            if (stack.getItem() instanceof AdvancedBarrierBlockItem)
+            if (stack.is(BarricadeItems.ADVANCED_BARRIER))
                 current = Either.left(OperatorItemPseudoTag.Registry.get(Barricade.asResource("barriers")));
-            if (previousStack.getItem() instanceof AdvancedBarrierBlockItem)
+            if (previousStack.is(BarricadeItems.ADVANCED_BARRIER))
                 current = Either.left(OperatorItemPseudoTag.Registry.get(Barricade.asResource("barriers")));
 
             refreshOperatorSections(stack, previousStack, current, previous);

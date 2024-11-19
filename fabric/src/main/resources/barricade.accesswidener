@@ -4,3 +4,5 @@ accessible class net/minecraft/client/resources/model/ModelBakery$ModelBakerImpl
 accessible method net/minecraft/client/resources/model/ModelBakery$ModelBakerImpl <init> (Lnet/minecraft/client/resources/model/ModelBakery;Lnet/minecraft/client/resources/model/ModelBakery$TextureGetter;Lnet/minecraft/client/resources/model/ModelResourceLocation;)V
 accessible class net/minecraft/client/resources/model/ModelManager$ReloadState
 accessible class net/minecraft/server/packs/resources/FallbackResourceManager$PackEntry
+accessible class net/minecraft/advancements/critereon/PlayerPredicate$AdvancementPredicate
+accessible class net/minecraft/advancements/critereon/PlayerPredicate$StatMatcher

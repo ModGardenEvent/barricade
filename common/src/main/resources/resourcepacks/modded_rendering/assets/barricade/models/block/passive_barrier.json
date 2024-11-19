@@ -2,7 +2,7 @@
   "loader": "barricade:operator",
   "required_item": "#barricade:barriers",
   "model": {
-    "parent": "barricade:block/entity_barrier",
+    "parent": "barricade:block/icon_barrier",
     "textures": {
       "all": "barricade:block/barrier",
       "inner": "barricade:item/barricade/icon/parrot"

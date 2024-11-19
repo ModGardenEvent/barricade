@@ -2,7 +2,6 @@ package net.modgarden.barricade.client;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.util.Unit;
 import net.modgarden.barricade.client.platform.BarricadeClientPlatformHelper;
 
 import java.util.List;

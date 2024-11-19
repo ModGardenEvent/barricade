@@ -12,6 +12,7 @@
   "block.barricade.mob_barrier": "Mob Barrier",
   "block.barricade.passive_barrier": "Passive Barrier",
   "block.barricade.hostile_barrier": "Hostile Barrier",
+  "block.barricade.creative_only_barrier": "Creative-Only Barrier",
   "tag.item.barricade.barriers": "Barriers",
   "resourcePack.barricade.modded_rendering.name": "Barricade Rendering",
   "resourcePack.barricade.modded_rendering.description": "Enables Barricade's alternative block rendering.",

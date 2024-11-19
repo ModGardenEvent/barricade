@@ -14,13 +14,12 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
 import net.modgarden.barricade.client.BarricadeClient;
-import net.modgarden.barricade.client.util.AdvancedBarrierComponents;
 import net.modgarden.barricade.client.model.AdvancedBarrierBlockUnbakedModel;
+import net.modgarden.barricade.client.util.AdvancedBarrierComponents;
 import net.modgarden.barricade.registry.BarricadeTags;
 
 import java.util.HashMap;

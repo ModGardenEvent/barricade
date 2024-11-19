@@ -7,7 +7,10 @@
   "mixins": [
     "BlockBehaviourBlockStateBaseMixin",
     "BlockBehaviourMixin",
-    "BlockMixin"
+    "BlockMixin",
+    "LootContextInvoker",
+    "Mixin_LootContext\$Builder",
+    "PlayerPredicateMixin"
   ],
   "client": [
     "client.ClientChunkCacheAccessor",
