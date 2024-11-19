@@ -2,7 +2,8 @@
 Barricade is a mod that implements more barrier types meant for use within Mod Garden events. Although it is free for other mapmakers to use too.
 
 This mod may also change barrier and light block rendering, to be friendlier to directional based barriers.
-You can enable the above by applying the Barricade Rendering resource pack.
+
+You can enable/disable the above by applying/removing the Barricade Rendering resource pack.
 
 ## Client-side Only
 This mod is able to run on clients without having it on the server. When run like this, the mod will only apply the rendering functionalities to any block with the `barricade:operator` loader json.
@@ -12,6 +13,7 @@ You may specify which items activate rendering by adding/modifying json found in
 
 ## The Barriers
 This mod adds three barrier block types, Directional, Predicate, and Advanced Barrier blocks.
+
 Directional barriers block movement from specific directions, whereas entity barriers block entities that meet the predicate specified by the block.
 
 All items may be accessed through the /give command or through the Operator Utilities creative menu tab.
@@ -36,6 +38,7 @@ All items may be accessed through the /give command or through the Operator Util
 ### Advanced Barrier
 
 The Advanced Barrier is a block entity based barrier that can be both an entity barrier and a directional barrier.
+
 What an Advanced Barrier will do can be modified by specifying an Advanced Barrier JSON inside `/data/<namespace>/barricade/advanced_barrier/<path>.json`.
 
 You may add this advanced barrier to your JSON with the id as the value of the `barricade:advanced_barrier` component.
