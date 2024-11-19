@@ -41,23 +41,15 @@ public record BlockedDirectionsComponent(EnumSet<Direction> directions) {
                 return direction;
             if (direction == Direction.UP && context.isAbove(Shapes.block(), pos, false))
                 return direction;
-            if (intersectsHorizontal(direction, entity.getBoundingBox(), entity.getDeltaMovement(), pos))
+            if (isOnOtherSideOfFace(direction, entity.getBoundingBox(), pos))
                 return direction;
         }
         return null;
     }
 
-    public static boolean intersectsHorizontal(Direction direction, AABB box, Vec3 deltaMovement, BlockPos pos) {
-        Vec3 startPos = new Vec3(pos.getX(), pos.getY(), pos.getZ()).add(getPoint(direction, Direction.Axis.X, 0, -0.1), getPoint(direction, Direction.Axis.Y, 0.5, -0.1), getPoint(direction, Direction.Axis.Z, 0, -0.1));
-        Vec3 endPos = startPos.add(getPoint(direction, Direction.Axis.X, 1, 0.2), getPoint(direction, Direction.Axis.Y, 0, 0.2), getPoint(direction, Direction.Axis.Z, 1, 0.2));
+    public static boolean isOnOtherSideOfFace(Direction direction, AABB box, BlockPos pos) {
         Vec3 boxDotPos = new Vec3(box.getCenter().x() - (pos.getX() + (direction.getAxis() == Direction.Axis.X ? Math.max(direction.getAxisDirection().getStep(), 0) : 0.5)), 0, box.getCenter().z() - (pos.getZ() + (direction.getAxis() == Direction.Axis.Z ? Math.max(direction.getAxisDirection().getStep(), 0) : 0.5))).normalize();
-        return box.expandTowards(deltaMovement.x(), 0, deltaMovement.z()).intersects(startPos, endPos) && boxDotPos.dot(new Vec3(direction.getStepX(), 0, direction.getStepZ())) > 0.2;
-    }
-
-    public static double getPoint(Direction direction, Direction.Axis axis, double defaultValue, double offset) {
-       if (direction.getAxis() == axis)
-           defaultValue = Math.max(direction.getAxisDirection().getStep(), 0) + offset;
-       return defaultValue;
+        return boxDotPos.dot(new Vec3(direction.getStepX(), 0, direction.getStepZ())) > box.getSize() * 0.3;
     }
 
     public boolean isHorizontal() {
