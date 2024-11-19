@@ -36,7 +36,7 @@ public class BarricadeBlocks {
     public static final PredicateBarrierBlock CREATIVE_ONLY_BARRIER = new PredicateBarrierBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
                     .dynamicShape(),
-            Barricade.asResource("item/barricade/icon/iron_sword"),
+            Barricade.asResource("barricade/icon/iron_sword"),
             LootItemEntityPropertyCondition.hasProperties(
                     LootContext.EntityTarget.THIS,
                     EntityPredicate.Builder.entity()
@@ -53,7 +53,7 @@ public class BarricadeBlocks {
     public static final PredicateBarrierBlock PLAYER_BARRIER = new PredicateBarrierBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
                     .dynamicShape(),
-            Barricade.asResource("item/barricade/icon/steve"),
+            Barricade.asResource("barricade/icon/steve"),
             InvertedLootItemCondition.invert(
                     LootItemEntityPropertyCondition.hasProperties(
                             LootContext.EntityTarget.THIS,
@@ -66,7 +66,7 @@ public class BarricadeBlocks {
     public static final PredicateBarrierBlock MOB_BARRIER = new PredicateBarrierBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
                     .dynamicShape(),
-            Barricade.asResource("item/barricade/icon/pig"),
+            Barricade.asResource("barricade/icon/pig"),
             LootItemEntityPropertyCondition.hasProperties(
                     LootContext.EntityTarget.THIS,
                     EntityPredicate.Builder.entity()
@@ -77,7 +77,7 @@ public class BarricadeBlocks {
     public static final PredicateBarrierBlock PASSIVE_BARRIER = new PredicateBarrierBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
                     .dynamicShape(),
-            Barricade.asResource("item/barricade/icon/parrot"),
+            Barricade.asResource("barricade/icon/parrot"),
             LootItemEntityPropertyCondition.hasProperties(
                     LootContext.EntityTarget.THIS,
                     EntityPredicate.Builder.entity()
@@ -88,7 +88,7 @@ public class BarricadeBlocks {
     public static final PredicateBarrierBlock HOSTILE_BARRIER = new PredicateBarrierBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
                     .dynamicShape(),
-            Barricade.asResource("item/barricade/icon/creeper"),
+            Barricade.asResource("barricade/icon/creeper"),
             LootItemEntityPropertyCondition.hasProperties(
                     LootContext.EntityTarget.THIS,
                     EntityPredicate.Builder.entity()

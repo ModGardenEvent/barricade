@@ -2,7 +2,7 @@
   "name": "Riding-Only Barrier",
   "icon": "barricade:standing_steve",
   "condition": {
-    "condition": "minecraft:any_of",
+    "condition": "minecraft:all_of",
     "terms": [
       {
         "condition": "minecraft:inverted",
@@ -10,10 +10,7 @@
           "condition": "minecraft:entity_properties",
           "entity": "this",
           "predicate": {
-            "passenger": {
-              "entity": "this",
-              "predicate": {}
-            }
+            "passenger": {}
           }
         }
       },
@@ -23,10 +20,7 @@
           "condition": "minecraft:entity_properties",
           "entity": "this",
           "predicate": {
-            "vehicle": {
-              "entity": "this",
-              "predicate": {}
-            }
+            "vehicle": {}
           }
         }
       }

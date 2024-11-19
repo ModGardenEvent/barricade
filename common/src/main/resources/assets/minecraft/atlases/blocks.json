@@ -1,0 +1,9 @@
+{
+    "sources": [
+        {
+            "type": "directory",
+            "source": "barricade/icon",
+            "prefix": "barricade/icon/"
+        }
+    ]
+}

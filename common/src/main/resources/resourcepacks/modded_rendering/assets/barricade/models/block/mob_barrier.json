@@ -5,7 +5,7 @@
     "parent": "barricade:block/icon_barrier",
     "textures": {
       "all": "barricade:block/barrier",
-      "inner": "barricade:item/barricade/icon/pig"
+      "inner": "barricade:barricade/icon/pig"
     },
     "render_type": "cutout"
   }

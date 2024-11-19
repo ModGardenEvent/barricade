@@ -31,7 +31,7 @@ import java.util.Optional;
 
 public record AdvancedBarrier(Optional<Component> name, BlockedDirectionsComponent directions, Optional<ResourceLocation> icon, Optional<LootItemCondition> condition) {
     public static final AdvancedBarrier DEFAULT = new AdvancedBarrier(Optional.empty(), BlockedDirectionsComponent.of(Direction.values()), Optional.empty(), Optional.empty());
-    public static final ResourceLocation UNKNOWN_ICON = Barricade.asResource("textures/item/barricade/icon/unknown");
+    public static final ResourceLocation UNKNOWN_ICON = Barricade.asResource("barricade/icon/unknown");
 
     public static final Codec<AdvancedBarrier> DIRECT_CODEC = RecordCodecBuilder.create(inst -> inst.group(
             ComponentSerialization.CODEC.optionalFieldOf("name").forGetter(AdvancedBarrier::name),
@@ -45,7 +45,7 @@ public record AdvancedBarrier(Optional<Component> name, BlockedDirectionsCompone
     public AdvancedBarrier(Optional<Component> name, BlockedDirectionsComponent directions, Optional<ResourceLocation> icon, Optional<LootItemCondition> condition) {
         this.name = name;
         this.directions = directions;
-        Optional<ResourceLocation> finalIcon = icon.map(resourceLocation -> resourceLocation.withPath(s -> "item/barricade/icon/" + s));
+        Optional<ResourceLocation> finalIcon = icon.map(resourceLocation -> resourceLocation.withPath(s -> "barricade/icon/" + s));
         if (condition.isPresent() && icon.isEmpty())
             finalIcon = Optional.of(UNKNOWN_ICON);
         this.icon = finalIcon;

@@ -5,7 +5,7 @@
     "parent": "barricade:block/icon_barrier",
     "textures": {
       "all": "barricade:block/barrier",
-      "inner": "barricade:item/barricade/icon/creeper"
+      "inner": "barricade:barricade/icon/creeper"
     },
     "render_type": "cutout"
   }
