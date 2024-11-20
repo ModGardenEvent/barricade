@@ -4,12 +4,14 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.BarrierBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.modgarden.barricade.component.BlockedDirectionsComponent;
@@ -66,11 +68,18 @@ public class DirectionalBarrierBlock extends BarrierBlock {
         if (directions.doesNotBlock())
             return Shapes.empty();
         if (directions.blocksAll())
-            return super.getCollisionShape(state, level, pos, context);
+            return Shapes.block();
         Direction direction = directions.blockingDirection(pos, context);
         if (direction == null)
             return Shapes.empty();
-        return super.getCollisionShape(state, level, pos, context);
+        return Shapes.block();
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        if (context instanceof EntityCollisionContext ctx && ctx.getEntity() instanceof Player player && player.canUseGameMasterBlocks())
+            return super.getShape(state, level, pos, context);
+        return getCollisionShape(state, level, pos, context);
     }
 
     @Override

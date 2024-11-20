@@ -6,6 +6,7 @@
   - Directional: Can be placed if an entity is inside it.
   - Entity: Can be placed if none of the entities within it meet the condition.
   - Advanced: Same as entity.
+- Non creative players may reach through barrier blocks that they don't collide with.
 
 ## Bugfixes
 - Fixed culling with directional barrier and advanced barrier faces.

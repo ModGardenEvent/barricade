@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
@@ -36,6 +38,7 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
         return CODEC;
     }
 
+    // NeoForge hook
     public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState, Direction dir) {
         return neighborState.is(state.getBlock()) && (!(level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity) || blockEntity.getBlockedDirections() == null || !blockEntity.getBlockedDirections().blocks(dir));
     }
@@ -47,16 +50,23 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
                 if (blockEntity.getBlockedDirections() != null && blockEntity.getBlockedDirections().doesNotBlock())
                     return Shapes.empty();
                 else if (blockEntity.getBlockedDirections() == null || blockEntity.getBlockedDirections().blocksAll())
-                    return super.getCollisionShape(state, level, pos, context);
+                    return Shapes.block();
                 else {
                     Direction direction = blockEntity.getBlockedDirections().blockingDirection(pos, context);
                     if (direction == null)
                         return Shapes.empty();
-                    return super.getCollisionShape(state, level, pos, context);
+                    return Shapes.block();
                 }
             }
         }
         return Shapes.empty();
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        if (context instanceof EntityCollisionContext ctx && ctx.getEntity() instanceof Player player && player.canUseGameMasterBlocks())
+            return super.getShape(state, level, pos, context);
+        return getCollisionShape(state, level, pos, context);
     }
 
     @Override
