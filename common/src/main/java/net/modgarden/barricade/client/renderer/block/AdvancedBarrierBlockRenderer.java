@@ -41,10 +41,8 @@ public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<Advance
                 blockEntity.getBlockPos(),
                 pose,
                 buffer.getBuffer(RenderType.cutout()),
-                true,
                 blockEntity.getLevel().random,
-                blockEntity.getBlockState().getSeed(blockEntity.getBlockPos()),
-                OverlayTexture.NO_OVERLAY);
+                blockEntity.getBlockState().getSeed(blockEntity.getBlockPos()));
     }
 
     private static BakedModel createModel(AdvancedBarrierComponents components) {

@@ -23,9 +23,11 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
 import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
 import net.modgarden.barricade.client.util.OperatorItemPseudoTag;
+import net.modgarden.barricade.registry.BarricadeBlocks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -49,7 +51,7 @@ public class CreativeOnlyBakedModel implements BakedModel, OperatorBakedModelAcc
     }
 
     @Override
-    public void emitBlockQuads(BlockAndTintGetter blockGetter, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
+    public void emitBlockQuads(BlockAndTintGetter level, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
         if (!RendererAccess.INSTANCE.hasRenderer() || (!Minecraft.getInstance().player.canUseGameMasterBlocks() || !Minecraft.getInstance().player.isHolding(stack -> requiredItem().map(tag -> tag.contains(stack.getItemHolder()), key -> stack.getItemHolder().is(key)))))
             return;
 
@@ -60,7 +62,7 @@ public class CreativeOnlyBakedModel implements BakedModel, OperatorBakedModelAcc
         for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
             final Direction cullFace = ModelHelper.faceFromIndex(i);
 
-            if (!context.hasTransform() && context.isFaceCulled(cullFace))
+            if (!context.hasTransform() && (context.isFaceCulled(cullFace) || cullFace != null && (level.getBlockState(pos.offset(cullFace.getNormal())).is(state.getBlock()) && (level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity && (blockEntity.getBlockedDirections() == null || !blockEntity.getBlockedDirections().blocks(cullFace))))))
                 continue;
 
             final List<BakedQuad> quads = model.getQuads(state, cullFace, randomSupplier.get());
