@@ -1,9 +1,12 @@
 package net.modgarden.barricade.block;
 
 import com.mojang.serialization.MapCodec;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BarrierBlock;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
@@ -13,6 +16,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
+import net.modgarden.barricade.registry.BarricadeComponents;
 import org.jetbrains.annotations.Nullable;
 
 public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
@@ -32,6 +36,10 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
         return CODEC;
     }
 
+    public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState, Direction dir) {
+        return neighborState.is(state.getBlock()) && (!(level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity) || blockEntity.getBlockedDirections() == null || !blockEntity.getBlockedDirections().blocks(dir));
+    }
+
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity) {
@@ -49,6 +57,18 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
             }
         }
         return Shapes.empty();
+    }
+
+    @Override
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+        ItemStack stack = new ItemStack(this);
+        if (level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity) {
+            if (blockEntity.getBlockedDirections() != null)
+                stack.set(BarricadeComponents.BLOCKED_DIRECTIONS, blockEntity.getBlockedDirections());
+            if (blockEntity.getBlockedEntities() != null)
+                stack.set(BarricadeComponents.BLOCKED_ENTITIES, blockEntity.getBlockedEntities());
+        }
+        return stack;
     }
 
     @Nullable

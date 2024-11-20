@@ -13,14 +13,10 @@ public class EntityBarrierBlockItem extends BlockItem {
         super(block, properties);
     }
 
+    // Place with the entities in the block in mind instead of the placer's collision.
     @Override
     protected boolean canPlace(BlockPlaceContext context, BlockState state) {
-        return context.getLevel().getEntities(null, Shapes.block().bounds().move(context.getClickedPos())).stream()
-                .noneMatch(entity -> {
-                    CollisionContext collisionContext = entity == null ? CollisionContext.empty() : CollisionContext.of(entity);
-                    if (state.getBlock() instanceof EntityBarrierBlock entityBarrier)
-                        return !entityBarrier.entities().canPass(collisionContext);
-                    return false;
-                });
+        return (!mustSurvive() || state.canSurvive(context.getLevel(), context.getClickedPos())) && context.getLevel().getEntities(null, Shapes.block().move(context.getClickedPos().getX(), context.getClickedPos().getY(), context.getClickedPos().getZ()).bounds()).stream().allMatch(entity ->
+                state.getCollisionShape(context.getLevel(), context.getClickedPos(), CollisionContext.of(entity)).isEmpty());
     }
 }

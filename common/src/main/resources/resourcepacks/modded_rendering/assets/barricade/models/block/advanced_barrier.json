@@ -1,5 +1,6 @@
 {
   "textures": {
-    "particle": "minecraft:item/no_barrier"
-  }
+    "particle": "minecraft:item/barrier"
+  },
+  "render_type": "cutout"
 }

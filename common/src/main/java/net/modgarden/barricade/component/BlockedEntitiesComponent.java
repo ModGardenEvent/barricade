@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.modgarden.barricade.Barricade;
@@ -22,11 +23,11 @@ import java.util.List;
 import java.util.Objects;
 
 public record BlockedEntitiesComponent(ResourceLocation icon, List<Either<TagKey<EntityType<?>>, Holder<EntityType<?>>>> entities, boolean inverted) {
-    public static final ResourceLocation DEFAULT_TEXTURE_ID = Barricade.asResource("item/barricade/icon/unknown");
+    public static final ResourceLocation DEFAULT_TEXTURE_ID = Barricade.asResource("barricade/icon/unknown");
     public static final BlockedEntitiesComponent EMPTY = new BlockedEntitiesComponent(DEFAULT_TEXTURE_ID, List.of(), false);
 
     public static final Codec<BlockedEntitiesComponent> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-            ResourceLocation.CODEC.optionalFieldOf("icon", DEFAULT_TEXTURE_ID).forGetter(BlockedEntitiesComponent::icon),
+            ResourceLocation.CODEC.xmap(rl -> rl.withPath(s -> "barricade/icon/" + s), rl -> rl.withPath(s -> s.substring(15))).optionalFieldOf("icon", DEFAULT_TEXTURE_ID).forGetter(BlockedEntitiesComponent::icon),
             Codec.either(TagKey.hashedCodec(Registries.ENTITY_TYPE), RegistryFixedCodec.create(Registries.ENTITY_TYPE)).listOf().fieldOf("entities").forGetter(BlockedEntitiesComponent::entities),
             Codec.BOOL.optionalFieldOf("inverted", false).forGetter(BlockedEntitiesComponent::inverted)
     ).apply(inst, BlockedEntitiesComponent::new));
@@ -39,6 +40,12 @@ public record BlockedEntitiesComponent(ResourceLocation icon, List<Either<TagKey
             BlockedEntitiesComponent::inverted,
             BlockedEntitiesComponent::new
     );
+
+    public BlockedEntitiesComponent(ResourceLocation icon, List<Either<TagKey<EntityType<?>>, Holder<EntityType<?>>>> entities, boolean inverted) {
+        this.icon = icon;
+        this.entities = entities;
+        this.inverted = inverted;
+    }
 
     public static BlockedEntitiesComponent fromTags(ResourceLocation textureId, List<TagKey<EntityType<?>>> tags, boolean inverted) {
         return new BlockedEntitiesComponent(textureId, tags.stream().map(Either::<TagKey<EntityType<?>>, Holder<EntityType<?>>>left).toList(), inverted);

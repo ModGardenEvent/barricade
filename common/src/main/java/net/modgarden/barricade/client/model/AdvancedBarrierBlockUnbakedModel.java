@@ -58,11 +58,11 @@ public class AdvancedBarrierBlockUnbakedModel extends BlockModel {
                 if (entities != null) {
                     innerFaces.put(direction, new BlockElementFace(direction, BlockElementFace.NO_TINT, "inner", new BlockFaceUV(null, 0)));
                     if (directions != null && !directions.blocksAll())
-                        exteriorInnerFaces.put(direction == Direction.WEST || direction == Direction.EAST ? direction.getOpposite() : direction, new BlockElementFace(null, BlockElementFace.NO_TINT, "inner", new BlockFaceUV(null, 0)));
+                        exteriorInnerFaces.put(direction.getOpposite(), new BlockElementFace(null, BlockElementFace.NO_TINT, "inner", new BlockFaceUV(null, 0)));
                 }
                 faces.put(direction, new BlockElementFace(direction, BlockElementFace.NO_TINT, "barrier", new BlockFaceUV(null, 0)));
                 if (directions != null && !directions.blocksAll())
-                    exteriorFaces.put(direction == Direction.WEST || direction == Direction.EAST ? direction.getOpposite() : direction, new BlockElementFace(null, BlockElementFace.NO_TINT, "barrier", new BlockFaceUV(null, 0)));
+                    exteriorFaces.put(direction.getOpposite(), new BlockElementFace(null, BlockElementFace.NO_TINT, "barrier", new BlockFaceUV(null, 0)));
             }
         }
         List<BlockElement> returnValue = new ArrayList<>();

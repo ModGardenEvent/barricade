@@ -39,7 +39,6 @@ public class DirectionalBarrierBlock extends BarrierBlock {
     };
 
     public BlockedDirectionsComponent directions;
-    private VoxelShape cachedShape;
 
     public DirectionalBarrierBlock(BlockedDirectionsComponent directions, Properties properties) {
         super(properties);
@@ -55,6 +54,11 @@ public class DirectionalBarrierBlock extends BarrierBlock {
     @Override
     public MapCodec<BarrierBlock> codec() {
         return CODEC.xmap(dir -> dir, barrierBlock -> (DirectionalBarrierBlock) barrierBlock);
+    }
+
+    @Override
+    protected boolean skipRendering(BlockState state, BlockState adjacentState, Direction direction) {
+        return adjacentState.is(state.getBlock()) && !directions.blocks(direction);
     }
 
     @Override

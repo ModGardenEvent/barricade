@@ -20,15 +20,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.modgarden.barricade.client.platform.BarricadeClientPlatformHelper;
 import net.modgarden.barricade.client.util.OperatorItemPseudoTag;
 import net.modgarden.barricade.neoforge.client.model.CreativeOnlyBakedModel;
+import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.model.ExtendedBlockModelDeserializer;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class BarricadeClientPlatformHelperNeoForge implements BarricadeClientPlatformHelper {
     @Override
     public Collection<BlockElement> fixSeamsOnNeoForge(Collection<BlockElement> collection, TextureAtlasSprite textureAtlasSprite) {
-        return collection;
+        return ClientHooks.fixItemModelSeams(new ArrayList<>(collection), textureAtlasSprite);
     }
 
     @Override

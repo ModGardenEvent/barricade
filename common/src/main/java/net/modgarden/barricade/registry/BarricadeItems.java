@@ -6,20 +6,21 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.item.AdvancedBarrierBlockItem;
+import net.modgarden.barricade.item.DirectionalBarrierBlockItem;
 import net.modgarden.barricade.item.EntityBarrierBlockItem;
 import net.modgarden.barricade.registry.internal.RegistrationCallback;
 
 public class BarricadeItems {
     public static final BlockItem ADVANCED_BARRIER = new AdvancedBarrierBlockItem(BarricadeBlocks.ADVANCED_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
 
-    public static final BlockItem HORIZONTAL_BARRIER = new BlockItem(BarricadeBlocks.HORIZONTAL_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
-    public static final BlockItem VERTICAL_BARRIER = new BlockItem(BarricadeBlocks.VERTICAL_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
-    public static final BlockItem DOWN_BARRIER = new BlockItem(BarricadeBlocks.DOWN_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
-    public static final BlockItem UP_BARRIER = new BlockItem(BarricadeBlocks.UP_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
-    public static final BlockItem SOUTH_BARRIER = new BlockItem(BarricadeBlocks.SOUTH_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
-    public static final BlockItem NORTH_BARRIER = new BlockItem(BarricadeBlocks.NORTH_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
-    public static final BlockItem EAST_BARRIER = new BlockItem(BarricadeBlocks.EAST_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
-    public static final BlockItem WEST_BARRIER = new BlockItem(BarricadeBlocks.WEST_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
+    public static final BlockItem HORIZONTAL_BARRIER = new DirectionalBarrierBlockItem(BarricadeBlocks.HORIZONTAL_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
+    public static final BlockItem VERTICAL_BARRIER = new DirectionalBarrierBlockItem(BarricadeBlocks.VERTICAL_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
+    public static final BlockItem DOWN_BARRIER = new DirectionalBarrierBlockItem(BarricadeBlocks.DOWN_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
+    public static final BlockItem UP_BARRIER = new DirectionalBarrierBlockItem(BarricadeBlocks.UP_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
+    public static final BlockItem SOUTH_BARRIER = new DirectionalBarrierBlockItem(BarricadeBlocks.SOUTH_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
+    public static final BlockItem NORTH_BARRIER = new DirectionalBarrierBlockItem(BarricadeBlocks.NORTH_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
+    public static final BlockItem EAST_BARRIER = new DirectionalBarrierBlockItem(BarricadeBlocks.EAST_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
+    public static final BlockItem WEST_BARRIER = new DirectionalBarrierBlockItem(BarricadeBlocks.WEST_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
 
     public static final BlockItem PLAYER_BARRIER = new EntityBarrierBlockItem(BarricadeBlocks.PLAYER_BARRIER, new Item.Properties().rarity(Rarity.EPIC));
     public static final BlockItem MOB_BARRIER = new EntityBarrierBlockItem(BarricadeBlocks.MOB_BARRIER, new Item.Properties().rarity(Rarity.EPIC));

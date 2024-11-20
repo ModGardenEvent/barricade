@@ -38,6 +38,11 @@ public class EntityBarrierBlock extends BarrierBlock {
     }
 
     @Override
+    protected boolean skipRendering(BlockState state, BlockState adjacentState, Direction direction) {
+        return adjacentState.is(state.getBlock());
+    }
+
+    @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (entities.canPass(context))
             return Shapes.empty();
