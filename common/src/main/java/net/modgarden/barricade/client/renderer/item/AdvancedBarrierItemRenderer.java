@@ -98,13 +98,10 @@ public class AdvancedBarrierItemRenderer {
 
         String variant = "";
         if (components.blockedEntities() != null)
-            variant = components.blockedEntities().icon() + "," + String.join(",", components.blockedEntities().entities().stream().map(either -> either.map(tagKey -> "#" + tagKey.location(), holder -> holder.unwrapKey().map(ResourceKey::location).orElse(ResourceLocation.withDefaultNamespace("null")).toString())).toList());
+            variant = components.blockedEntities().icon().toString();
+        if (components.blockedDirections() != null && !components.blockedDirections().doesNotBlock())
+            variant = (variant.isEmpty() ? "" : variant + ",") + String.join(",", components.blockedDirections().directions().stream().map(Direction::getName).toList());
 
-        if (components.blockedDirections() != null && !components.blockedDirections().doesNotBlock()) {
-            if (!variant.isEmpty())
-                variant = variant + ",";
-            variant = String.join(",", components.blockedDirections().directions().stream().map(Direction::getName).toList());
-        }
         BlockModel blockModel = new BlockModel(ResourceLocation.withDefaultNamespace("builtin/generated"), List.of(), textureMap, false, BlockModel.GuiLight.FRONT, Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(Items.BARRIER).getTransforms(), List.of());
         return ModelBakeryAccessor.getItemModelGenerator()
                 .generateBlockModel(Material::sprite, blockModel)

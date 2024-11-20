@@ -12,16 +12,13 @@ import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
 import net.modgarden.barricade.client.BarricadeClient;
+import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
 import net.modgarden.barricade.client.util.AdvancedBarrierComponents;
 import net.modgarden.barricade.client.model.AdvancedBarrierBlockUnbakedModel;
-import net.modgarden.barricade.registry.BarricadeTags;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +29,7 @@ public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<Advance
     @Override
     @SuppressWarnings("ConstantConditions")
     public void render(AdvancedBarrierBlockEntity blockEntity, float partialTick, PoseStack pose, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        if (!Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState()) || !Minecraft.getInstance().player.canUseGameMasterBlocks() || !Minecraft.getInstance().player.isHolding(stack -> stack.is(BarricadeTags.ItemTags.BARRIERS)))
+        if (!(Minecraft.getInstance().getBlockRenderer().getBlockModel(Blocks.BARRIER.defaultBlockState()) instanceof OperatorBakedModelAccess model) || !Minecraft.getInstance().player.canUseGameMasterBlocks() || !Minecraft.getInstance().player.isHolding(stack -> model.requiredItem().map(tag -> tag.contains(stack.getItemHolder()), key -> stack.getItemHolder().is(key))))
             return;
 
         AdvancedBarrierComponents components = new AdvancedBarrierComponents(blockEntity.getBlockedEntities(), blockEntity.getBlockedDirections());
@@ -53,15 +50,14 @@ public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<Advance
     private static BakedModel createModel(AdvancedBarrierComponents components) {
         String variant = "";
         if (components.blockedEntities() != null)
-            variant = components.blockedEntities().icon() + "," + String.join(",", components.blockedEntities().entities().stream().map(either -> either.map(tagKey -> "#" + tagKey.location(), holder -> holder.unwrapKey().map(ResourceKey::location).orElse(ResourceLocation.withDefaultNamespace("null")).toString())).toList());
+            variant = components.blockedEntities().icon().toString();
+        if (components.blockedDirections() != null && !components.blockedDirections().doesNotBlock())
+            variant = (variant.isEmpty() ? "" : variant + ",") + String.join(",", components.blockedDirections().directions().stream().map(Direction::getName).toList());
 
-        if (components.blockedDirections() != null && !components.blockedDirections().doesNotBlock()) {
-            variant = String.join(",", components.blockedDirections().directions().stream().map(Direction::getName).toList());
-        }
         BlockModel blockModel = new AdvancedBarrierBlockUnbakedModel(components.blockedDirections(), components.blockedEntities());
         return blockModel
                 .bake(
-                        BarricadeClient.getModelBakery().new ModelBakerImpl((modelLocation, material) -> material.sprite(), new ModelResourceLocation(Barricade.asResource("advanced_barrier_item_renderer"), variant)),
+                        BarricadeClient.getModelBakery().new ModelBakerImpl((modelLocation, material) -> material.sprite(), new ModelResourceLocation(Barricade.asResource("advanced_barrier_block_renderer"), variant)),
                         Material::sprite,
                         BlockModelRotation.X0_Y0
                 );
