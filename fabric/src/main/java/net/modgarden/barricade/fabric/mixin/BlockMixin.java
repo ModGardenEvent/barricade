@@ -1,4 +1,4 @@
-package net.modgarden.barricade.fabric.mixins.client;
+package net.modgarden.barricade.fabric.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.core.BlockPos;
