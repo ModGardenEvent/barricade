@@ -39,8 +39,7 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${Versions.FABRIC_API}")
     modLocalRuntime("com.terraformersmc:modmenu:${Versions.MOD_MENU}")
     modLocalRuntime("maven.modrinth:sodium:${Versions.SODIUM}-fabric")
-    // This is runtimeOnly so that dependents of this mod have it out-of-the-box in dev.
-    modRuntimeOnly("house.greenhouse.silicate:silicate-fabric:${Versions.SILICATE}")
+    modImplementation("house.greenhouse.silicate:silicate-fabric:${Versions.SILICATE}")
 }
 
 loom {
