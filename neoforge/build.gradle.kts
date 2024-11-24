@@ -20,9 +20,17 @@ repositories {
     }
 }
 
+configurations {
+    create("localRuntime") {
+        extendsFrom(runtimeClasspath.get())
+    }
+}
+
+val localRuntime = configurations.getByName("localRuntime")
+
 dependencies {
-//    runtimeOnly("maven.modrinth:sodium:${Versions.SODIUM}-neoforge")
-//    runtimeOnly("org.sinytra.forgified-fabric-api:forgified-fabric-api:${Versions.FORGIFIED_FABRIC_API}")
+    localRuntime("maven.modrinth:sodium:${Versions.SODIUM}-neoforge")
+    localRuntime("org.sinytra.forgified-fabric-api:forgified-fabric-api:${Versions.FORGIFIED_FABRIC_API}")
     // This is runtimeOnly so that dependents of this mod have it out-of-the-box in dev.
     runtimeOnly("house.greenhouse.silicate:silicate-neoforge:${Versions.SILICATE}")
 }
