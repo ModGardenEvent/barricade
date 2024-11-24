@@ -43,6 +43,14 @@ repositories {
     maven("https://maven.fabricmc.net/") {
         name = "Fabric"
     }
+    exclusiveContent {
+        forRepositories(
+            maven("https://maven.muonmc.org/releases") {
+                name = "MuonMC"
+            }
+        )
+        filter { includeGroup("house.greenhouse.silicate") }
+    }
 }
 
 dependencies {
@@ -93,6 +101,7 @@ tasks {
         "fabric_loader_version" to Versions.FABRIC_LOADER,
         "fabric_minecraft_version_range" to Versions.FABRIC_MINECRAFT_RANGE,
         "fabric_loader_range" to Versions.FABRIC_LOADER_RANGE,
+        "fabric_silicate_range" to Versions.FABRIC_SILICATE_RANGE,
         "mod_name" to Properties.MOD_NAME,
         "mod_author" to Properties.MOD_AUTHOR,
         "neoforge_mod_contributors" to Properties.MOD_CONTRIBUTORS.joinToString(),
@@ -103,6 +112,7 @@ tasks {
         "neoforge_version" to Versions.NEOFORGE,
         "neoforge_minecraft_version_range" to Versions.NEOFORGE_MINECRAFT_RANGE,
         "neoforge_loader_version_range" to Versions.NEOFORGE_LOADER_RANGE,
+        "silicate_version_range" to Versions.SILICATE_RANGE,
         "java_version" to Versions.JAVA,
         "homepage" to Properties.HOMEPAGE,
         "sources" to Properties.GITHUB_REPO

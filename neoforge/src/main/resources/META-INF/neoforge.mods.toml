@@ -34,3 +34,10 @@ mandatory=true
 versionRange="${neoforge_minecraft_version_range}"
 ordering="NONE"
 side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="silicate"
+mandatory=true
+versionRange="${silicate_version_range}"
+ordering="NONE"
+side="BOTH"
