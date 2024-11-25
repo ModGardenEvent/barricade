@@ -31,7 +31,9 @@ import java.util.function.Consumer;
 
 @Mod(Barricade.MOD_ID)
 public class BarricadeNeoForge {
-    public BarricadeNeoForge(IEventBus eventBus) {}
+    public BarricadeNeoForge(IEventBus eventBus) {
+        Barricade.setHelper(new BarricadeNeoForgeHelper());
+    }
 
     @EventBusSubscriber(modid = Barricade.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
     public static class ModEvents {
