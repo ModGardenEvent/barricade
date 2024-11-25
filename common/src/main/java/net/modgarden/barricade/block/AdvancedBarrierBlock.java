@@ -1,14 +1,15 @@
 package net.modgarden.barricade.block;
 
 import com.mojang.serialization.MapCodec;
+import house.greenhouse.silicate.api.exception.InvalidContextParameterException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BarrierBlock;
 import net.minecraft.world.level.block.Block;
@@ -26,6 +27,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
 import net.modgarden.barricade.data.AdvancedBarrier;
 import net.modgarden.barricade.data.BlockedDirections;
@@ -101,26 +103,47 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        if (level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity) {
-            ServerLevel serverLevel = null;
-            if (level instanceof ServerLevel)
-                serverLevel = (ServerLevel) level;
-            if ((blockEntity.getData().condition().isEmpty() || context instanceof EntityCollisionContext entityContext && entityContext.getEntity() != null && blockEntity.getData().test(serverLevel, entityContext.getEntity(), state, pos)) && (directions(state).blocksAll() || directions(state).shouldBlock(pos, context)))
-                return Shapes.block();
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext context) {
+        if (blockGetter.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity) {
+            Level level = null;
+            if (blockGetter instanceof Level) {
+                level = (Level) blockGetter;
+            }
+            
+	        try {
+                boolean meetsCondition = blockEntity.getData().condition().isEmpty()
+                    || context instanceof EntityCollisionContext entityContext && entityContext.getEntity() != null && blockEntity.getData()
+                    .test(level, entityContext.getEntity(), state, pos);
+                boolean blocksDirection = directions(state).blocksAll() || directions(state).shouldBlock(pos, context);
+                if (meetsCondition && blocksDirection) {
+                    return Shapes.block();
+                }
+	        } catch (InvalidContextParameterException e) {
+		        Barricade.LOG.error("Failed to test shape", e);
+	        }
         }
         return Shapes.empty();
     }
 
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        if (level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity && context instanceof EntityCollisionContext entityContext) {
-            ServerLevel serverLevel = null;
-            if (level instanceof ServerLevel)
-                serverLevel = (ServerLevel) level;
-            if (entityContext.getEntity() instanceof Player player && player.canUseGameMasterBlocks() || entityContext.getEntity() != null && blockEntity.getData().test(serverLevel, entityContext.getEntity(), state, pos))
-                return super.getShape(state, level, pos, context);
+    protected VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext context) {
+        if (blockGetter.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity && context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player) {
+            Level level = null;
+            if (blockGetter instanceof Level) {
+                level = (Level) blockGetter;
+            }
+
+	        try {
+                boolean isOperator = player.canUseGameMasterBlocks();
+		        if (isOperator && entityContext.getEntity() != null && !blockEntity.getData().test(level, entityContext.getEntity(), state, pos)) {
+                    return super.getShape(state, blockGetter, pos, context);
+                } else if (isOperator) {
+                    return super.getShape(state, blockGetter, pos, context);
+                }
+	        } catch (InvalidContextParameterException e) {
+                Barricade.LOG.error("Failed to test shape", e);
+	        }
         }
         return Shapes.empty();
     }
