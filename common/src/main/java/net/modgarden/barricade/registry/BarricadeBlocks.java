@@ -1,17 +1,15 @@
 package net.modgarden.barricade.registry;
 
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.GameTypePredicate;
-import net.minecraft.advancements.critereon.PlayerPredicate;
+import house.greenhouse.silicate.api.condition.InvertedCondition;
+import house.greenhouse.silicate.api.condition.builtin.EntityTypeCondition;
+import house.greenhouse.silicate.api.condition.builtin.PlayerGameTypeCondition;
+import house.greenhouse.silicate.api.context.param.ContextParamTypes;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.predicates.InvertedLootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.AdvancedBarrierBlock;
 import net.modgarden.barricade.block.DirectionalBarrierBlock;
@@ -34,66 +32,51 @@ public class BarricadeBlocks {
     // Predicate Barriers
     public static final PredicateBarrierBlock CREATIVE_ONLY_BARRIER = new PredicateBarrierBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
-                    .dynamicShape(),
+                .dynamicShape(),
             Barricade.asResource("barricade/icon/iron_sword"),
-            LootItemEntityPropertyCondition.hasProperties(
-                    LootContext.EntityTarget.THIS,
-                    EntityPredicate.Builder.entity()
-                            .of(EntityType.PLAYER)
-                            .subPredicate(
-                                    PlayerPredicate.Builder.player()
-                                            .setGameType(GameTypePredicate.SURVIVAL_LIKE)
-                                            .build()
-                            )
-                            .build()
-            ).build()
+            new PlayerGameTypeCondition(
+                    ContextParamTypes.THIS_ENTITY,
+                    PlayerGameTypeCondition.SURVIVAL_LIKE
+            )
     );
 
     public static final PredicateBarrierBlock PLAYER_BARRIER = new PredicateBarrierBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
                     .dynamicShape(),
             Barricade.asResource("barricade/icon/steve"),
-            LootItemEntityPropertyCondition.hasProperties(
-                    LootContext.EntityTarget.THIS,
-                    EntityPredicate.Builder.entity()
-                            .of(EntityType.PLAYER)
-                            .build()
-            ).build()
+            EntityTypeCondition.of(
+                    ContextParamTypes.THIS_ENTITY,
+                    EntityType.PLAYER
+            )
     );
     public static final PredicateBarrierBlock MOB_BARRIER = new PredicateBarrierBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
                     .dynamicShape(),
             Barricade.asResource("barricade/icon/pig"),
-            InvertedLootItemCondition.invert(
-                    LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity()
-                                    .of(EntityType.PLAYER)
-                                    .build()
+            new InvertedCondition(
+                    EntityTypeCondition.of(
+                            ContextParamTypes.THIS_ENTITY,
+                            EntityType.PLAYER
                     )
-            ).build()
+            )
     );
     public static final PredicateBarrierBlock PASSIVE_BARRIER = new PredicateBarrierBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
                     .dynamicShape(),
             Barricade.asResource("barricade/icon/parrot"),
-            LootItemEntityPropertyCondition.hasProperties(
-                    LootContext.EntityTarget.THIS,
-                    EntityPredicate.Builder.entity()
-                            .of(BarricadeTags.EntityTags.BLOCKED_BY_PASSIVE_BARRIER)
-                            .build()
-            ).build()
+            EntityTypeCondition.of(
+                    ContextParamTypes.THIS_ENTITY,
+                    BarricadeTags.EntityTags.BLOCKED_BY_PASSIVE_BARRIER
+            )
     );
     public static final PredicateBarrierBlock HOSTILE_BARRIER = new PredicateBarrierBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
                     .dynamicShape(),
             Barricade.asResource("barricade/icon/creeper"),
-            LootItemEntityPropertyCondition.hasProperties(
-                    LootContext.EntityTarget.THIS,
-                    EntityPredicate.Builder.entity()
-                            .of(BarricadeTags.EntityTags.BLOCKED_BY_HOSTILE_BARRIER)
-                            .build()
-            ).build()
+            EntityTypeCondition.of(
+                    ContextParamTypes.THIS_ENTITY,
+                    BarricadeTags.EntityTags.BLOCKED_BY_HOSTILE_BARRIER
+            )
     );
     public static void registerAll(RegistrationCallback<Block> callback) {
         callback.register(BuiltInRegistries.BLOCK, Barricade.asResource("advanced_barrier"), ADVANCED_BARRIER);

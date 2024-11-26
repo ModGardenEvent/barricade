@@ -2,25 +2,35 @@
   "name": "Riding-Only Barrier",
   "icon": "barricade:standing_steve",
   "condition": {
-    "condition": "minecraft:all_of",
-    "terms": [
+    "type": "silicate:compound",
+    "conditions": [
       {
-        "condition": "minecraft:inverted",
-        "term": {
-          "condition": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "passenger": {}
+        "type": "silicate:inverted",
+        "condition": {
+          "type": "silicate:entity_passenger",
+          "param_type": "silicate:this_entity",
+          "condition": {
+            "type": "silicate:retyped",
+            "param_type": "silicate:this_entity",
+            "condition": {
+              "type": "silicate:always",
+              "value": true
+            }
           }
         }
       },
       {
-        "condition": "minecraft:inverted",
-        "term": {
-          "condition": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "vehicle": {}
+        "type": "silicate:inverted",
+        "condition": {
+          "type": "silicate:entity_vehicle",
+          "param_type": "silicate:this_entity",
+          "condition": {
+            "type": "silicate:retyped",
+            "param_type": "silicate:this_entity",
+            "condition": {
+              "type": "silicate:always",
+              "value": true
+            }
           }
         }
       }

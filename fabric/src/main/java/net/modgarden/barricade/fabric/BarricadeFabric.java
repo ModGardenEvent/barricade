@@ -21,6 +21,7 @@ import net.modgarden.barricade.registry.BarricadeRegistries;
 public class BarricadeFabric implements ModInitializer {
     @Override
     public void onInitialize() {
+        Barricade.setHelper(new BarricadeFabricHelper());
         BarricadeBlocks.registerAll(Registry::register);
         BarricadeBlockEntityTypes.registerAll(Registry::register);
         BarricadeComponents.registerAll(Registry::register);

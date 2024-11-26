@@ -7,9 +7,7 @@
   "mixins": [
     "BlockBehaviourBlockStateBaseMixin",
     "BlockBehaviourMixin",
-    "BlockMixin",
-    "LootContextBuilderMixin",
-    "LootContextInvoker"
+    "BlockMixin"
   ],
   "client": [
     "client.ClientChunkCacheAccessor",

@@ -1,35 +1,32 @@
 package net.modgarden.barricade.block;
 
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import house.greenhouse.silicate.api.condition.CompoundCondition;
+import house.greenhouse.silicate.api.condition.GameCondition;
+import house.greenhouse.silicate.api.context.GameContext;
+import house.greenhouse.silicate.api.context.param.ContextParamMap;
+import house.greenhouse.silicate.api.context.param.ContextParamSet;
+import house.greenhouse.silicate.api.context.param.ContextParamTypes;
+import house.greenhouse.silicate.api.exception.InvalidContextParameterException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BarrierBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.ValidationContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.modgarden.barricade.AgnosticLootContext$Builder;
+import net.modgarden.barricade.Barricade;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 /**
- * A type of {@link BarrierBlock} that uses {@link LootItemCondition} to determine if an entity collides.
+ * A type of {@link BarrierBlock} that uses {@link GameCondition} to determine if an entity collides.
  */
 public class PredicateBarrierBlock extends BarrierBlock {
 	private static final MapCodec<PredicateBarrierBlock> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -37,128 +34,121 @@ public class PredicateBarrierBlock extends BarrierBlock {
 			ResourceLocation.CODEC
 					.fieldOf("icon")
 					.forGetter(PredicateBarrierBlock::icon),
-			LootItemCondition.DIRECT_CODEC.listOf()
+			CompoundCondition.CODEC
 					.fieldOf("conditions")
-					.validate(conditions -> {
-						try {
-							conditions.forEach(PredicateBarrierBlock::validateCondition);
-							return DataResult.success(conditions);
-						} catch (IllegalArgumentException e) {
-							return DataResult.error(e::getMessage);
-						}
-					})
-					.forGetter(PredicateBarrierBlock::conditions)
+					.forGetter(PredicateBarrierBlock::condition)
 	).apply(instance, PredicateBarrierBlock::new));
-	public static final LootContextParamSet PARAM_SET = LootContextParamSet.builder()
-			.required(LootContextParams.THIS_ENTITY)
-			.required(LootContextParams.BLOCK_STATE)
-			.required(LootContextParams.ORIGIN)
+	public static final ContextParamSet PARAM_SET = ContextParamSet.Builder
+			.of()
+			.required(ContextParamTypes.THIS_ENTITY)
+			.required(ContextParamTypes.BLOCK_STATE)
+			.required(ContextParamTypes.ORIGIN)
 			.build();
 	private final ResourceLocation icon;
-	private final List<LootItemCondition> conditions;
+	private final CompoundCondition condition;
 
-	/**
-	 * @throws IllegalArgumentException if the conditions are invalid for this {@link LootContextParamSet}.
-	 */
-	public PredicateBarrierBlock(Properties properties, ResourceLocation icon, LootItemCondition... conditions) throws IllegalArgumentException {
-		super(properties);
-		this.icon = icon;
-		this.conditions = List.of(conditions);
-		this.conditions.forEach(PredicateBarrierBlock::validateCondition);
+	public PredicateBarrierBlock(Properties properties, ResourceLocation icon, GameCondition<?>... conditions) {
+		this(properties, icon, CompoundCondition.of(conditions));
 	}
 	
-	private PredicateBarrierBlock(Properties properties, ResourceLocation icon, List<LootItemCondition> conditions) {
+	private PredicateBarrierBlock(Properties properties, ResourceLocation icon, CompoundCondition condition) {
 		super(properties);
 		this.icon = icon;
-		this.conditions = conditions;
+		this.condition = condition;
 	}
 
 	public ResourceLocation icon() {
 		return icon;
 	}
 	
-	public List<LootItemCondition> conditions() {
-		return conditions;
+	public CompoundCondition condition() {
+		return condition;
 	}
 	
 	@Override
 	public @NotNull MapCodec<BarrierBlock> codec() {
-		return CODEC.xmap(
+			return CODEC.xmap(
 				properties -> properties,
 				block -> (PredicateBarrierBlock) block
-		);
+			);
 	}
 	
 	public boolean test(
-			@Nullable ServerLevel level,
+			@Nullable Level level,
 			@NotNull Entity entity,
 			BlockState state,
 			BlockPos pos
-	) {
+	) throws InvalidContextParameterException {
 		return test(newContext(level, entity, state, pos));
 	}
 	
-	public boolean test(LootContext context) {
-		return this.conditions().stream().allMatch(condition -> condition.test(context));
+	public boolean test(GameContext context) {
+		return this.condition().test(context);
 	}
 	
-	@SuppressWarnings("DataFlowIssue") // allow client-side checks
-	public static LootContext newContext(
-			@Nullable ServerLevel level,
+	public static GameContext newContext(
+			@Nullable Level level,
 			@NotNull Entity entity,
 			BlockState state,
 			BlockPos pos
-	) {
-		return ((AgnosticLootContext$Builder) new LootContext.Builder(
-				new LootParams.Builder(level)
-						.withParameter(LootContextParams.THIS_ENTITY, entity)
-						.withParameter(LootContextParams.BLOCK_STATE, state)
-						.withParameter(LootContextParams.ORIGIN, pos.getCenter())
-						.create(PARAM_SET)
-		))
-				.barricade$create();
+	) throws InvalidContextParameterException {
+		ContextParamMap paramMap = ContextParamMap.Builder
+				.of(PARAM_SET)
+				.withParameter(ContextParamTypes.THIS_ENTITY, entity)
+				.withParameter(ContextParamTypes.BLOCK_STATE, state)
+				.withParameter(ContextParamTypes.ORIGIN, pos.getCenter())
+				.build();
+		return GameContext.of(level, paramMap);
 	}
 
 	@Override
 	protected @NotNull VoxelShape getCollisionShape(
 			@NotNull BlockState state,
-			@NotNull BlockGetter level,
+			@NotNull BlockGetter blockGetter,
 			@NotNull BlockPos pos,
 			@NotNull CollisionContext context
 	) {
 		if (context instanceof EntityCollisionContext entityContext && entityContext.getEntity() != null) {
-			ServerLevel serverLevel = null;
-			if (level instanceof ServerLevel) {
-				serverLevel = (ServerLevel) level;
+			Level level = null;
+			if (blockGetter instanceof Level) {
+				level = (Level) blockGetter;
 			}
-			
-			if (test(serverLevel, entityContext.getEntity(), state, pos))
-				return Shapes.block();
+
+			try {
+				if (test(level, entityContext.getEntity(), state, pos)) {
+					return Shapes.block();
+				}
+			} catch (InvalidContextParameterException e) {
+				Barricade.LOG.error("Failed to test shape", e);
+			}
 		}
 		return Shapes.empty();
 	}
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    protected @NotNull VoxelShape getShape(
+		@NotNull BlockState state,
+	    @NotNull BlockGetter blockGetter,
+	    @NotNull BlockPos pos,
+	    @NotNull CollisionContext context
+    ) {
         if (context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player) {
-            ServerLevel serverLevel = null;
-            if (level instanceof ServerLevel) {
-                serverLevel = (ServerLevel) level;
+            Level level = null;
+            if (blockGetter instanceof Level) {
+                level = (Level) blockGetter;
             }
 
-            if (player.canUseGameMasterBlocks() || entityContext.getEntity() != null && test(serverLevel, entityContext.getEntity(), state, pos))
-                return super.getShape(state, level, pos, context);
+	        try {
+		        boolean isOperator = player.canUseGameMasterBlocks();
+		        if (isOperator && !test(level, entityContext.getEntity(), state, pos)) {
+			        return super.getShape(state, blockGetter, pos, context);
+		        } else if (isOperator) {
+			        return super.getShape(state, blockGetter, pos, context);
+		        }
+	        } catch (InvalidContextParameterException e) {
+		        Barricade.LOG.error("Failed to test shape", e);
+	        }
         }
         return Shapes.empty();
     }
-
-	private static void validateCondition(LootItemCondition condition) throws IllegalArgumentException {
-		var problemReporter = new ProblemReporter.Collector();
-		condition.validate(
-				new ValidationContext(problemReporter, PARAM_SET)
-		);
-		problemReporter.getReport().ifPresent(message -> {
-			throw new IllegalArgumentException("Failed to validate PredicateBarrierBlock conditions: " + message);
-		});
-	}
 }
