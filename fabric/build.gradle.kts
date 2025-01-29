@@ -39,7 +39,7 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${Versions.FABRIC_API}")
     modLocalRuntime("com.terraformersmc:modmenu:${Versions.MOD_MENU}")
     modLocalRuntime("maven.modrinth:sodium:${Versions.SODIUM}-fabric")
-    modImplementation("house.greenhouse.silicate:silicate-fabric:${Versions.SILICATE}")
+    modImplementation("net.modgarden.silicate:silicate-fabric:${Versions.SILICATE}")
 }
 
 loom {

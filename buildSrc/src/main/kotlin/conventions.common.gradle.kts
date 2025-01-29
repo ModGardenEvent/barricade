@@ -45,11 +45,11 @@ repositories {
     }
     exclusiveContent {
         forRepositories(
-            maven("https://maven.muonmc.org/releases") {
-                name = "MuonMC"
+            maven("https://repo.greenhouse.house/releases") {
+                name = "Greenhouse"
             }
         )
-        filter { includeGroup("house.greenhouse.silicate") }
+        filter { includeGroup("net.modgarden.silicate") }
     }
 }
 
