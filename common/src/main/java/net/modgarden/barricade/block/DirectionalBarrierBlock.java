@@ -4,12 +4,14 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.BarrierBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.modgarden.barricade.data.BlockedDirections;
@@ -64,7 +66,15 @@ public class DirectionalBarrierBlock extends BarrierBlock {
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (!directions.doesNotBlock() && (directions.blocksAll() || directions.shouldBlock(pos, context)))
-            return super.getCollisionShape(state, level, pos, context);
+            return Shapes.block();
+        return Shapes.empty();
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        boolean isOperator = context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player && player.canUseGameMasterBlocks();
+        if (isOperator || !directions.doesNotBlock() && (directions.blocksAll() || directions.shouldBlock(pos, context)))
+            return super.getShape(state, level, pos, context);
         return Shapes.empty();
     }
 

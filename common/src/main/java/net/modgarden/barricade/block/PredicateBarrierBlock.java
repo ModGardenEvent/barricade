@@ -146,9 +146,7 @@ public class PredicateBarrierBlock extends BarrierBlock {
 
 	        try {
 		        boolean isOperator = player.canUseGameMasterBlocks();
-		        if (isOperator && !test(level, entityContext.getEntity(), state, pos)) {
-			        return super.getShape(state, blockGetter, pos, context);
-		        } else if (isOperator) {
+				if (isOperator || test(level, entityContext.getEntity(), state, pos)) {
 			        return super.getShape(state, blockGetter, pos, context);
 		        }
 	        } catch (InvalidContextParameterException e) {
