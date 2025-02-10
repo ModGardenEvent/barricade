@@ -7,7 +7,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.data.AdvancedBarrier;
 import net.modgarden.barricade.data.BlockedDirections;
-import net.modgarden.barricade.registry.internal.RegistrationCallback;
 
 public class BarricadeComponents {
     public static final DataComponentType<Holder<AdvancedBarrier>> ADVANCED_BARRIER = DataComponentType.<Holder<AdvancedBarrier>>builder()
