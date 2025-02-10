@@ -1,7 +1,7 @@
 package net.modgarden.barricade.block;
 
 import com.mojang.serialization.MapCodec;
-import house.greenhouse.silicate.api.exception.InvalidContextParameterException;
+import net.modgarden.silicate.api.exception.InvalidContextParameterException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;

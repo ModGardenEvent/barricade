@@ -2,8 +2,8 @@ package net.modgarden.barricade.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import house.greenhouse.silicate.api.condition.GameCondition;
-import house.greenhouse.silicate.api.exception.InvalidContextParameterException;
+import net.modgarden.silicate.api.condition.GameCondition;
+import net.modgarden.silicate.api.exception.InvalidContextParameterException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;

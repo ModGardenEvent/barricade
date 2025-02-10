@@ -1,9 +1,9 @@
 package net.modgarden.barricade.registry;
 
-import house.greenhouse.silicate.api.condition.InvertedCondition;
-import house.greenhouse.silicate.api.condition.builtin.EntityTypeCondition;
-import house.greenhouse.silicate.api.condition.builtin.PlayerGameTypeCondition;
-import house.greenhouse.silicate.api.context.param.ContextParamTypes;
+import net.modgarden.silicate.api.condition.InvertedCondition;
+import net.modgarden.silicate.api.condition.builtin.EntityTypeCondition;
+import net.modgarden.silicate.api.condition.builtin.PlayerGameTypeCondition;
+import net.modgarden.silicate.api.context.param.ContextParamTypes;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
