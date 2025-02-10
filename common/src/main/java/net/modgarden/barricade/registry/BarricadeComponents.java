@@ -1,6 +1,7 @@
 package net.modgarden.barricade.registry;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.modgarden.barricade.Barricade;
@@ -18,8 +19,8 @@ public class BarricadeComponents {
             .networkSynchronized(BlockedDirections.STREAM_CODEC)
             .build();
 
-    public static void registerAll(RegistrationCallback<DataComponentType<?>> callback) {
-        callback.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Barricade.asResource("advanced_barrier"), ADVANCED_BARRIER);
-        callback.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Barricade.asResource("blocked_directions"), BLOCKED_DIRECTIONS);
+    public static void registerAll() {
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Barricade.asResource("advanced_barrier"), ADVANCED_BARRIER);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Barricade.asResource("blocked_directions"), BLOCKED_DIRECTIONS);
     }
 }

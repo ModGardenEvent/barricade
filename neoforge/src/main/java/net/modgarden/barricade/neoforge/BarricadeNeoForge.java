@@ -1,6 +1,8 @@
 package net.modgarden.barricade.neoforge;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
@@ -16,7 +18,6 @@ import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeComponents;
 import net.modgarden.barricade.registry.BarricadeItems;
 import net.modgarden.barricade.registry.BarricadeRegistries;
-import net.modgarden.barricade.registry.internal.RegistrationCallback;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -27,7 +28,6 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 @Mod(Barricade.MOD_ID)
 public class BarricadeNeoForge {
@@ -39,14 +39,15 @@ public class BarricadeNeoForge {
     public static class ModEvents {
         @SubscribeEvent
         public static void registerContent(RegisterEvent event) {
-            register(event, BarricadeBlocks::registerAll);
-            register(event, BarricadeBlockEntityTypes::registerAll);
-            register(event, BarricadeComponents::registerAll);
-            register(event, BarricadeItems::registerAll);
+            register(event, Registries.BLOCK, BarricadeBlocks::registerAll);
+            register(event, Registries.BLOCK_ENTITY_TYPE, BarricadeBlockEntityTypes::registerAll);
+            register(event, Registries.DATA_COMPONENT_TYPE, BarricadeComponents::registerAll);
+            register(event, Registries.ITEM, BarricadeItems::registerAll);
         }
 
-        private static <T> void register(RegisterEvent event, Consumer<RegistrationCallback<T>> consumer) {
-            consumer.accept((registry, id, object) -> event.register(registry.key(), id, () -> object));
+        private static <T> void register(RegisterEvent event, ResourceKey<T> registryKey, Runnable registrar) {
+            if (event.getRegistryKey() == registryKey)
+                registrar.run();
         }
 
         @SubscribeEvent

@@ -22,10 +22,10 @@ public class BarricadeFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         Barricade.setHelper(new BarricadeFabricHelper());
-        BarricadeBlocks.registerAll(Registry::register);
-        BarricadeBlockEntityTypes.registerAll(Registry::register);
-        BarricadeComponents.registerAll(Registry::register);
-        BarricadeItems.registerAll(Registry::register);
+        BarricadeBlocks.registerAll();
+        BarricadeBlockEntityTypes.registerAll();
+        BarricadeComponents.registerAll();
+        BarricadeItems.registerAll();
 
         FabricLoader.getInstance().getModContainer(Barricade.MOD_ID).ifPresent(modContainer -> {
             ResourceManagerHelper.registerBuiltinResourcePack(Barricade.asResource("modded_rendering"), modContainer, Component.translatable("resourcePack.barricade.modded_rendering.name"), ResourcePackActivationType.DEFAULT_ENABLED);
