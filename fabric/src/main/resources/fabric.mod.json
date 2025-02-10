@@ -36,5 +36,8 @@
     "minecraft": "${fabric_minecraft_version_range}",
     "java": ">=${java_version}",
     "silicate": "${fabric_silicate_range}"
+  },
+  "breaks": {
+    "visiblebarriers": "*"
   }
 }
