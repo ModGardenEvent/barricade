@@ -2,6 +2,7 @@ package net.modgarden.barricade.block;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Direction;
 import net.modgarden.silicate.api.condition.CompoundCondition;
 import net.modgarden.silicate.api.condition.GameCondition;
 import net.modgarden.silicate.api.context.GameContext;
@@ -72,7 +73,12 @@ public class PredicateBarrierBlock extends BarrierBlock {
 				block -> (PredicateBarrierBlock) block
 			);
 	}
-	
+
+	@Override
+	protected boolean skipRendering(BlockState state, BlockState adjacentState, Direction direction) {
+		return adjacentState.is(state.getBlock());
+	}
+
 	public boolean test(
 			@Nullable Level level,
 			@NotNull Entity entity,

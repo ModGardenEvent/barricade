@@ -57,6 +57,11 @@ public class DirectionalBarrierBlock extends BarrierBlock {
     }
 
     @Override
+    protected boolean skipRendering(BlockState state, BlockState adjacentState, Direction direction) {
+        return adjacentState.is(state.getBlock()) && !directions.blocks(direction);
+    }
+
+    @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (!directions.doesNotBlock() && (directions.blocksAll() || directions.shouldBlock(pos, context)))
             return super.getCollisionShape(state, level, pos, context);

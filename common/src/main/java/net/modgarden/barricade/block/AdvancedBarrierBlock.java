@@ -101,6 +101,10 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
     public MapCodec<BarrierBlock> codec() {
         return CODEC;
     }
+    
+    public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState, Direction dir) {
+        return neighborState.is(state.getBlock()) && (!(level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity) || directions(state) == null || !directions(state).blocks(dir));
+    }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext context) {

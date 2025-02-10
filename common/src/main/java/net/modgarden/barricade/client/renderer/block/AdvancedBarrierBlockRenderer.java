@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.Material;
@@ -41,17 +40,16 @@ public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<Advance
                 blockEntity.getBlockPos(),
                 pose,
                 buffer.getBuffer(RenderType.cutout()),
-                true,
                 blockEntity.getLevel().random,
-                blockEntity.getBlockState().getSeed(blockEntity.getBlockPos()),
-                OverlayTexture.NO_OVERLAY);
+                blockEntity.getBlockState().getSeed(blockEntity.getBlockPos())
+        );
     }
 
     private static BakedModel createModel(AdvancedBarrierModelValues values) {
         BlockModel blockModel = new AdvancedBarrierBlockUnbakedModel(values.directions(), values.icon());
         return blockModel
                 .bake(
-                        BarricadeClient.getModelBakery().new ModelBakerImpl((modelLocation, material) -> material.sprite(), new ModelResourceLocation(Barricade.asResource("advanced_barrier_item_renderer"), values.getVariant())),
+                        BarricadeClient.getModelBakery().new ModelBakerImpl((modelLocation, material) -> material.sprite(), new ModelResourceLocation(Barricade.asResource("advanced_barrier_block_renderer"), values.getVariant())),
                         Material::sprite,
                         BlockModelRotation.X0_Y0
                 );
