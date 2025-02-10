@@ -121,14 +121,14 @@ public class PredicateBarrierBlock extends BarrierBlock {
 			}
 
 			try {
-				if (test(level, entityContext.getEntity(), state, pos)) {
-					return Shapes.block();
+				if (!test(level, entityContext.getEntity(), state, pos)) {
+					return Shapes.empty();
 				}
 			} catch (InvalidContextParameterException e) {
 				Barricade.LOG.error("Failed to test shape", e);
 			}
 		}
-		return Shapes.empty();
+		return Shapes.block();
 	}
 
     @Override
@@ -138,21 +138,21 @@ public class PredicateBarrierBlock extends BarrierBlock {
 	    @NotNull BlockPos pos,
 	    @NotNull CollisionContext context
     ) {
-        if (context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player) {
+        if (context instanceof EntityCollisionContext entityContext && entityContext.getEntity() != null) {
             Level level = null;
             if (blockGetter instanceof Level) {
                 level = (Level) blockGetter;
             }
 
 	        try {
-		        boolean isOperator = player.canUseGameMasterBlocks();
-				if (isOperator || test(level, entityContext.getEntity(), state, pos)) {
-			        return super.getShape(state, blockGetter, pos, context);
+		        boolean isOperator = entityContext.getEntity() instanceof Player player && player.canUseGameMasterBlocks();
+				if (!isOperator && !test(level, entityContext.getEntity(), state, pos)) {
+			        return Shapes.empty();
 		        }
 	        } catch (InvalidContextParameterException e) {
 		        Barricade.LOG.error("Failed to test shape", e);
 	        }
         }
-        return Shapes.empty();
+        return super.getShape(state, blockGetter, pos, context);
     }
 }

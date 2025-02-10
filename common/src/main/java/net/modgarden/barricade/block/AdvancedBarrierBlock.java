@@ -119,37 +119,35 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
                     || context instanceof EntityCollisionContext entityContext && entityContext.getEntity() != null && blockEntity.getData()
                     .test(level, entityContext.getEntity(), state, pos);
                 boolean blocksDirection = directions(state).blocksAll() || directions(state).shouldBlock(pos, context);
-                if (meetsCondition && blocksDirection) {
-                    return Shapes.block();
+                if (!meetsCondition || !blocksDirection) {
+                    return Shapes.empty();
                 }
 	        } catch (InvalidContextParameterException e) {
 		        Barricade.LOG.error("Failed to test shape", e);
 	        }
         }
-        return Shapes.empty();
+        return Shapes.block();
     }
 
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext context) {
-        if (blockGetter.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity && context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player) {
+        if (blockGetter.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity && context instanceof EntityCollisionContext entityContext && entityContext.getEntity() != null) {
             Level level = null;
             if (blockGetter instanceof Level) {
                 level = (Level) blockGetter;
             }
 
 	        try {
-                boolean isOperator = player.canUseGameMasterBlocks();
-		        if (isOperator && entityContext.getEntity() != null && !blockEntity.getData().test(level, entityContext.getEntity(), state, pos)) {
-                    return super.getShape(state, blockGetter, pos, context);
-                } else if (isOperator) {
-                    return super.getShape(state, blockGetter, pos, context);
+                boolean isOperator = entityContext.getEntity() instanceof Player player && player.canUseGameMasterBlocks();
+                if (!isOperator && !blockEntity.getData().test(level, entityContext.getEntity(), state, pos)) {
+                    return Shapes.empty();
                 }
 	        } catch (InvalidContextParameterException e) {
                 Barricade.LOG.error("Failed to test shape", e);
 	        }
         }
-        return Shapes.empty();
+        return super.getShape(state, blockGetter, pos, context);
     }
 
     @Override

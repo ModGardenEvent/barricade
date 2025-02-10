@@ -8,6 +8,7 @@
 - Changed the modified Advanced Barrier directional state to a block state.
 
 ## Bugfixes
+- Fixed `inGround` projectile behavior with directional and predicated barriers.
 - Fixed culling with directional barrier and advanced barrier faces.
 - Fixed NeoForge seams fix hook not running on advanced barriers.
 - Fixed placement contexts being inconsistent with the barrier at hand.
