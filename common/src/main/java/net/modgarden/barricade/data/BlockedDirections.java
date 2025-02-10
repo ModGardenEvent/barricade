@@ -36,15 +36,15 @@ public record BlockedDirections(EnumSet<Direction> directions) {
             return true;
         Entity entity = entityContext.getEntity();
         for (Direction direction : directions) {
-            if (test(direction, entity.getBoundingBox(), pos, entity.position()))
+            if (test(direction, entity.getBoundingBox(), pos))
                 return true;
         }
         return false;
     }
 
-    private static boolean test(Direction direction, AABB box, BlockPos blockPos, Vec3 entityPos) {
+    private static boolean test(Direction direction, AABB box, BlockPos pos) {
         double boxPoint = direction.getAxisDirection() == Direction.AxisDirection.POSITIVE ? box.min(direction.getAxis()) + 1.0E-5F : box.max(direction.getAxis()) - 1.0E-5F;
-        double blockPoint = blockPos.get(direction.getAxis());
+        double blockPoint = pos.get(direction.getAxis());
         if (direction.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
             blockPoint = blockPoint + 1 - 1.0E-5F;
             return boxPoint > blockPoint;
