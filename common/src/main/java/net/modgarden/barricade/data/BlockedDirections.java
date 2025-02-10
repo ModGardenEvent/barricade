@@ -10,6 +10,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 
@@ -32,18 +33,18 @@ public record BlockedDirections(EnumSet<Direction> directions) {
 
     public boolean shouldBlock(BlockPos pos, CollisionContext context) {
         if (!(context instanceof EntityCollisionContext entityContext) || entityContext.getEntity() == null)
-            return false;
+            return true;
         Entity entity = entityContext.getEntity();
         for (Direction direction : directions) {
-            if (test(direction, entity.getBoundingBox(), pos))
+            if (test(direction, entity.getBoundingBox(), pos, entity.position()))
                 return true;
         }
         return false;
     }
 
-    private static boolean test(Direction direction, AABB box, BlockPos pos) {
-        double boxPoint = (direction.getAxisDirection() == Direction.AxisDirection.POSITIVE ? box.min(direction.getAxis()) : box.max(direction.getAxis()));
-        double blockPoint = pos.get(direction.getAxis());
+    private static boolean test(Direction direction, AABB box, BlockPos blockPos, Vec3 entityPos) {
+        double boxPoint = direction.getAxisDirection() == Direction.AxisDirection.POSITIVE ? box.min(direction.getAxis()) + 1.0E-5F : box.max(direction.getAxis()) - 1.0E-5F;
+        double blockPoint = blockPos.get(direction.getAxis());
         if (direction.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
             blockPoint = blockPoint + 1 - 1.0E-5F;
             return boxPoint > blockPoint;
