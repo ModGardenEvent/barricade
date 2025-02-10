@@ -37,7 +37,7 @@ All items may be accessed through the /give command or through the Operator Util
 
 ### Advanced Barrier
 
-The Advanced Barrier is a block entity based barrier that can be both an entity barrier and a directional barrier.
+The Advanced Barrier is a block entity based barrier that can be both directional and predicated.
 
 What an Advanced Barrier will do can be modified by specifying an Advanced Barrier JSON inside `/data/<namespace>/barricade/advanced_barrier/<path>.json`.
 
