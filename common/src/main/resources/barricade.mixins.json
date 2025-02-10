@@ -7,7 +7,8 @@
   "mixins": [
     "BlockBehaviourBlockStateBaseMixin",
     "BlockBehaviourMixin",
-    "BlockMixin"
+    "BlockMixin",
+    "ProjectileMixin"
   ],
   "client": [
     "client.ClientChunkCacheAccessor",
@@ -18,7 +19,6 @@
     "client.MinecraftMixin",
     "client.ModelBakeryAccessor",
     "client.ModelManagerMixin",
-    "client.PlayerPredicateMixin",
     "client.StructureBlockRendererMixin"
   ],
   "injectors": {
