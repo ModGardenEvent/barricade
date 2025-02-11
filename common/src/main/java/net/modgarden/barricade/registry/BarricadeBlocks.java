@@ -1,6 +1,7 @@
 package net.modgarden.barricade.registry;
 
 import net.minecraft.core.Registry;
+import net.modgarden.silicate.api.condition.ConditionTemplate;
 import net.modgarden.silicate.api.condition.InvertedCondition;
 import net.modgarden.silicate.api.condition.builtin.EntityTypeCondition;
 import net.modgarden.silicate.api.condition.builtin.PlayerGameTypeCondition;
@@ -33,49 +34,32 @@ public class BarricadeBlocks {
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
                 .dynamicShape(),
             Barricade.asResource("barricade/icon/iron_sword"),
-            new PlayerGameTypeCondition(
-                    ContextParamTypes.THIS_ENTITY,
-                    PlayerGameTypeCondition.SURVIVAL_LIKE
-            )
+            new ConditionTemplate(Barricade.asResource("creative_only"))
     );
 
     public static final PredicateBarrierBlock PLAYER_BARRIER = new PredicateBarrierBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
                     .dynamicShape(),
             Barricade.asResource("barricade/icon/steve"),
-            EntityTypeCondition.of(
-                    ContextParamTypes.THIS_ENTITY,
-                    EntityType.PLAYER
-            )
+            new ConditionTemplate(Barricade.asResource("player"))
     );
     public static final PredicateBarrierBlock MOB_BARRIER = new PredicateBarrierBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
                     .dynamicShape(),
             Barricade.asResource("barricade/icon/pig"),
-            new InvertedCondition(
-                    EntityTypeCondition.of(
-                            ContextParamTypes.THIS_ENTITY,
-                            EntityType.PLAYER
-                    )
-            )
+            new ConditionTemplate(Barricade.asResource("mob"))
     );
     public static final PredicateBarrierBlock PASSIVE_BARRIER = new PredicateBarrierBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
                     .dynamicShape(),
             Barricade.asResource("barricade/icon/parrot"),
-            EntityTypeCondition.of(
-                    ContextParamTypes.THIS_ENTITY,
-                    BarricadeTags.EntityTags.BLOCKED_BY_PASSIVE_BARRIER
-            )
+            new ConditionTemplate(Barricade.asResource("passive"))
     );
     public static final PredicateBarrierBlock HOSTILE_BARRIER = new PredicateBarrierBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
                     .dynamicShape(),
             Barricade.asResource("barricade/icon/creeper"),
-            EntityTypeCondition.of(
-                    ContextParamTypes.THIS_ENTITY,
-                    BarricadeTags.EntityTags.BLOCKED_BY_HOSTILE_BARRIER
-            )
+            new ConditionTemplate(Barricade.asResource("hostile"))
     );
     public static void registerAll() {
         Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("advanced_barrier"), ADVANCED_BARRIER);
