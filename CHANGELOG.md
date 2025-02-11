@@ -15,3 +15,4 @@
 - Fixed placement contexts being inconsistent with the barrier at hand.
 - Fixed barriers not turning invisible under certain circumstances when quick swapping items.
 - Fixed larger entities bugging on the corners of horizontal barriers.
+- Players riding mobs can no longer pass through player barriers.
