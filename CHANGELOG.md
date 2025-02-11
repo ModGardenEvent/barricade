@@ -1,6 +1,7 @@
 ## Changes
 - Merge 1.3 codebase with 2.0
 - Added Creative-Only Barrier.
+- Replace the LootContextAware system with [Silicate](https://modrinth.com/mod/silicate).
 - Non creative players may now reach through predicated barriers that do not apply to them.
 - Renamed /assets/barricade/textures/item/barricade/entity/ directory to /assets/barricade/textures/item/barricade/icon/.
 - Removed `barricade:blocked_entities` component in favour of `barricade:advanced_barriers` component.
