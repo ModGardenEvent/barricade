@@ -3,7 +3,6 @@ package net.modgarden.barricade.neoforge.client;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.stream.JsonWriter;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -19,7 +18,6 @@ import net.modgarden.barricade.client.model.OperatorUnbakedModel;
 import net.modgarden.barricade.client.particle.AdvancedBarrierParticle;
 import net.modgarden.barricade.client.util.BarrierRenderUtils;
 import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
-import net.modgarden.barricade.neoforge.BarricadeNeoForge;
 import net.modgarden.barricade.neoforge.client.bewlr.BarricadeBEWLR;
 import net.modgarden.barricade.client.renderer.block.AdvancedBarrierBlockRenderer;
 import net.modgarden.barricade.neoforge.client.model.CreativeOnlyUnbakedModelGeometry;
@@ -41,7 +39,6 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
@@ -63,6 +60,11 @@ public class BarricadeNeoForgeClient {
         @SubscribeEvent
         public static void registerClientCommands(RegisterClientCommandsEvent event) {
             BarricadeClientCommands.registerClientCommands(event.getDispatcher(), event.getBuildContext());
+        }
+
+        @SubscribeEvent
+        public static void onDisconnect(ClientPlayerNetworkEvent.LoggingOut event) {
+            Barricade.serverContext = false;
         }
 
         @SubscribeEvent

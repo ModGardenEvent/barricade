@@ -21,7 +21,7 @@ public record SetServerContextClientboundPacket() implements CustomPacketPayload
     }
 
     public void handleConfiguration() {
-        Minecraft.getInstance().execute(Barricade::setServerContext);
+        Minecraft.getInstance().execute(() -> Barricade.serverContext = true);
     }
 
     @Override

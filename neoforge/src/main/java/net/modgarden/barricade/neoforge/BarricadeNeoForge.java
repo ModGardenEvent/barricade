@@ -43,10 +43,10 @@ public class BarricadeNeoForge {
     public static class GameEvents {
         @SubscribeEvent
         public static void registerContent(ServerStartingEvent event) {
-            Barricade.setServerContext();
+            Barricade.serverContext = true;
         }
     }
-    
+
     @EventBusSubscriber(modid = Barricade.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
     public static class ModEvents {
         @SubscribeEvent
@@ -70,7 +70,7 @@ public class BarricadeNeoForge {
         @SubscribeEvent
         public static void buildCreativeModeTabs(BuildCreativeModeTabContentsEvent event) {
             if (event.getTabKey() == CreativeModeTabs.OP_BLOCKS) {
-                if (!event.hasPermissions())
+                if (!event.hasPermissions() || !Barricade.serverContext)
                     return;
                 ItemStack startItem = null;
                 for (ItemStack entry : event.getParentEntries()) {

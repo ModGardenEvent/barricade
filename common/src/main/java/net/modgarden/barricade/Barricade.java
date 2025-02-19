@@ -15,7 +15,7 @@ public class Barricade {
     public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
     private static BarricadePlatformHelper helper;
 
-    private static boolean serverContext;
+    public static boolean serverContext;
 
     public static boolean isOperatorModel(BlockState state) {
         return BarricadeClient.getHelper() != null && Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof OperatorBakedModelAccess;
@@ -28,14 +28,6 @@ public class Barricade {
 	public static BarricadePlatformHelper getHelper() {
 		return helper;
 	}
-
-    public static boolean isServerContext() {
-        return serverContext;
-    }
-
-    public static void setServerContext() {
-        serverContext = true;
-    }
 
 	public static void setHelper(BarricadePlatformHelper helper) {
 		Barricade.helper = helper;

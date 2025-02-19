@@ -10,6 +10,7 @@
 - Added `/barricade:client visibility [enable/disable]` command, which sets the above config's values.
 - Added `barricade:blocked_by_mob_barrier` tag, which includes the other two more specific tags and is now used for the mob barrier instead of blocking all non players.
   - This means content such as Projectiles, and Armor Stands may pass through.
+- You will no longer see Barricade items in the creative mode tab when playing on a server without Barricade.
 
 ## Bugfixes
 - Fixed `inGround` projectile behavior with directional and predicated barriers.
