@@ -38,8 +38,11 @@ dependencies {
     modLocalRuntime("com.terraformersmc:modmenu:${Versions.MOD_MENU}")
     modLocalRuntime("maven.modrinth:sodium:${Versions.SODIUM}-fabric")
     modApi("net.modgarden.silicate:silicate-fabric:${Versions.SILICATE}")
+    include("net.modgarden.silicate:silicate-fabric:${Versions.SILICATE}")
     modApi("house.greenhouse:greenhouseconfig:${Versions.GREENHOUSE_CONFIG}-fabric")
+    include("house.greenhouse:greenhouseconfig:${Versions.GREENHOUSE_CONFIG}-fabric")
     api("house.greenhouse:greenhouseconfig_jsonc:${Versions.GREENHOUSE_CONFIG_JSONC}")
+    include("house.greenhouse:greenhouseconfig_jsonc:${Versions.GREENHOUSE_CONFIG_JSONC}")
 }
 
 loom {

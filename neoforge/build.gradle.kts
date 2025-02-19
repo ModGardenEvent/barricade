@@ -30,8 +30,11 @@ dependencies {
     localRuntime("maven.modrinth:sodium:${Versions.SODIUM}-neoforge")
     localRuntime("org.sinytra.forgified-fabric-api:forgified-fabric-api:${Versions.FORGIFIED_FABRIC_API}")
     api("net.modgarden.silicate:silicate-neoforge:${Versions.SILICATE}")
+    jarJar("net.modgarden.silicate:silicate-neoforge:${Versions.SILICATE}")
     api("house.greenhouse:greenhouseconfig:${Versions.GREENHOUSE_CONFIG}-neoforge")
+    jarJar("house.greenhouse:greenhouseconfig:${Versions.GREENHOUSE_CONFIG}-neoforge")
     api("house.greenhouse:greenhouseconfig_jsonc:${Versions.GREENHOUSE_CONFIG_JSONC}")
+    jarJar("house.greenhouse:greenhouseconfig_jsonc:${Versions.GREENHOUSE_CONFIG_JSONC}")
 }
 
 neoForge {
