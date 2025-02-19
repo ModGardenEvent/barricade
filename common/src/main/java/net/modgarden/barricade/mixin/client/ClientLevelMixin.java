@@ -28,6 +28,7 @@ import net.modgarden.barricade.client.BarricadeClientConfig;
 import net.modgarden.barricade.client.util.BarrierRenderUtils;
 import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 import net.modgarden.barricade.data.BlockedDirections;
+import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeItems;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -68,7 +69,7 @@ public class ClientLevelMixin {
 
     @ModifyReturnValue(method = "getMarkerParticleTarget", at = @At(value = "RETURN", ordinal = 0))
     private Block barricade$setMarkerParticleTarget(Block original, @Local Item item) {
-        if (Barricade.isOperatorModel(original.defaultBlockState()) || (original instanceof AdvancedBarrierBlock && Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState())))
+        if (Barricade.isOperatorModel(original.defaultBlockState()))
             return null;
         if (OperatorBlockPseudoTag.Registry.get(Barricade.asResource("barriers")).contains(original.builtInRegistryHolder()))
             return Blocks.BARRIER;

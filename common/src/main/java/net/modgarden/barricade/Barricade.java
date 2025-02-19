@@ -6,6 +6,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
 import net.modgarden.barricade.platform.BarricadePlatformHelper;
+import net.modgarden.barricade.registry.BarricadeBlocks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +19,8 @@ public class Barricade {
     public static boolean serverContext;
 
     public static boolean isOperatorModel(BlockState state) {
+        if (state.getBlock() == BarricadeBlocks.ADVANCED_BARRIER)
+            state = BarricadeBlocks.ADVANCED_BARRIER.defaultBlockState();
         return BarricadeClient.getHelper() != null && Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof OperatorBakedModelAccess;
     }
 
