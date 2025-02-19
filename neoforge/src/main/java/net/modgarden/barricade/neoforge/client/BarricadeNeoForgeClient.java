@@ -114,21 +114,16 @@ public class BarricadeNeoForgeClient {
     public static class ModEvents {
         @SubscribeEvent(priority = EventPriority.HIGHEST)
         public static void onClientSetup(FMLClientSetupEvent event) {
-            File packCache = FMLPaths.GAMEDIR.get().resolve("barricade/resource_pack_cache.json").toFile();
+            File packCache = FMLPaths.GAMEDIR.get().resolve("barricade/enabled_resource_pack_cache").toFile();
 
             if (!packCache.exists()) {
                 PackRepository repository = Minecraft.getInstance().getResourcePackRepository();
-                repository.addPack("mod/" + Barricade.asResource("resourcepacks/modded_rendering").toString());
+                repository.addPack("mod/" + Barricade.asResource("resourcepacks/modded_rendering"));
                 try {
+                    Files.createDirectory(FMLPaths.GAMEDIR.get().resolve("barricade"));
                     Files.createFile(packCache.toPath());
-                    try (JsonWriter jsonWriter = new JsonWriter(new FileWriter(packCache))) {
-                        jsonWriter.beginObject();
-                        jsonWriter.name("info");
-                        jsonWriter.value("This file purely exists to tell the game that Barricade was loaded for the first time and to enable the built-in resource pack.");
-                        jsonWriter.endObject();
-                    }
                 } catch (IOException ex) {
-                    Barricade.LOG.error("Failed to create resource pack cache for Barricade.");
+                    Barricade.LOG.error("Failed to create resource pack cache for Barricade.", ex);
                 }
             }
         }
