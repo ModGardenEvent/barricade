@@ -20,7 +20,7 @@ public record SetServerContextClientboundPacket() implements CustomPacketPayload
     public static void write(FriendlyByteBuf buf, SetServerContextClientboundPacket packet) {
     }
 
-    public void handleConfiguration() {
+    public void handle() {
         Minecraft.getInstance().execute(() -> Barricade.serverContext = true);
     }
 

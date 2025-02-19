@@ -10,6 +10,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
@@ -41,6 +42,7 @@ import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 import net.modgarden.barricade.fabric.client.platform.BarricadeClientPlatformHelperFabric;
 import net.modgarden.barricade.client.renderer.block.AdvancedBarrierBlockRenderer;
 import net.modgarden.barricade.client.renderer.item.AdvancedBarrierItemRenderer;
+import net.modgarden.barricade.network.clientbound.SetServerContextClientboundPacket;
 import net.modgarden.barricade.particle.AdvancedBarrierParticleOptions;
 import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeBlocks;
@@ -72,6 +74,7 @@ public class BarricadeFabricClient implements ClientModInitializer {
         BlockEntityRenderers.register(BarricadeBlockEntityTypes.ADVANCED_BARRIER, context -> new AdvancedBarrierBlockRenderer());
         BuiltinItemRendererRegistry.INSTANCE.register(BarricadeItems.ADVANCED_BARRIER, AdvancedBarrierItemRenderer::renderItem);
 
+        ClientConfigurationNetworking.registerGlobalReceiver(SetServerContextClientboundPacket.TYPE, (packet, ctx) -> packet.handle());
         ClientLoginConnectionEvents.DISCONNECT.register((listener, minecraft) -> Barricade.serverContext = false);
         ParticleFactoryRegistry.getInstance().register(AdvancedBarrierParticleOptions.Type.INSTANCE, new AdvancedBarrierParticle.Provider());
 

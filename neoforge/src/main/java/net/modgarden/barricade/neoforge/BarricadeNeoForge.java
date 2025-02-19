@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.data.AdvancedBarrier;
+import net.modgarden.barricade.network.clientbound.SetServerContextClientboundPacket;
 import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeComponents;
@@ -28,6 +29,7 @@ import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.network.event.RegisterConfigurationTasksEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
@@ -106,6 +108,11 @@ public class BarricadeNeoForge {
             }
         }
 
+        @SubscribeEvent
+        public static void registerPayloads(RegisterPayloadHandlersEvent event) {
+            event.registrar("1")
+                    .configurationToClient(SetServerContextClientboundPacket.TYPE, SetServerContextClientboundPacket.STREAM_CODEC, (packet, ctx) -> packet.handle());
+        }
 
         @SubscribeEvent
         public static void registerConfigurationTasks(RegisterConfigurationTasksEvent event) {

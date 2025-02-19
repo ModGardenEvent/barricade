@@ -6,6 +6,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
@@ -34,6 +35,8 @@ public class BarricadeFabric implements ModInitializer {
         BarricadeComponents.registerAll();
         BarricadeItems.registerAll();
 
+
+        PayloadTypeRegistry.configurationS2C().register(SetServerContextClientboundPacket.TYPE, SetServerContextClientboundPacket.STREAM_CODEC);
         ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.register((handler, server) -> {
             if (!ServerConfigurationNetworking.canSend(handler, SetServerContextClientboundPacket.TYPE))
                 return;
