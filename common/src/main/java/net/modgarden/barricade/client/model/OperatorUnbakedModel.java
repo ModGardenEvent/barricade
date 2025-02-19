@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.BarricadeClient;
 import org.jetbrains.annotations.Nullable;
@@ -20,13 +21,13 @@ import java.util.function.Function;
 
 public class OperatorUnbakedModel implements UnbakedModel {
     protected final UnbakedModel sourceModel;
-    protected final Either<ResourceLocation, ResourceKey<Item>> requiredItem;
+    protected final Either<ResourceLocation, ResourceKey<Block>> operatorBlocks;
 
     public OperatorUnbakedModel(
             UnbakedModel model,
-            Either<ResourceLocation, ResourceKey<Item>> requiredItem) {
+            Either<ResourceLocation, ResourceKey<Block>> operatorBlocks) {
         this.sourceModel = model;
-        this.requiredItem = requiredItem;
+        this.operatorBlocks = operatorBlocks;
     }
 
     @Override
@@ -42,7 +43,7 @@ public class OperatorUnbakedModel implements UnbakedModel {
     @Nullable
     @Override
     public BakedModel bake(ModelBaker modelBaker, Function<Material, TextureAtlasSprite> textureGetter, ModelState modelState) {
-        return BarricadeClient.getHelper().createCreativeOnlyModel(sourceModel.bake(modelBaker, textureGetter, modelState), requiredItem);
+        return BarricadeClient.getHelper().createCreativeOnlyModel(sourceModel.bake(modelBaker, textureGetter, modelState), operatorBlocks);
     }
 
     public static class Deserializer implements JsonDeserializer<OperatorUnbakedModel> {
@@ -50,29 +51,29 @@ public class OperatorUnbakedModel implements UnbakedModel {
 
         public OperatorUnbakedModel deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
             if (!json.isJsonObject())
-                throw new JsonParseException("Cannot deserialize non JsonObject 'barricade:operator' model.");
+                throw new JsonParseException("Could not deserialize non JsonObject 'barricade:operator' model.");
 
             JsonObject jsonObject = json.getAsJsonObject();
 
             BlockModel model = BlockModel.fromString(jsonObject.get("model").toString());
 
-            if (!jsonObject.has("required_item"))
-                throw new JsonParseException("Cannot get 'required_item' field from 'barricade:operator' model.");
+            if (!jsonObject.has("operator_blocks"))
+                throw new JsonParseException("Could not find 'operator_blocks' field from 'barricade:operator' model.");
 
-            Either<ResourceLocation, ResourceKey<Item>> either = getEither(GsonHelper.getAsString(jsonObject, "required_item"));
+            Either<ResourceLocation, ResourceKey<Block>> either = getEither(GsonHelper.getAsString(jsonObject, "operator_blocks"));
 
             return new OperatorUnbakedModel(model, either);
         }
 
-        private static Either<ResourceLocation, ResourceKey<Item>> getEither(String id) throws JsonParseException {
-            Either<ResourceLocation, ResourceKey<Item>> either;
+        private static Either<ResourceLocation, ResourceKey<Block>> getEither(String id) throws JsonParseException {
+            Either<ResourceLocation, ResourceKey<Block>> either;
             try {
                 if (id.startsWith("#"))
                     either = Either.left(ResourceLocation.read(id.substring(1)).getOrThrow());
                 else
-                    either = Either.right(ResourceKey.create(Registries.ITEM, ResourceLocation.read(id).getOrThrow()));
+                    either = Either.right(ResourceKey.create(Registries.BLOCK, ResourceLocation.read(id).getOrThrow()));
             } catch (Exception ex) {
-                throw new JsonParseException("Failed to parse 'block' field from 'barricade:operator' model. Must be either a block id or a block tag.", ex);
+                throw new JsonParseException("Failed to parse 'block' field from 'barricade:operator' model. Must be either a block id or an operator block tag.", ex);
             }
             return either;
         }

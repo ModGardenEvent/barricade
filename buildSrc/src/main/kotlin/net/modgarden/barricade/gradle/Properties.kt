@@ -1,7 +1,7 @@
 package net.modgarden.barricade.gradle
 
 object Properties {
-    const val GROUP = "net.modgarden"
+    const val GROUP = "net.modgarden.barricade"
     const val MOD_NAME = "Barricade"
     const val MOD_ID = "barricade"
     const val MOD_AUTHOR = "Mod Garden"

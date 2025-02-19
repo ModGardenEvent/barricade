@@ -34,6 +34,8 @@ dependencies {
     annotationProcessor("io.github.llamalad7:mixinextras-common:${Versions.MIXIN_EXTRAS}")
     compileOnly("net.fabricmc:sponge-mixin:${Versions.FABRIC_MIXIN}")
     compileOnly("net.modgarden.silicate:silicate-common:${Versions.SILICATE}")
+    compileOnly("house.greenhouse:greenhouseconfig:${Versions.GREENHOUSE_CONFIG}-common-mojmap")
+    compileOnly("house.greenhouse:greenhouseconfig_jsonc:${Versions.GREENHOUSE_CONFIG_JSONC}")
 }
 
 configurations {

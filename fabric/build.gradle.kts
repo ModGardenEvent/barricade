@@ -9,13 +9,11 @@ plugins {
 }
 
 repositories {
-    maven {
+    maven("https://api.modrinth.com/maven") {
         name = "Modrinth"
-        url = uri("https://api.modrinth.com/maven")
     }
-    maven {
+    maven("https://maven.terraformersmc.com/") {
         name = "TerraformersMC"
-        url = uri("https://maven.terraformersmc.com/")
     }
 }
 
@@ -39,7 +37,9 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${Versions.FABRIC_API}")
     modLocalRuntime("com.terraformersmc:modmenu:${Versions.MOD_MENU}")
     modLocalRuntime("maven.modrinth:sodium:${Versions.SODIUM}-fabric")
-    modImplementation("net.modgarden.silicate:silicate-fabric:${Versions.SILICATE}")
+    modApi("net.modgarden.silicate:silicate-fabric:${Versions.SILICATE}")
+    modApi("house.greenhouse:greenhouseconfig:${Versions.GREENHOUSE_CONFIG}-fabric")
+    api("house.greenhouse:greenhouseconfig_jsonc:${Versions.GREENHOUSE_CONFIG_JSONC}")
 }
 
 loom {

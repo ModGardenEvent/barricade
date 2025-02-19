@@ -82,6 +82,9 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 
         @Override
         protected void addTags(HolderLookup.Provider wrapperLookup) {
+            getOrCreateTagBuilder(BarricadeTags.EntityTags.BLOCKED_BY_MOB_BARRIER)
+                    .forceAddTag(BarricadeTags.EntityTags.BLOCKED_BY_HOSTILE_BARRIER)
+                    .forceAddTag(BarricadeTags.EntityTags.BLOCKED_BY_PASSIVE_BARRIER);
             getOrCreateTagBuilder(BarricadeTags.EntityTags.BLOCKED_BY_PASSIVE_BARRIER)
                     .add(
                             EntityType.ALLAY,

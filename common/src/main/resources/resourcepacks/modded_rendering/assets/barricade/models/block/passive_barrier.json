@@ -1,6 +1,6 @@
 {
   "loader": "barricade:operator",
-  "required_item": "#barricade:barriers",
+  "operator_blocks": "#barricade:barriers",
   "model": {
     "parent": "barricade:block/icon_barrier",
     "textures": {

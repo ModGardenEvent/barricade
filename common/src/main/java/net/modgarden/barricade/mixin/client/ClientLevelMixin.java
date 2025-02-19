@@ -13,18 +13,23 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.BarrierBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LightBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.AdvancedBarrierBlock;
 import net.modgarden.barricade.block.DirectionalBarrierBlock;
 import net.modgarden.barricade.block.PredicateBarrierBlock;
 import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
+import net.modgarden.barricade.client.BarricadeClient;
+import net.modgarden.barricade.client.BarricadeClientConfig;
 import net.modgarden.barricade.client.util.BarrierRenderUtils;
-import net.modgarden.barricade.client.util.OperatorItemPseudoTag;
+import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 import net.modgarden.barricade.data.BlockedDirections;
 import net.modgarden.barricade.registry.BarricadeItems;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -62,35 +67,35 @@ public class ClientLevelMixin {
     }
 
     @ModifyReturnValue(method = "getMarkerParticleTarget", at = @At(value = "RETURN", ordinal = 0))
-    private Block barricade$setMarkerParticleTarget(Block original, @Local ItemStack itemStack, @Local Item item) {
+    private Block barricade$setMarkerParticleTarget(Block original, @Local Item item) {
         if (Barricade.isOperatorModel(original.defaultBlockState()) || (original instanceof AdvancedBarrierBlock && Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState())))
             return null;
-        if (OperatorItemPseudoTag.Registry.get(Barricade.asResource("barriers")).contains(item.builtInRegistryHolder()))
+        if (OperatorBlockPseudoTag.Registry.get(Barricade.asResource("barriers")).contains(original.builtInRegistryHolder()))
             return Blocks.BARRIER;
         return original;
     }
 
     @ModifyExpressionValue(method = "doAnimateTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getBlock()Lnet/minecraft/world/level/block/Block;", ordinal = 1))
-    private Block barricade$trickGameIntoRendering(Block original) {
-        if (OperatorItemPseudoTag.Registry.get(Barricade.asResource("barriers")).contains(original.asItem().builtInRegistryHolder()))
+    private Block barricade$trickGameIntoRendering(Block original, @Local(argsOnly = true) @Nullable Block block, @Local BlockState state) {
+        if (Barricade.isOperatorModel(state))
+            return original;
+        if (BarricadeClient.CONFIG.get().everythingVisible() && (original instanceof BarrierBlock || original instanceof LightBlock) || BarricadeClient.CONFIG.get().visibleBlocks().stream().anyMatch(either -> either.map(tag -> tag.contains(original.builtInRegistryHolder()), key -> original.builtInRegistryHolder().is(key))))
+            return block;
+        if (OperatorBlockPseudoTag.Registry.get(Barricade.asResource("barriers")).contains(original.builtInRegistryHolder()))
             return Blocks.BARRIER;
         return original;
     }
 
     @WrapOperation(method = "doAnimateTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;addParticle(Lnet/minecraft/core/particles/ParticleOptions;DDDDDD)V"))
-    private void barricade$renderVanillaStyle(ClientLevel instance, ParticleOptions particleData, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, Operation<Void> original, @Local(argsOnly = true) Block block, @Local(argsOnly = true) BlockPos.MutableBlockPos blockPos, @Local BlockState blockState) {
-        if (block != blockState.getBlock() && OperatorItemPseudoTag.Registry.get(Barricade.asResource("barriers")).contains(blockState.getBlock().asItem().builtInRegistryHolder())) {
-            if (blockState.getBlock() instanceof DirectionalBarrierBlock directionalBarrierBlock) {
-                BarrierRenderUtils.createAdvancedParticle(directionalBarrierBlock.directions(), null, particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
-                return;
-            } else if (instance.getBlockEntity(blockPos.immutable()) instanceof AdvancedBarrierBlockEntity blockEntity) {
-                BarrierRenderUtils.createAdvancedParticle(blockEntity.getData().directions(), blockEntity.getData().icon().orElse(null), particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
-                return;
-            } else if (blockState.getBlock() instanceof PredicateBarrierBlock predicateBarrierBlock) {
-                BarrierRenderUtils.createAdvancedParticle(BlockedDirections.of(Direction.values()), predicateBarrierBlock.icon(), particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
-            }
-            original.call(instance, new BlockParticleOption(ParticleTypes.BLOCK_MARKER, blockState), x, y, z, xSpeed, ySpeed, zSpeed);
+    private void barricade$renderVanillaStyle(ClientLevel instance, ParticleOptions particleData, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, Operation<Void> original, @Local(argsOnly = true) BlockPos.MutableBlockPos blockPos, @Local BlockState blockState) {
+        if (blockState.getBlock() instanceof DirectionalBarrierBlock directionalBarrierBlock) {
+            BarrierRenderUtils.createAdvancedParticle(directionalBarrierBlock.directions(), null, particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
             return;
+        } else if (instance.getBlockEntity(blockPos.immutable()) instanceof AdvancedBarrierBlockEntity blockEntity) {
+            BarrierRenderUtils.createAdvancedParticle(blockEntity.getData().directions(), blockEntity.getData().icon().orElse(null), particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
+            return;
+        } else if (blockState.getBlock() instanceof PredicateBarrierBlock predicateBarrierBlock) {
+            BarrierRenderUtils.createAdvancedParticle(BlockedDirections.of(Direction.values()), predicateBarrierBlock.icon(), particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
         }
         original.call(instance, particleData, x, y, z, xSpeed, ySpeed, zSpeed);
     }

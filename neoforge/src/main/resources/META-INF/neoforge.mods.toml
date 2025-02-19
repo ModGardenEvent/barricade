@@ -41,3 +41,17 @@ mandatory=true
 versionRange="${silicate_version_range}"
 ordering="NONE"
 side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="greenhouseconfig"
+mandatory=true
+versionRange="${greenhouse_config_version_range}"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="greenhouseconfig_jsonc"
+mandatory=true
+versionRange="${greenhouse_config_jsonc_version_range}"
+ordering="NONE"
+side="BOTH"

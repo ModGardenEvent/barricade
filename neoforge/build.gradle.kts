@@ -10,13 +10,11 @@ plugins {
 }
 
 repositories {
-    maven {
+    maven("https://api.modrinth.com/maven") {
         name = "Modrinth"
-        url = uri("https://api.modrinth.com/maven")
     }
-    maven {
+    maven("https://maven.su5ed.dev/releases") {
         name = "Su5ed"
-        url = uri("https://maven.su5ed.dev/releases")
     }
 }
 
@@ -31,7 +29,9 @@ val localRuntime = configurations.getByName("localRuntime")
 dependencies {
     localRuntime("maven.modrinth:sodium:${Versions.SODIUM}-neoforge")
     localRuntime("org.sinytra.forgified-fabric-api:forgified-fabric-api:${Versions.FORGIFIED_FABRIC_API}")
-    implementation("net.modgarden.silicate:silicate-neoforge:${Versions.SILICATE}")
+    api("net.modgarden.silicate:silicate-neoforge:${Versions.SILICATE}")
+    api("house.greenhouse:greenhouseconfig:${Versions.GREENHOUSE_CONFIG}-neoforge")
+    api("house.greenhouse:greenhouseconfig_jsonc:${Versions.GREENHOUSE_CONFIG_JSONC}")
 }
 
 neoForge {

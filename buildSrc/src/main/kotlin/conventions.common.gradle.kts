@@ -49,7 +49,10 @@ repositories {
                 name = "Greenhouse"
             }
         )
-        filter { includeGroup("net.modgarden.silicate") }
+        filter {
+            includeGroup("house.greenhouse")
+            includeGroup("net.modgarden.silicate")
+        }
     }
 }
 
@@ -102,6 +105,8 @@ tasks {
         "fabric_minecraft_version_range" to Versions.FABRIC_MINECRAFT_RANGE,
         "fabric_loader_range" to Versions.FABRIC_LOADER_RANGE,
         "fabric_silicate_range" to Versions.FABRIC_SILICATE_RANGE,
+        "fabric_greenhouse_config_version_range" to Versions.FABRIC_GREENHOUSE_CONFIG_RANGE,
+        "fabric_greenhouse_config_jsonc_version_range" to Versions.FABRIC_GREENHOUSE_CONFIG_JSONC_RANGE,
         "mod_name" to Properties.MOD_NAME,
         "mod_author" to Properties.MOD_AUTHOR,
         "neoforge_mod_contributors" to Properties.MOD_CONTRIBUTORS.joinToString(),
@@ -113,6 +118,8 @@ tasks {
         "neoforge_minecraft_version_range" to Versions.NEOFORGE_MINECRAFT_RANGE,
         "neoforge_loader_version_range" to Versions.NEOFORGE_LOADER_RANGE,
         "silicate_version_range" to Versions.SILICATE_RANGE,
+        "greenhouse_config_version_range" to Versions.GREENHOUSE_CONFIG_RANGE,
+        "greenhouse_config_jsonc_version_range" to Versions.GREENHOUSE_CONFIG_JSONC_RANGE,
         "java_version" to Versions.JAVA,
         "homepage" to Properties.HOMEPAGE,
         "sources" to Properties.GITHUB_REPO

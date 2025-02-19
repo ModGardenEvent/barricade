@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.BarricadeClient;
+import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 import net.modgarden.barricade.data.BlockedDirections;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;

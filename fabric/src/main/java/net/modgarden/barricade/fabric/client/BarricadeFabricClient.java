@@ -4,15 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleRenderEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
@@ -22,23 +20,23 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.telemetry.events.WorldLoadEvent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.BarricadeClient;
+import net.modgarden.barricade.client.command.BarricadeClientCommands;
 import net.modgarden.barricade.client.model.OperatorUnbakedModel;
 import net.modgarden.barricade.client.particle.AdvancedBarrierParticle;
 import net.modgarden.barricade.client.util.BarrierRenderUtils;
-import net.modgarden.barricade.client.util.OperatorItemPseudoTag;
-import net.modgarden.barricade.fabric.BarricadeFabric;
+import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 import net.modgarden.barricade.fabric.client.platform.BarricadeClientPlatformHelperFabric;
 import net.modgarden.barricade.client.renderer.block.AdvancedBarrierBlockRenderer;
 import net.modgarden.barricade.client.renderer.item.AdvancedBarrierItemRenderer;
@@ -46,10 +44,10 @@ import net.modgarden.barricade.particle.AdvancedBarrierParticleOptions;
 import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeItems;
-import net.modgarden.barricade.registry.BarricadeParticleTypes;
 
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -58,6 +56,8 @@ import java.util.stream.Collectors;
 
 public class BarricadeFabricClient implements ClientModInitializer {
     private static boolean previousGameMasterBlockState = false;
+    private static boolean previousAllVisibleState = false;
+    private static List<Either<OperatorBlockPseudoTag, ResourceKey<Block>>> previousVisibleBlocks = List.of();
     private static ItemStack lastItemInMainHand = ItemStack.EMPTY;
     private static ItemStack lastItemInOffHand = ItemStack.EMPTY;
 
@@ -73,6 +73,8 @@ public class BarricadeFabricClient implements ClientModInitializer {
 
         ParticleFactoryRegistry.getInstance().register(AdvancedBarrierParticleOptions.Type.INSTANCE, new AdvancedBarrierParticle.Provider());
 
+        ClientCommandRegistrationCallback.EVENT.register(BarricadeClientCommands::registerClientCommands);
+
         PreparableModelLoadingPlugin.register(BarricadeFabricClient::getCreativeUnbakedModels, (data, pluginContext) -> {
             pluginContext.resolveModel().register((context) -> {
                 if (data.containsKey(context.id()))
@@ -82,11 +84,11 @@ public class BarricadeFabricClient implements ClientModInitializer {
         });
 
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new IdentifiableResourceReloadListener() {
-            private final OperatorItemPseudoTag.Loader listener = OperatorItemPseudoTag.Loader.INSTANCE;
+            private final OperatorBlockPseudoTag.Loader listener = OperatorBlockPseudoTag.Loader.INSTANCE;
 
             @Override
             public ResourceLocation getFabricId() {
-                return Barricade.asResource("operator_items");
+                return Barricade.asResource("operator_blocks");
             }
 
             @Override
@@ -100,14 +102,28 @@ public class BarricadeFabricClient implements ClientModInitializer {
             if (player == null)
                 return;
 
-            ItemStack mainHand = player.getInventory().items.get(player.getInventory().selected);
-            ItemStack offHand = player.getInventory().offhand.getFirst();
-
             if (previousGameMasterBlockState != player.canUseGameMasterBlocks()) {
                 BarrierRenderUtils.refreshAllOperatorBlocks();
                 previousGameMasterBlockState = player.canUseGameMasterBlocks();
                 return;
             }
+
+            if (!previousGameMasterBlockState)
+                return;
+
+            if (previousAllVisibleState != BarricadeClient.CONFIG.get().everythingVisible() || !previousVisibleBlocks.equals(BarricadeClient.CONFIG.get().visibleBlocks())) {
+                BarrierRenderUtils.refreshAllOperatorBlocks();
+                previousAllVisibleState = BarricadeClient.CONFIG.get().everythingVisible();
+                previousVisibleBlocks = BarricadeClient.CONFIG.get().visibleBlocks();
+                return;
+            }
+
+            if (previousAllVisibleState)
+                return;
+
+            ItemStack mainHand = player.getInventory().items.get(player.getInventory().selected);
+            ItemStack offHand = player.getInventory().offhand.getFirst();
+
 
             if (!ItemStack.isSameItemSameComponents(mainHand, lastItemInMainHand)) {
                 BarrierRenderUtils.refreshOperatorBlocks(mainHand, lastItemInMainHand, offHand);

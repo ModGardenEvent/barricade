@@ -10,6 +10,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Blocks;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
@@ -28,7 +29,15 @@ public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<Advance
     @Override
     @SuppressWarnings("ConstantConditions")
     public void render(AdvancedBarrierBlockEntity blockEntity, float partialTick, PoseStack pose, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        if (!Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState()) || !Minecraft.getInstance().player.canUseGameMasterBlocks() || !Minecraft.getInstance().player.isHolding(stack -> ((OperatorBakedModelAccess)Minecraft.getInstance().getBlockRenderer().getBlockModel(Blocks.BARRIER.defaultBlockState())).requiredItem().map(tag -> tag.contains(stack.getItemHolder()), key -> stack.getItemHolder().is(key))))
+        if (!Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState()) || !Minecraft.getInstance().player.canUseGameMasterBlocks() || !Minecraft.getInstance().player.isHolding(stack -> ((OperatorBakedModelAccess)Minecraft.getInstance().getBlockRenderer().getBlockModel(Blocks.BARRIER.defaultBlockState())).requiredBlock().map(tag -> {
+            if (stack.getItem() instanceof BlockItem blockItem)
+                tag.contains(blockItem.getBlock().builtInRegistryHolder());
+            return false;
+        }, key -> {
+            if (stack.getItem() instanceof BlockItem blockItem)
+                blockItem.getBlock().builtInRegistryHolder().is(key);
+            return false;
+        })))
             return;
 
         AdvancedBarrierModelValues components = new AdvancedBarrierModelValues(BarricadeBlocks.ADVANCED_BARRIER.directions(blockEntity.getBlockState()), blockEntity.getData().icon().orElse(null));

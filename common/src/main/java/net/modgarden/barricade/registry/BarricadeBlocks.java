@@ -52,11 +52,9 @@ public class BarricadeBlocks {
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
                     .dynamicShape(),
             Barricade.asResource("barricade/icon/pig"),
-            new InvertedCondition(
-                    EntityTypeCondition.of(
-                            ContextParamTypes.THIS_ENTITY,
-                            EntityType.PLAYER
-                    )
+            EntityTypeCondition.of(
+                    ContextParamTypes.THIS_ENTITY,
+                    BarricadeTags.EntityTags.BLOCKED_BY_MOB_BARRIER
             )
     );
     public static final PredicateBarrierBlock PASSIVE_BARRIER = new PredicateBarrierBlock(

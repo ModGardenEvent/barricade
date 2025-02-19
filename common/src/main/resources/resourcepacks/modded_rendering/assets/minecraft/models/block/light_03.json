@@ -1,6 +1,6 @@
 {
   "loader": "barricade:operator",
-  "required_item": "#barricade:lights",
+  "operator_blocks": "#barricade:lights",
   "model": {
     "parent": "minecraft:block/cube_all",
     "textures": {

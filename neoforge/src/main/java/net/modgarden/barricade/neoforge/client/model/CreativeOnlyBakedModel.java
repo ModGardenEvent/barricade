@@ -11,12 +11,14 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Unit;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
-import net.modgarden.barricade.client.util.OperatorItemPseudoTag;
+import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 import net.neoforged.neoforge.client.model.BakedModelWrapper;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
@@ -27,18 +29,29 @@ import java.util.List;
 import java.util.function.Function;
 
 public class CreativeOnlyBakedModel extends BakedModelWrapper<BakedModel> implements OperatorBakedModelAccess {
-    private final Either<ResourceLocation, ResourceKey<Item>> requiredItem;
-    private OperatorItemPseudoTag cachedPseudoTag;
+    private final Either<ResourceLocation, ResourceKey<Block>> operatorBlocks;
+    private OperatorBlockPseudoTag cachedPseudoTag;
     private static final ModelProperty<Unit> IS_TERRAIN = new ModelProperty<>();
 
-    public CreativeOnlyBakedModel(BakedModel model, Either<ResourceLocation, ResourceKey<Item>> requiredItem) {
+    public CreativeOnlyBakedModel(BakedModel model, Either<ResourceLocation, ResourceKey<Block>> operatorBlocks) {
         super(model);
-        this.requiredItem = requiredItem;
+        this.operatorBlocks = operatorBlocks;
     }
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData extraData, @Nullable RenderType renderType) {
-        if (extraData.has(IS_TERRAIN) && (!Minecraft.getInstance().player.canUseGameMasterBlocks() || !Minecraft.getInstance().player.isHolding(stack -> requiredItem().map(tag -> tag.contains(stack.getItemHolder()), blockKey -> stack.getItemHolder().is(blockKey)))))
+        if (extraData.has(IS_TERRAIN) && (!Minecraft.getInstance().player.canUseGameMasterBlocks() ||
+                !BarricadeClient.CONFIG.get().everythingVisible() && BarricadeClient.CONFIG.get().visibleBlocks().stream().noneMatch(either ->
+                        either.map(tag -> tag.contains(state.getBlockHolder()), key -> state.getBlockHolder().is(key))
+                ) && !Minecraft.getInstance().player.isHolding(stack -> requiredBlock().map(tag -> {
+            if (stack.getItem() instanceof BlockItem blockItem)
+                return tag.contains(blockItem.getBlock().builtInRegistryHolder());
+            return false;
+        }, key -> {
+            if (stack.getItem() instanceof BlockItem blockItem)
+                return blockItem.getBlock().builtInRegistryHolder().is(key);
+            return false;
+        }))))
             return Collections.emptyList();
 
         return originalModel.getQuads(state, side, rand, extraData, renderType);
@@ -49,10 +62,10 @@ public class CreativeOnlyBakedModel extends BakedModelWrapper<BakedModel> implem
     }
 
     @Override
-    public Either<OperatorItemPseudoTag, ResourceKey<Item>> requiredItem() {
-        return requiredItem.mapBoth(id -> {
+    public Either<OperatorBlockPseudoTag, ResourceKey<Block>> requiredBlock() {
+        return operatorBlocks.mapBoth(id -> {
             if (cachedPseudoTag == null)
-                cachedPseudoTag = OperatorItemPseudoTag.Registry.get(id);
+                cachedPseudoTag = OperatorBlockPseudoTag.Registry.get(id);
             return cachedPseudoTag;
         }, Function.identity());
     }
