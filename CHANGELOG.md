@@ -1,5 +1,6 @@
 ## Changes
 - Added Creative-Only Barrier.
+- Replace the LootContextAware system with [Silicate](https://modrinth.com/mod/silicate).
 - Non creative players may now reach through predicated barriers that do not apply to them.
 - Renamed /assets/barricade/textures/item/barricade/entity/ directory to /assets/barricade/textures/item/barricade/icon/.
 - Removed `barricade:blocked_entities` component in favour of `barricade:advanced_barriers` component.
@@ -17,3 +18,4 @@
 - Fixed placement contexts being inconsistent with the barrier at hand.
 - Fixed barriers not turning invisible under certain circumstances when quick swapping items.
 - Fixed larger entities bugging on the corners of horizontal barriers.
+- Players riding mobs can no longer pass through player barriers.

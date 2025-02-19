@@ -2,38 +2,7 @@
   "name": "Riding-Only Barrier",
   "icon": "barricade:standing_steve",
   "condition": {
-    "type": "silicate:compound",
-    "conditions": [
-      {
-        "type": "silicate:inverted",
-        "condition": {
-          "type": "silicate:entity_passenger",
-          "param_type": "silicate:this_entity",
-          "condition": {
-            "type": "silicate:retyped",
-            "param_type": "silicate:this_entity",
-            "condition": {
-              "type": "silicate:always",
-              "value": true
-            }
-          }
-        }
-      },
-      {
-        "type": "silicate:inverted",
-        "condition": {
-          "type": "silicate:entity_vehicle",
-          "param_type": "silicate:this_entity",
-          "condition": {
-            "type": "silicate:retyped",
-            "param_type": "silicate:this_entity",
-            "condition": {
-              "type": "silicate:always",
-              "value": true
-            }
-          }
-        }
-      }
-    ]
+    "type": "silicate:inverted",
+    "condition": "test:is_riding"
   }
 }

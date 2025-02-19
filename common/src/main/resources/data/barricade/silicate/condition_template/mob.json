@@ -1,0 +1,4 @@
+{
+  "type": "silicate:inverted",
+  "condition": "barricade:player"
+}

@@ -13,14 +13,14 @@ object Versions {
     const val MOD_MENU = "11.0.3"
     const val FABRIC_LOADER_RANGE = ">=0.15"
     const val FABRIC_MINECRAFT_RANGE = ">=1.21 <=1.21.1"
-    const val FABRIC_SILICATE_RANGE = ">=0.3"
+    const val FABRIC_SILICATE_RANGE = ">=0.6"
     const val FABRIC_GREENHOUSE_CONFIG_RANGE = ">=1.0.1"
     const val FABRIC_GREENHOUSE_CONFIG_JSONC_RANGE = ">=1.0"
 
     const val NEOFORGE = "21.1.115"
     const val NEOFORGE_LOADER_RANGE = "[4,)"
     const val NEOFORGE_MINECRAFT_RANGE = "[1.21,1.21.2)"
-    const val SILICATE_RANGE = "[0.3,)"
+    const val SILICATE_RANGE = "[0.6,)"
     const val GREENHOUSE_CONFIG_RANGE = "[1.0.1,)"
     const val GREENHOUSE_CONFIG_JSONC_RANGE = "[1.0,)"
 
