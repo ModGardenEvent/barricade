@@ -21,15 +21,13 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
+import net.modgarden.barricade.block.AdvancedBarrierBlock;
 import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
 import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
-import net.modgarden.barricade.registry.BarricadeBlocks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -74,16 +72,16 @@ public class CreativeOnlyBakedModel implements BakedModel, OperatorBakedModelAcc
         for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
             final Direction cullFace = ModelHelper.faceFromIndex(i);
 
-            if (!context.hasTransform() && context.isFaceCulled(cullFace)  || cullFace != null && 
+            if (!context.hasTransform() && context.isFaceCulled(cullFace) || cullFace != null &&
                     (
                             blockGetter.getBlockState(pos.offset(cullFace.getNormal())).is(state.getBlock()) &&
                             (
-                                    blockGetter.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity &&
+                                    state.getBlock() instanceof AdvancedBarrierBlock advanced &&
                                     (
-                                            BarricadeBlocks.ADVANCED_BARRIER.directions(state) == null ||
-                                            !BarricadeBlocks.ADVANCED_BARRIER.directions(state).blocks(cullFace)
+                                            advanced.hidesNeighborFace(blockGetter, pos, state, blockGetter.getBlockState(pos.offset(cullFace.getNormal())), cullFace)
                                     )
                             )
+
                     )
             )
                 continue;
