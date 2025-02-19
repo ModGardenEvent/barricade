@@ -1,8 +1,13 @@
 package net.modgarden.barricade.fabric;
 
+import house.greenhouse.greenhouseconfig.impl.GreenhouseConfigStorage;
+import house.greenhouse.greenhouseconfig.impl.network.SyncGreenhouseConfigPacket;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -12,6 +17,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Items;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.data.AdvancedBarrier;
+import net.modgarden.barricade.network.clientbound.SetServerContextClientboundPacket;
 import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeComponents;
@@ -27,9 +33,17 @@ public class BarricadeFabric implements ModInitializer {
         BarricadeComponents.registerAll();
         BarricadeItems.registerAll();
 
+        ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.register((handler, server) -> {
+            if (!ServerConfigurationNetworking.canSend(handler, SetServerContextClientboundPacket.TYPE))
+                return;
+            ServerConfigurationNetworking.send(handler, new SetServerContextClientboundPacket());
+        });
+        ServerLifecycleEvents.SERVER_STARTING.register(minecraftServer -> Barricade.setServerContext());
+
         FabricLoader.getInstance().getModContainer(Barricade.MOD_ID).ifPresent(modContainer -> {
             ResourceManagerHelper.registerBuiltinResourcePack(Barricade.asResource("modded_rendering"), modContainer, Component.translatable("resourcePack.barricade.modded_rendering.name"), ResourcePackActivationType.DEFAULT_ENABLED);
         });
+
         DynamicRegistries.registerSynced(BarricadeRegistries.ADVANCED_BARRIER, AdvancedBarrier.DIRECT_CODEC);
 
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.OP_BLOCKS).register(entries -> {

@@ -1,5 +1,7 @@
 package net.modgarden.barricade.neoforge;
 
+import house.greenhouse.greenhouseconfig.impl.SyncGreenhouseConfigTask;
+import house.greenhouse.greenhouseconfig.impl.network.SyncGreenhouseConfigPacket;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -24,6 +26,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.network.event.RegisterConfigurationTasksEvent;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
@@ -35,6 +39,14 @@ public class BarricadeNeoForge {
         Barricade.setHelper(new BarricadeNeoForgeHelper());
     }
 
+    @EventBusSubscriber(modid = Barricade.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
+    public static class GameEvents {
+        @SubscribeEvent
+        public static void registerContent(ServerStartingEvent event) {
+            Barricade.setServerContext();
+        }
+    }
+    
     @EventBusSubscriber(modid = Barricade.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
     public static class ModEvents {
         @SubscribeEvent
@@ -92,6 +104,14 @@ public class BarricadeNeoForge {
                     startItem = stack;
                 }
             }
+        }
+
+
+        @SubscribeEvent
+        public static void registerConfigurationTasks(RegisterConfigurationTasksEvent event) {
+            if (!event.getListener().hasChannel(SyncGreenhouseConfigPacket.TYPE) || event.getListener().getConnection().isMemoryConnection())
+                return;
+            event.register(new SyncGreenhouseConfigTask(event.getListener()));
         }
 
         @SubscribeEvent
