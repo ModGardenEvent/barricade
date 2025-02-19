@@ -29,15 +29,17 @@ public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<Advance
     @Override
     @SuppressWarnings("ConstantConditions")
     public void render(AdvancedBarrierBlockEntity blockEntity, float partialTick, PoseStack pose, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        if (!Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState()) || !Minecraft.getInstance().player.canUseGameMasterBlocks() || !Minecraft.getInstance().player.isHolding(stack -> ((OperatorBakedModelAccess)Minecraft.getInstance().getBlockRenderer().getBlockModel(Blocks.BARRIER.defaultBlockState())).requiredBlock().map(tag -> {
+        if (!Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState()) || !Minecraft.getInstance().player.canUseGameMasterBlocks() ||
+                !BarricadeClient.CONFIG.get().everythingVisible() && BarricadeClient.CONFIG.get().visibleBlocks().stream().noneMatch(either ->
+                        either.map(tag -> tag.contains(blockEntity.getBlockState().getBlockHolder()), key -> blockEntity.getBlockState().getBlockHolder().is(key)) && !Minecraft.getInstance().player.isHolding(stack -> ((OperatorBakedModelAccess)Minecraft.getInstance().getBlockRenderer().getBlockModel(Blocks.BARRIER.defaultBlockState())).requiredBlock().map(tag -> {
             if (stack.getItem() instanceof BlockItem blockItem)
-                tag.contains(blockItem.getBlock().builtInRegistryHolder());
+                return tag.contains(blockItem.getBlock().builtInRegistryHolder());
             return false;
         }, key -> {
             if (stack.getItem() instanceof BlockItem blockItem)
-                blockItem.getBlock().builtInRegistryHolder().is(key);
+                return blockItem.getBlock().builtInRegistryHolder().is(key);
             return false;
-        })))
+        }))))
             return;
 
         AdvancedBarrierModelValues components = new AdvancedBarrierModelValues(BarricadeBlocks.ADVANCED_BARRIER.directions(blockEntity.getBlockState()), blockEntity.getData().icon().orElse(null));
