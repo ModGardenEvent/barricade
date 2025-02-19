@@ -51,7 +51,7 @@ public class BarricadeFabric implements ModInitializer {
         DynamicRegistries.registerSynced(BarricadeRegistries.ADVANCED_BARRIER, AdvancedBarrier.DIRECT_CODEC);
 
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.OP_BLOCKS).register(entries -> {
-            if (!entries.shouldShowOpRestrictedItems() || Barricade.serverContext)
+            if (!entries.shouldShowOpRestrictedItems() || !Barricade.serverContext)
                 return;
             entries.addAfter(Items.BARRIER,
                     BarricadeItems.UP_BARRIER,
