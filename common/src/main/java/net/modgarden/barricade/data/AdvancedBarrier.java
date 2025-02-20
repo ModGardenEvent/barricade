@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
-public record AdvancedBarrier(Optional<Component> name, BlockedDirections directions, Optional<ResourceLocation> icon, Optional<GameCondition<?>> condition) {
+public record AdvancedBarrier(Optional<Component> name, BlockedDirections directions, Optional<ResourceLocation> icon, Optional<Holder<GameCondition<?>>> condition) {
     public static final AdvancedBarrier DEFAULT = new AdvancedBarrier(Optional.empty(), BlockedDirections.of(Direction.values()), Optional.empty(), Optional.empty());
     public static final ResourceLocation UNKNOWN_ICON = Barricade.asResource("barricade/icon/unknown");
 
@@ -41,7 +41,7 @@ public record AdvancedBarrier(Optional<Component> name, BlockedDirections direct
     public static final Codec<Holder<AdvancedBarrier>> CODEC = RegistryFixedCodec.create(BarricadeRegistries.ADVANCED_BARRIER);
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<AdvancedBarrier>> STREAM_CODEC = ByteBufCodecs.holderRegistry(BarricadeRegistries.ADVANCED_BARRIER);
 
-    public AdvancedBarrier(Optional<Component> name, BlockedDirections directions, Optional<ResourceLocation> icon, Optional<GameCondition<?>> condition) {
+    public AdvancedBarrier(Optional<Component> name, BlockedDirections directions, Optional<ResourceLocation> icon, Optional<Holder<GameCondition<?>>> condition) {
         this.name = name;
         this.directions = directions;
         Optional<ResourceLocation> finalIcon = icon.map(resourceLocation -> resourceLocation.withPath(s -> "barricade/icon/" + s));
@@ -58,7 +58,7 @@ public record AdvancedBarrier(Optional<Component> name, BlockedDirections direct
             BlockState state,
             BlockPos pos
     ) throws InvalidContextParameterException {
-        return condition.isPresent() && condition.get().test(
+        return condition.isPresent() && condition.get().value().test(
             PredicateBarrierBlock.newContext(level, entity, state, pos)
         );
     }

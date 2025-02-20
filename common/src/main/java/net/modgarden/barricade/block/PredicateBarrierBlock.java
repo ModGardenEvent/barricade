@@ -3,6 +3,10 @@ package net.modgarden.barricade.block;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
+import net.modgarden.silicate.api.SilicateRegistries;
 import net.modgarden.silicate.api.condition.CompoundCondition;
 import net.modgarden.silicate.api.condition.GameCondition;
 import net.modgarden.silicate.api.context.GameContext;
@@ -26,6 +30,8 @@ import net.modgarden.barricade.Barricade;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Function;
+
 /**
  * A type of {@link BarrierBlock} that uses {@link GameCondition} to determine if an entity collides.
  */
@@ -35,9 +41,9 @@ public class PredicateBarrierBlock extends BarrierBlock {
 			ResourceLocation.CODEC
 					.fieldOf("icon")
 					.forGetter(PredicateBarrierBlock::icon),
-			CompoundCondition.CODEC
+			GameCondition.CODEC
 					.fieldOf("conditions")
-					.forGetter(PredicateBarrierBlock::condition)
+					.forGetter(PredicateBarrierBlock::rawCondition)
 	).apply(instance, PredicateBarrierBlock::new));
 	public static final ContextParamSet PARAM_SET = ContextParamSet.Builder
 			.of()
@@ -46,15 +52,23 @@ public class PredicateBarrierBlock extends BarrierBlock {
 			.required(ContextParamTypes.ORIGIN)
 			.build();
 	private final ResourceLocation icon;
-	private final CompoundCondition condition;
+	private final Function<RegistryAccess, Holder<GameCondition<?>>> function;
+	private Holder<GameCondition<?>> condition;
 
-	public PredicateBarrierBlock(Properties properties, ResourceLocation icon, GameCondition<?>... conditions) {
-		this(properties, icon, CompoundCondition.of(conditions));
-	}
-	
-	private PredicateBarrierBlock(Properties properties, ResourceLocation icon, CompoundCondition condition) {
+	public PredicateBarrierBlock(Properties properties, ResourceLocation icon, ResourceKey<GameCondition<?>> conditionTemplate) {
 		super(properties);
 		this.icon = icon;
+		this.function = registryAccess -> registryAccess.registryOrThrow(SilicateRegistries.CONDITION_TEMPLATE).getHolderOrThrow(conditionTemplate);
+	}
+
+	public PredicateBarrierBlock(Properties properties, ResourceLocation icon, GameCondition<?> condition) {
+		this(properties, icon, Holder.direct(condition));
+	}
+	
+	private PredicateBarrierBlock(Properties properties, ResourceLocation icon, Holder<GameCondition<?>> condition) {
+		super(properties);
+		this.icon = icon;
+		this.function = null;
 		this.condition = condition;
 	}
 
@@ -62,7 +76,13 @@ public class PredicateBarrierBlock extends BarrierBlock {
 		return icon;
 	}
 	
-	public CompoundCondition condition() {
+	public Holder<GameCondition<?>> condition(RegistryAccess registries) {
+		if (condition == null && function != null)
+			condition = function.apply(registries);
+		return condition;
+	}
+
+	private Holder<GameCondition<?>> rawCondition() {
 		return condition;
 	}
 	
@@ -89,7 +109,9 @@ public class PredicateBarrierBlock extends BarrierBlock {
 	}
 	
 	public boolean test(GameContext context) {
-		return this.condition().test(context);
+		if (context.getLevel() == null)
+			return rawCondition() != null && rawCondition().value().test(context);
+		return this.condition(context.getLevel().registryAccess()).value().test(context);
 	}
 	
 	public static GameContext newContext(
