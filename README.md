@@ -9,7 +9,7 @@ You can enable/disable the above by applying/removing the Barricade Rendering re
 This mod is able to run on clients without having it on the server. When run like this, the mod will only apply the rendering functionalities to any block with the `barricade:operator` loader json.
 If you wish to implement this model type for your own barriers in a resource pack, copy from the models found in the mod's source.
 
-You may specify which items activate rendering by adding/modifying json found in `assets/<namespace>/barricade/operator_items`.
+You may specify which items activate rendering by adding/modifying json found in `assets/<namespace>/barricade/operator_blocks`.
 
 ## The Barriers
 This mod adds three barrier block types, Directional, Predicate, and Advanced Barrier blocks.
