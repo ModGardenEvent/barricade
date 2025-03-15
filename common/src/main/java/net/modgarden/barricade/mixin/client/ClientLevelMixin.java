@@ -71,7 +71,7 @@ public class ClientLevelMixin {
     private Block barricade$setMarkerParticleTarget(Block original, @Local Item item) {
         if (Barricade.isOperatorModel(original.defaultBlockState()))
             return null;
-        if (OperatorBlockPseudoTag.Registry.get(Barricade.asResource("barriers")).contains(original.builtInRegistryHolder()))
+        if (OperatorBlockPseudoTag.Registry.get(Barricade.asResource("barriers")).blocks().contains(original.builtInRegistryHolder()))
             return Blocks.BARRIER;
         return original;
     }
@@ -80,9 +80,9 @@ public class ClientLevelMixin {
     private Block barricade$trickGameIntoRendering(Block original, @Local(argsOnly = true) @Nullable Block block, @Local BlockState state) {
         if (Barricade.isOperatorModel(state))
             return original;
-        if (BarricadeClient.CONFIG.get().everythingVisible() && (original instanceof BarrierBlock || original instanceof LightBlock) || BarricadeClient.CONFIG.get().visibleBlocks().stream().anyMatch(either -> either.map(tag -> tag.contains(original.builtInRegistryHolder()), key -> original.builtInRegistryHolder().is(key))))
+        if (BarricadeClient.CONFIG.get().everythingVisible() && (original instanceof BarrierBlock || original instanceof LightBlock) || BarricadeClient.CONFIG.get().visibleBlocks().stream().anyMatch(either -> either.map(tag -> OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(original.builtInRegistryHolder()), key -> original.builtInRegistryHolder().is(key))))
             return block;
-        if (OperatorBlockPseudoTag.Registry.get(Barricade.asResource("barriers")).contains(original.builtInRegistryHolder()))
+        if (OperatorBlockPseudoTag.Registry.get(Barricade.asResource("barriers")).blocks().contains(original.builtInRegistryHolder()))
             return Blocks.BARRIER;
         return original;
     }

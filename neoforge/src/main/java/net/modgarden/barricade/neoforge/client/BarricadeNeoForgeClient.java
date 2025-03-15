@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -41,7 +42,7 @@ import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.List;
+import java.util.Set;
 
 @Mod(value = Barricade.MOD_ID, dist = Dist.CLIENT)
 public class BarricadeNeoForgeClient {
@@ -53,7 +54,7 @@ public class BarricadeNeoForgeClient {
     public static class GameEvents {
         private static boolean previousGameMasterBlockState = false;
         private static boolean previousAllVisibleState = false;
-        private static List<Either<OperatorBlockPseudoTag, ResourceKey<Block>>> previousVisibleBlocks = List.of();
+        private static Set<Either<ResourceLocation, ResourceKey<Block>>> previousVisibleBlocks = Set.of();
         private static ItemStack lastItemInMainHand = ItemStack.EMPTY;
         private static ItemStack lastItemInOffHand = ItemStack.EMPTY;
 

@@ -20,7 +20,9 @@ import net.modgarden.barricade.client.BarricadeClientConfig;
 import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class VisibilityCommand {
     public static void register(CommandNode<Object> root, CommandBuildContext context) {
@@ -65,7 +67,7 @@ public class VisibilityCommand {
             BarricadeClient.getHelper().sendFailureClient(context, Component.translatable("command.barricade.visibility.enable.all.error.already_enabled"));
             return 0;
         }
-        var newConfig = new BarricadeClientConfig(true, List.of());
+        var newConfig = new BarricadeClientConfig(true, Set.of());
         BarricadeClient.CONFIG.saveConfig(newConfig);
         BarricadeClient.CONFIG.reloadConfig(Barricade.LOG::error);
 
@@ -78,7 +80,7 @@ public class VisibilityCommand {
             BarricadeClient.getHelper().sendFailureClient(context, Component.translatable("command.barricade.visibility.disable.all.error.already_disabled"));
             return 0;
         }
-        var newConfig = new BarricadeClientConfig(false, List.of());
+        var newConfig = new BarricadeClientConfig(false, Set.of());
         BarricadeClient.CONFIG.saveConfig(newConfig);
         BarricadeClient.CONFIG.reloadConfig(Barricade.LOG::error);
 
@@ -92,23 +94,23 @@ public class VisibilityCommand {
         ResourceLocation id = context.getArgument("blocks", ResourceLocation.class);
 
         if (!OperatorBlockPseudoTag.Registry.containsKey(id)) {
-            BarricadeClient.getHelper().sendFailureClient(context, Component.translatable("command.barricade.visibility.blocks.error.not_found", id));
+            BarricadeClient.getHelper().sendFailureClient(context, Component.translatable("command.barricade.visibility.blocks.error.not_found", id.toString()));
             return 0;
         }
-        Either<OperatorBlockPseudoTag, ResourceKey<Block>> tag = Either.left(OperatorBlockPseudoTag.Registry.get(id));
+        Either<ResourceLocation, ResourceKey<Block>> tag = Either.left(id);
 
-        if (oldConfig.visibleBlocks().contains(Either.left(tag)) || oldConfig.everythingVisible()) {
-            BarricadeClient.getHelper().sendFailureClient(context, Component.translatable("command.barricade.visibility.enable.blocks.error.already_enabled", id));
+        if (oldConfig.visibleBlocks().contains(tag) || oldConfig.everythingVisible()) {
+            BarricadeClient.getHelper().sendFailureClient(context, Component.translatable("command.barricade.visibility.enable.blocks.error.already_enabled", id.toString()));
             return 0;
         }
 
-        List<Either<OperatorBlockPseudoTag, ResourceKey<Block>>> newSpecifics = new ArrayList<>(oldConfig.visibleBlocks());
+        Set<Either<ResourceLocation, ResourceKey<Block>>> newSpecifics = new HashSet<>(oldConfig.visibleBlocks());
         newSpecifics.add(tag);
         var newConfig = new BarricadeClientConfig(false, newSpecifics);
         BarricadeClient.CONFIG.saveConfig(newConfig);
         BarricadeClient.CONFIG.reloadConfig(Barricade.LOG::error);
 
-        BarricadeClient.getHelper().sendSuccessClient(context, Component.translatable("command.barricade.visibility.disable.blocks.success", id));
+        BarricadeClient.getHelper().sendSuccessClient(context, Component.translatable("command.barricade.visibility.enable.blocks.success", id.toString()));
         return 1;
     }
 
@@ -122,24 +124,24 @@ public class VisibilityCommand {
         ResourceLocation id = context.getArgument("blocks", ResourceLocation.class);
 
         if (!OperatorBlockPseudoTag.Registry.containsKey(id)) {
-            BarricadeClient.getHelper().sendFailureClient(context, Component.translatable("command.barricade.visibility.blocks.error.not_found", id));
+            BarricadeClient.getHelper().sendFailureClient(context, Component.translatable("command.barricade.visibility.blocks.error.not_found", id.toString()));
             return 0;
         }
-        Either<OperatorBlockPseudoTag, ResourceKey<Block>> tag = Either.left(OperatorBlockPseudoTag.Registry.get(id));
+        Either<ResourceLocation, ResourceKey<Block>> tag = Either.left(id);
 
 
-        if (!oldConfig.visibleBlocks().contains(Either.left(tag))) {
-            BarricadeClient.getHelper().sendFailureClient(context, Component.translatable("command.barricade.visibility.disable.blocks.error.already_disabled", id));
+        if (!oldConfig.visibleBlocks().contains(tag)) {
+            BarricadeClient.getHelper().sendFailureClient(context, Component.translatable("command.barricade.visibility.disable.blocks.error.already_disabled", id.toString()));
             return 0;
         }
 
-        List<Either<OperatorBlockPseudoTag, ResourceKey<Block>>> newSpecifics = new ArrayList<>(oldConfig.visibleBlocks());
+        Set<Either<ResourceLocation, ResourceKey<Block>>> newSpecifics = new HashSet<>(oldConfig.visibleBlocks());
         newSpecifics.remove(tag);
         var newConfig = new BarricadeClientConfig(false, newSpecifics);
         BarricadeClient.CONFIG.saveConfig(newConfig);
         BarricadeClient.CONFIG.reloadConfig(Barricade.LOG::error);
 
-        BarricadeClient.getHelper().sendSuccessClient(context, Component.translatable("command.barricade.visibility.disable.blocks.success", id));
+        BarricadeClient.getHelper().sendSuccessClient(context, Component.translatable("command.barricade.visibility.disable.blocks.success", id.toString()));
         return 1;
     }
 }

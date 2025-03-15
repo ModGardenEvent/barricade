@@ -49,10 +49,7 @@ import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeItems;
 
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
@@ -60,7 +57,7 @@ import java.util.stream.Collectors;
 public class BarricadeFabricClient implements ClientModInitializer {
     private static boolean previousGameMasterBlockState = false;
     private static boolean previousAllVisibleState = false;
-    private static List<Either<OperatorBlockPseudoTag, ResourceKey<Block>>> previousVisibleBlocks = List.of();
+    private static Set<Either<ResourceLocation, ResourceKey<Block>>> previousVisibleBlocks = Set.of();
     private static ItemStack lastItemInMainHand = ItemStack.EMPTY;
     private static ItemStack lastItemInOffHand = ItemStack.EMPTY;
 

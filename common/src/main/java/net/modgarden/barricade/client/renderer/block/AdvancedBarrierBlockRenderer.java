@@ -18,6 +18,7 @@ import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.model.AdvancedBarrierBlockUnbakedModel;
 import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
 import net.modgarden.barricade.client.util.AdvancedBarrierModelValues;
+import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 
 import java.util.HashMap;
@@ -31,9 +32,9 @@ public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<Advance
     public void render(AdvancedBarrierBlockEntity blockEntity, float partialTick, PoseStack pose, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         if (!Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState()) || !Minecraft.getInstance().player.canUseGameMasterBlocks() ||
                 !BarricadeClient.CONFIG.get().everythingVisible() && BarricadeClient.CONFIG.get().visibleBlocks().stream().noneMatch(either ->
-                        either.map(tag -> tag.contains(blockEntity.getBlockState().getBlockHolder()), key -> blockEntity.getBlockState().getBlockHolder().is(key)) && !Minecraft.getInstance().player.isHolding(stack -> ((OperatorBakedModelAccess)Minecraft.getInstance().getBlockRenderer().getBlockModel(Blocks.BARRIER.defaultBlockState())).requiredBlock().map(tag -> {
+                        either.map(tag -> OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(blockEntity.getBlockState().getBlockHolder()), key -> blockEntity.getBlockState().getBlockHolder().is(key)) && !Minecraft.getInstance().player.isHolding(stack -> ((OperatorBakedModelAccess)Minecraft.getInstance().getBlockRenderer().getBlockModel(Blocks.BARRIER.defaultBlockState())).requiredBlock().map(tag -> {
             if (stack.getItem() instanceof BlockItem blockItem)
-                return tag.contains(blockItem.getBlock().builtInRegistryHolder());
+                return tag.blocks().contains(blockItem.getBlock().builtInRegistryHolder());
             return false;
         }, key -> {
             if (stack.getItem() instanceof BlockItem blockItem)
