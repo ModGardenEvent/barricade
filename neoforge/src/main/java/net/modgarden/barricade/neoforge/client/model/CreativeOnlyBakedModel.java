@@ -40,7 +40,7 @@ public class CreativeOnlyBakedModel extends BakedModelWrapper<BakedModel> implem
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData extraData, @Nullable RenderType renderType) {
-        if (extraData.has(IS_TERRAIN) && (!Minecraft.getInstance().player.canUseGameMasterBlocks() ||
+        if (extraData.has(IS_TERRAIN) && (!Minecraft.getInstance().player.getAbilities().instabuild ||
                 !BarricadeClient.CONFIG.get().everythingVisible() && BarricadeClient.CONFIG.get().visibleBlocks().stream().noneMatch(either ->
                         either.map(tag -> OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(state.getBlockHolder()), key -> state.getBlockHolder().is(key))
                 ) && !Minecraft.getInstance().player.isHolding(stack -> requiredBlock().map(tag -> {

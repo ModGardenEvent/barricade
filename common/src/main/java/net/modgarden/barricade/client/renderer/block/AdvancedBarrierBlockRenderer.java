@@ -30,7 +30,7 @@ public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<Advance
     @Override
     @SuppressWarnings("ConstantConditions")
     public void render(AdvancedBarrierBlockEntity blockEntity, float partialTick, PoseStack pose, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        if (!Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState()) || !Minecraft.getInstance().player.canUseGameMasterBlocks() ||
+        if (!Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState()) || !Minecraft.getInstance().player.getAbilities().instabuild ||
                 !BarricadeClient.CONFIG.get().everythingVisible() && BarricadeClient.CONFIG.get().visibleBlocks().stream().noneMatch(either ->
                         either.map(tag -> OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(blockEntity.getBlockState().getBlockHolder()), key -> blockEntity.getBlockState().getBlockHolder().is(key)) && !Minecraft.getInstance().player.isHolding(stack -> ((OperatorBakedModelAccess)Minecraft.getInstance().getBlockRenderer().getBlockModel(Blocks.BARRIER.defaultBlockState())).requiredBlock().map(tag -> {
             if (stack.getItem() instanceof BlockItem blockItem)

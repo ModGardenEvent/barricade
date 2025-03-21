@@ -139,7 +139,7 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
             }
 
 	        try {
-                boolean isOperator = entityContext.getEntity() instanceof Player player && player.canUseGameMasterBlocks();
+                boolean isOperator = entityContext.getEntity() instanceof Player player && player.getAbilities().instabuild;
                 if (!isOperator && !blockEntity.getData().test(level, entityContext.getEntity(), state, pos)) {
                     return Shapes.empty();
                 }

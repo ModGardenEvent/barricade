@@ -72,7 +72,7 @@ public class DirectionalBarrierBlock extends BarrierBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        boolean isOperator = context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player && player.canUseGameMasterBlocks();
+        boolean isOperator = context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player && player.getAbilities().instabuild;
         if (isOperator || !directions.doesNotBlock() && (directions.blocksAll() || directions.shouldBlock(pos, context)))
             return super.getShape(state, level, pos, context);
         return Shapes.empty();

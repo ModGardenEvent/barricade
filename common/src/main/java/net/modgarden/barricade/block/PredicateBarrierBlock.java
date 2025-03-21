@@ -167,7 +167,7 @@ public class PredicateBarrierBlock extends BarrierBlock {
             }
 
 	        try {
-		        boolean isOperator = entityContext.getEntity() instanceof Player player && player.canUseGameMasterBlocks();
+		        boolean isOperator = entityContext.getEntity() instanceof Player player && player.getAbilities().instabuild;
 				if (!isOperator && !test(level, entityContext.getEntity(), state, pos)) {
 			        return Shapes.empty();
 		        }

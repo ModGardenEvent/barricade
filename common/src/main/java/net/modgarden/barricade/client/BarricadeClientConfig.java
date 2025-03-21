@@ -25,7 +25,7 @@ public record BarricadeClientConfig(boolean everythingVisible, Set<Either<Resour
                     GreenhouseConfigCodecs.commentedCodec(
                             Codec.BOOL,
                             "If all invisible blocks are visible to you, not accounting the item you are holding.",
-                            "The player must be in creative and have at least permission level 2 to see barriers."
+                            "The player must be in creative to see barriers."
                     ), "everything_visible", DEFAULT.everythingVisible()
             ).forGetter(BarricadeClientConfig::everythingVisible),
             GreenhouseConfigCodecs.defaultFieldCodec(
@@ -37,7 +37,7 @@ public record BarricadeClientConfig(boolean everythingVisible, Set<Either<Resour
                             }, rl -> "#" + rl.toString()), ResourceKey.codec(Registries.BLOCK)).listOf().xmap(Set::copyOf, List::copyOf),
                             "Which operator blocks are visible to you, not accounting the item you are holding.",
                             "Accepts a list of mixed block ids or operator blocks tags found within assets/<namespace>/barricade/operator_blocks/<path>.json",
-                            "The player must be in creative and have at least permission level 2 to see barriers."
+                            "The player must be in creative to see barriers."
                     ), "visible_blocks", DEFAULT.visibleBlocks()
             ).forGetter(BarricadeClientConfig::visibleBlocks)
     ).apply(inst, BarricadeClientConfig::new));

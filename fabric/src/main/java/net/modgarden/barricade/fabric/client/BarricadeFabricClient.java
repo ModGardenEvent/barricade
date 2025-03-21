@@ -104,9 +104,9 @@ public class BarricadeFabricClient implements ClientModInitializer {
             if (player == null)
                 return;
 
-            if (previousGameMasterBlockState != player.canUseGameMasterBlocks()) {
+            if (previousGameMasterBlockState != player.getAbilities().instabuild) {
                 BarrierRenderUtils.refreshAllOperatorBlocks();
-                previousGameMasterBlockState = player.canUseGameMasterBlocks();
+                previousGameMasterBlockState = player.getAbilities().instabuild;
                 return;
             }
 
