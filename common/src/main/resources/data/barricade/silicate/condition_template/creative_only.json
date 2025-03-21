@@ -1,5 +1,17 @@
 {
-  "type": "silicate:player_game_type",
-  "param_type": "silicate:this_entity",
-  "game_types": ["survival", "adventure"]
+  "type": "silicate:compound",
+  "or": true,
+  "conditions": [
+    "barricade:is_survival_like",
+    {
+      "type": "silicate:entity_passenger",
+      "param_type": "silicate:this_entity",
+      "condition": "barricade:is_mob"
+    },
+    {
+      "type": "silicate:entity_passenger",
+      "param_type": "silicate:this_entity",
+      "condition": "barricade:is_survival_like"
+    }
+  ]
 }

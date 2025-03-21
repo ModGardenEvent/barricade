@@ -55,7 +55,7 @@ import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 public class BarricadeFabricClient implements ClientModInitializer {
-    private static boolean previousGameMasterBlockState = false;
+    private static boolean previousInstabuildState = false;
     private static boolean previousAllVisibleState = false;
     private static Set<Either<ResourceLocation, ResourceKey<Block>>> previousVisibleBlocks = Set.of();
     private static ItemStack lastItemInMainHand = ItemStack.EMPTY;
@@ -104,13 +104,13 @@ public class BarricadeFabricClient implements ClientModInitializer {
             if (player == null)
                 return;
 
-            if (previousGameMasterBlockState != player.getAbilities().instabuild) {
+            if (previousInstabuildState != player.getAbilities().instabuild) {
                 BarrierRenderUtils.refreshAllOperatorBlocks();
-                previousGameMasterBlockState = player.getAbilities().instabuild;
+                previousInstabuildState = player.getAbilities().instabuild;
                 return;
             }
 
-            if (!previousGameMasterBlockState)
+            if (!previousInstabuildState)
                 return;
 
             if (previousAllVisibleState != BarricadeClient.CONFIG.get().everythingVisible() || !previousVisibleBlocks.equals(BarricadeClient.CONFIG.get().visibleBlocks())) {

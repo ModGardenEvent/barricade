@@ -52,7 +52,7 @@ public class BarricadeNeoForgeClient {
 
     @EventBusSubscriber(bus = EventBusSubscriber.Bus.GAME, modid = Barricade.MOD_ID, value = Dist.CLIENT)
     public static class GameEvents {
-        private static boolean previousInstabuildBlockState = false;
+        private static boolean previousInstabuildState = false;
         private static boolean previousAllVisibleState = false;
         private static Set<Either<ResourceLocation, ResourceKey<Block>>> previousVisibleBlocks = Set.of();
         private static ItemStack lastItemInMainHand = ItemStack.EMPTY;
@@ -75,13 +75,13 @@ public class BarricadeNeoForgeClient {
                 if (player == null)
                     return;
 
-                if (previousInstabuildBlockState != player.getAbilities().instabuild) {
+                if (previousInstabuildState != player.getAbilities().instabuild) {
                     BarrierRenderUtils.refreshAllOperatorBlocks();
-                    previousInstabuildBlockState = player.getAbilities().instabuild;
+                    previousInstabuildState = player.getAbilities().instabuild;
                     return;
                 }
 
-                if (!previousInstabuildBlockState)
+                if (!previousInstabuildState)
                     return;
 
                 if (previousAllVisibleState != BarricadeClient.CONFIG.get().everythingVisible() || !previousVisibleBlocks.equals(BarricadeClient.CONFIG.get().visibleBlocks())) {
@@ -97,9 +97,9 @@ public class BarricadeNeoForgeClient {
                 ItemStack mainHand = player.getInventory().items.get(player.getInventory().selected);
                 ItemStack offHand = player.getInventory().offhand.getFirst();
 
-                if (previousInstabuildBlockState != player.getAbilities().instabuild) {
+                if (previousInstabuildState != player.getAbilities().instabuild) {
                     BarrierRenderUtils.refreshAllOperatorBlocks();
-                    previousInstabuildBlockState = player.getAbilities().instabuild;
+                    previousInstabuildState = player.getAbilities().instabuild;
                 }
                 if (!ItemStack.isSameItemSameComponents(mainHand, lastItemInMainHand)) {
                     BarrierRenderUtils.refreshOperatorBlocks(mainHand, lastItemInMainHand, offHand);

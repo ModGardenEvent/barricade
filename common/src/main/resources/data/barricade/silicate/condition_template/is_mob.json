@@ -1,0 +1,5 @@
+{
+  "type": "silicate:entity_type",
+  "param_type": "silicate:this_entity",
+  "entity_type": "#barricade:blocked_by_mob_barrier"
+}

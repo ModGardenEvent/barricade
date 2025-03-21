@@ -1,5 +1,12 @@
 {
-  "type": "silicate:entity_type",
-  "param_type": "silicate:this_entity",
-  "entity_type": "#barricade:blocked_by_mob_barrier"
+  "type": "silicate:compound",
+  "or": true,
+  "conditions": [
+    "barricade:is_mob",
+    {
+      "type": "silicate:entity_passenger",
+      "param_type": "silicate:this_entity",
+      "condition": "barricade:is_mob"
+    }
+  ]
 }
