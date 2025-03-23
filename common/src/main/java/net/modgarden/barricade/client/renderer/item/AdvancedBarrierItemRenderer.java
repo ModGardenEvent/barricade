@@ -80,7 +80,8 @@ public class AdvancedBarrierItemRenderer {
         int i = 0;
 
         if (values.icon() != null) {
-            textureMap.put("barricade_layer" + i, Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, values.icon())));
+            Material material = new Material(TextureAtlas.LOCATION_BLOCKS, values.icon());
+            textureMap.put("barricade_layer" + i, Either.left(material));
             ++i;
         }
 

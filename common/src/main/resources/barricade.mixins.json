@@ -5,24 +5,25 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "AbstractArrowMixin",
-    "BlockBehaviourBlockStateBaseMixin",
-    "BlockBehaviourMixin",
-    "BlockMixin"
+	"AbstractArrowMixin",
+	"BlockBehaviourBlockStateBaseMixin",
+	"BlockBehaviourMixin",
+	"BlockMixin"
   ],
   "client": [
-    "client.ClientChunkCacheAccessor",
-    "client.ClientChunkCacheStorageAccessor",
-    "client.ClientLevelMixin",
-    "client.ItemModelGeneratorMixin",
-    "client.LevelRendererInvoker",
-    "client.MinecraftMixin",
-    "client.ModelBakeryAccessor",
-    "client.ModelManagerMixin",
-    "client.StructureBlockRendererMixin"
+	"client.ClientChunkCacheAccessor",
+	"client.ClientChunkCacheStorageAccessor",
+	"client.ClientLevelMixin",
+	"client.ItemModelGeneratorMixin",
+	"client.LevelRendererInvoker",
+	"client.MinecraftMixin",
+	"client.ModelBakeryAccessor",
+	"client.ModelManagerMixin",
+	"client.StructureBlockRendererMixin",
+	"client.TextureAtlasMixin"
   ],
   "injectors": {
-    "defaultRequire": 1
+	"defaultRequire": 1
   }
 }
 

@@ -45,8 +45,14 @@ public record AdvancedBarrier(Optional<Component> name, BlockedDirections direct
         this.name = name;
         this.directions = directions;
         Optional<ResourceLocation> finalIcon = icon.map(resourceLocation -> resourceLocation.withPath(s -> "barricade/icon/" + s));
-        if (condition.isPresent() && icon.isEmpty())
+        // Sanity check for icon
+        if (condition.isPresent() && icon.isEmpty()) {
+            // Warn user
+            Component knownName = name.orElse(Component.literal("Unknown"));
+            Barricade.LOG.warn("Icon is missing for Advanced Barrier \"{}\"", knownName.getString());
+            // Use unknown icon
             finalIcon = Optional.of(UNKNOWN_ICON);
+        }
         this.icon = finalIcon;
         this.condition = condition;
     }
