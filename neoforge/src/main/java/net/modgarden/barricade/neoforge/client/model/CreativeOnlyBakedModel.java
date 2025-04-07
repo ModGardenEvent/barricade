@@ -40,18 +40,21 @@ public class CreativeOnlyBakedModel extends BakedModelWrapper<BakedModel> implem
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData extraData, @Nullable RenderType renderType) {
-        if (extraData.has(IS_TERRAIN) && (!Minecraft.getInstance().player.getAbilities().instabuild ||
+        if (!Minecraft.getInstance().player.getAbilities().instabuild ||
                 !BarricadeClient.CONFIG.get().everythingVisible() && BarricadeClient.CONFIG.get().visibleBlocks().stream().noneMatch(either ->
-                        either.map(tag -> OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(state.getBlockHolder()), key -> state.getBlockHolder().is(key))
+                        either.map(tag ->
+                                        OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(state.getBlockHolder()),
+                                key -> state.getBlockHolder().is(key)
+                        )
                 ) && !Minecraft.getInstance().player.isHolding(stack -> requiredBlock().map(tag -> {
-            if (stack.getItem() instanceof BlockItem blockItem)
-                return tag.blocks().contains(blockItem.getBlock().builtInRegistryHolder());
-            return false;
-        }, key -> {
-            if (stack.getItem() instanceof BlockItem blockItem)
-                return blockItem.getBlock().builtInRegistryHolder().is(key);
-            return false;
-        }))))
+                    if (stack.getItem() instanceof BlockItem blockItem)
+                        return tag.blocks().contains(blockItem.getBlock().builtInRegistryHolder());
+                    return false;
+                }, key -> {
+                    if (stack.getItem() instanceof BlockItem blockItem)
+                        return blockItem.getBlock().builtInRegistryHolder().is(key);
+                    return false;
+                })))
             return Collections.emptyList();
 
         return originalModel.getQuads(state, side, rand, extraData, renderType);

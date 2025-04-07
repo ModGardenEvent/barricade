@@ -53,7 +53,10 @@ public class CreativeOnlyBakedModel implements BakedModel, OperatorBakedModelAcc
     public void emitBlockQuads(BlockAndTintGetter blockGetter, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
         if (!RendererAccess.INSTANCE.hasRenderer() || (!Minecraft.getInstance().player.getAbilities().instabuild ||
                 !BarricadeClient.CONFIG.get().everythingVisible() && BarricadeClient.CONFIG.get().visibleBlocks().stream().noneMatch(either ->
-                        either.map(tag -> OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(state.getBlockHolder()), key -> state.getBlockHolder().is(key))
+                        either.map(tag ->
+                                OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(state.getBlockHolder()),
+                                key -> state.getBlockHolder().is(key)
+                        )
                 ) && !Minecraft.getInstance().player.isHolding(stack -> requiredBlock().map(tag -> {
                     if (stack.getItem() instanceof BlockItem blockItem)
                         return tag.blocks().contains(blockItem.getBlock().builtInRegistryHolder());

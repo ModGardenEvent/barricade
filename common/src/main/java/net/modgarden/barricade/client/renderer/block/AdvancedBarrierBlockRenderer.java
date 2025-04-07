@@ -32,15 +32,29 @@ public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<Advance
     public void render(AdvancedBarrierBlockEntity blockEntity, float partialTick, PoseStack pose, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         if (!Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState()) || !Minecraft.getInstance().player.getAbilities().instabuild ||
                 !BarricadeClient.CONFIG.get().everythingVisible() && BarricadeClient.CONFIG.get().visibleBlocks().stream().noneMatch(either ->
-                        either.map(tag -> OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(blockEntity.getBlockState().getBlockHolder()), key -> blockEntity.getBlockState().getBlockHolder().is(key)) && !Minecraft.getInstance().player.isHolding(stack -> ((OperatorBakedModelAccess)Minecraft.getInstance().getBlockRenderer().getBlockModel(Blocks.BARRIER.defaultBlockState())).requiredBlock().map(tag -> {
-            if (stack.getItem() instanceof BlockItem blockItem)
-                return tag.blocks().contains(blockItem.getBlock().builtInRegistryHolder());
-            return false;
-        }, key -> {
-            if (stack.getItem() instanceof BlockItem blockItem)
-                return blockItem.getBlock().builtInRegistryHolder().is(key);
-            return false;
-        }))))
+                        either.map(tag ->
+                                        OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(blockEntity.getBlockState().getBlockHolder()),
+                                key ->
+                                        blockEntity.getBlockState().getBlockHolder().is(key)) && !Minecraft.getInstance().player.isHolding(stack -> ((OperatorBakedModelAccess)Minecraft.getInstance().getBlockRenderer().getBlockModel(Blocks.BARRIER.defaultBlockState())).requiredBlock().map(tag -> {
+                            if (stack.getItem() instanceof BlockItem blockItem)
+                                return tag.blocks().contains(blockItem.getBlock().builtInRegistryHolder());
+                            return false;
+                        }, key -> {
+                                            if (stack.getItem() instanceof BlockItem blockItem)
+                                                return blockItem.getBlock().builtInRegistryHolder().is(key);
+                                            return false;
+                                        })
+                        )
+                ) && !Minecraft.getInstance().player.isHolding(stack -> {
+                    BakedModel model = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(Blocks.BARRIER.defaultBlockState());
+                    if (model instanceof OperatorBakedModelAccess access) {
+                        return access.requiredBlock().map(
+                                tag -> tag.blocks().contains(blockEntity.getBlockState().getBlockHolder()),
+                                key -> blockEntity.getBlockState().is(key));
+                    }
+                    return false;
+                })
+        )
             return;
 
         AdvancedBarrierModelValues components = new AdvancedBarrierModelValues(BarricadeBlocks.ADVANCED_BARRIER.directions(blockEntity.getBlockState()), blockEntity.getData().icon().orElse(null));
