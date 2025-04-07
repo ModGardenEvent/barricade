@@ -1,7 +1,5 @@
 package net.modgarden.barricade.fabric;
 
-import house.greenhouse.greenhouseconfig.impl.GreenhouseConfigStorage;
-import house.greenhouse.greenhouseconfig.impl.network.SyncGreenhouseConfigPacket;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
@@ -9,22 +7,16 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
-import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Items;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.data.AdvancedBarrier;
 import net.modgarden.barricade.network.clientbound.SetServerContextClientboundPacket;
-import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
-import net.modgarden.barricade.registry.BarricadeBlocks;
-import net.modgarden.barricade.registry.BarricadeComponents;
-import net.modgarden.barricade.registry.BarricadeItems;
-import net.modgarden.barricade.registry.BarricadeRegistries;
+import net.modgarden.barricade.registry.*;
 
 public class BarricadeFabric implements ModInitializer {
     @Override
@@ -34,6 +26,7 @@ public class BarricadeFabric implements ModInitializer {
         BarricadeBlockEntityTypes.registerAll();
         BarricadeComponents.registerAll();
         BarricadeItems.registerAll();
+        BarricadeParticleTypes.registerAll();
 
 
         PayloadTypeRegistry.configurationS2C().register(SetServerContextClientboundPacket.TYPE, SetServerContextClientboundPacket.STREAM_CODEC);

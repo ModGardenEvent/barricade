@@ -33,6 +33,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -92,7 +93,7 @@ public class ClientLevelMixin {
             BarrierRenderUtils.createAdvancedParticle(blockEntity.getData().directions(), blockEntity.getData().icon().orElse(null), particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
             return;
         } else if (blockState.getBlock() instanceof PredicateBarrierBlock predicateBarrierBlock) {
-            BarrierRenderUtils.createAdvancedParticle(BlockedDirections.of(Direction.values()), predicateBarrierBlock.icon(), particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
+            BarrierRenderUtils.createAdvancedParticle(new BlockedDirections(EnumSet.allOf(Direction.class)), predicateBarrierBlock.icon(), particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
             return;
         }
         original.call(instance, particleData, x, y, z, xSpeed, ySpeed, zSpeed);

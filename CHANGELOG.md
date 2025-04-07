@@ -3,3 +3,4 @@
 - NullPointerException crashed when utilising Light blocks in the inventory.
 - Creative Only Barriers using the default Barrier texture when Barricade Rendering is not enabled.
 - Vanilla Rendering uses the bottom of the entity's hitbox rather than eye height.
+- Vanilla Rendering uses the directional barrier logic when it shouldn't.

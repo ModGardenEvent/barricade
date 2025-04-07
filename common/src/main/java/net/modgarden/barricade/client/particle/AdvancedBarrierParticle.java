@@ -36,7 +36,7 @@ public class AdvancedBarrierParticle extends TextureSheetParticle {
         this.blockedDirections = blockedDirections;
         this.icon = icon;
         this.origin = origin;
-        this.relative = origin.map(pos -> BarrierRenderUtils.relativeDirectionsComponent(blockedDirections, pos)).orElse(blockedDirections);
+        this.relative = blockedDirections.blocksAll() || blockedDirections.doesNotBlock() ? blockedDirections : origin.map(pos -> BarrierRenderUtils.relativeDirectionsComponent(blockedDirections, pos)).orElse(blockedDirections);
     }
 
     @Override

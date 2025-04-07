@@ -16,11 +16,7 @@ import net.minecraft.world.item.Items;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.data.AdvancedBarrier;
 import net.modgarden.barricade.network.clientbound.SetServerContextClientboundPacket;
-import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
-import net.modgarden.barricade.registry.BarricadeBlocks;
-import net.modgarden.barricade.registry.BarricadeComponents;
-import net.modgarden.barricade.registry.BarricadeItems;
-import net.modgarden.barricade.registry.BarricadeRegistries;
+import net.modgarden.barricade.registry.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -57,6 +53,7 @@ public class BarricadeNeoForge {
             register(event, Registries.BLOCK_ENTITY_TYPE, BarricadeBlockEntityTypes::registerAll);
             register(event, Registries.DATA_COMPONENT_TYPE, BarricadeComponents::registerAll);
             register(event, Registries.ITEM, BarricadeItems::registerAll);
+            register(event, Registries.PARTICLE_TYPE, BarricadeParticleTypes::registerAll);
         }
 
         private static <T> void register(RegisterEvent event, ResourceKey<T> registryKey, Runnable registrar) {

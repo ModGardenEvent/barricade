@@ -58,10 +58,7 @@ public record BlockedDirections(EnumSet<Direction> directions) {
     }
 
     public boolean blocksAll() {
-        for (Direction dir : Direction.values())
-            if (!directions.contains(dir))
-                return false;
-        return true;
+        return directions.containsAll(Arrays.asList(Direction.values()));
     }
 
     public boolean blocks(Direction direction) {
