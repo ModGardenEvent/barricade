@@ -36,7 +36,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.HashSet;
 import java.util.Set;
 
-@Mixin(ClientLevel.class)
+@Mixin(value = ClientLevel.class, priority = 900) // Run before Axiom.
 public class ClientLevelMixin {
     @Mutable
     @Shadow @Final private static Set<Item> MARKER_PARTICLE_ITEMS;
