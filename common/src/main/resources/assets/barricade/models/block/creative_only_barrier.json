@@ -1,5 +1,5 @@
 {
   "textures": {
-    "particle": "minecraft:item/barrier"
+    "particle": "barricade:item/creative_only_barrier"
   }
 }
