@@ -248,12 +248,12 @@ public class BarrierRenderUtils {
             return null;
 
         Vec3 direction = new Vec3(0, 1, 0);
-        double dot = direction.dot(player.position().subtract(pos.getCenter()));
+        double dot = direction.dot(player.getEyePosition().subtract(pos.getCenter()));
 
-        if (dot >= (0.5 * (player.position().subtract(pos.getCenter()).length())))
+        if (dot >= (0.5 * (player.getEyePosition().subtract(pos.getCenter()).length())))
             return Direction.UP;
 
-        if (dot <= (-0.9 * (player.position().subtract(pos.getCenter()).length())))
+        if (dot <= (-0.9 * (player.getEyePosition().subtract(pos.getCenter()).length())))
             return Direction.DOWN;
 
         return null;
