@@ -69,10 +69,12 @@ public class ClientLevelMixin {
 
     @ModifyReturnValue(method = "getMarkerParticleTarget", at = @At(value = "RETURN", ordinal = 0))
     private Block barricade$setMarkerParticleTarget(Block original, @Local Item item) {
-        if (Barricade.isOperatorModel(original.defaultBlockState()))
-            return null;
-        if (OperatorBlockPseudoTag.Registry.get(Barricade.asResource("barriers")).blocks().contains(original.builtInRegistryHolder()))
-            return Blocks.BARRIER;
+        if (original != null) {
+            if (Barricade.isOperatorModel(original.defaultBlockState()))
+                return null;
+            if (OperatorBlockPseudoTag.Registry.get(Barricade.asResource("barriers")).blocks().contains(original.builtInRegistryHolder()))
+                return Blocks.BARRIER;
+        }
         return original;
     }
 
@@ -97,6 +99,7 @@ public class ClientLevelMixin {
             return;
         } else if (blockState.getBlock() instanceof PredicateBarrierBlock predicateBarrierBlock) {
             BarrierRenderUtils.createAdvancedParticle(BlockedDirections.of(Direction.values()), predicateBarrierBlock.icon(), particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
+            return;
         }
         original.call(instance, particleData, x, y, z, xSpeed, ySpeed, zSpeed);
     }
