@@ -1,12 +1,12 @@
 {
-  "loader": "barricade:operator",
-  "operator_blocks": "#barricade:barriers",
-  "model": {
-    "parent": "barricade:block/icon_barrier",
-    "textures": {
-      "all": "barricade:block/barrier",
-      "inner": "barricade:barricade/icon/iron_sword"
-    },
-    "render_type": "cutout"
-  }
+	"loader": "barricade:operator",
+	"operator_blocks": "#barricade:barriers",
+	"model": {
+		"parent": "barricade:block/icon_barrier",
+		"textures": {
+			"all": "barricade:block/barrier",
+			"inner": "barricade:barricade/icon/iron_sword"
+		},
+		"render_type": "cutout"
+	}
 }

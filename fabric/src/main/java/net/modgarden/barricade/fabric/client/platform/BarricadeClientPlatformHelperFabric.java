@@ -15,7 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,40 +24,40 @@ import net.modgarden.barricade.fabric.client.model.CreativeOnlyBakedModel;
 import java.util.Collection;
 
 public class BarricadeClientPlatformHelperFabric implements BarricadeClientPlatformHelper {
-    @Override
-    public Collection<BlockElement> fixSeamsOnNeoForge(Collection<BlockElement> collection, TextureAtlasSprite textureAtlasSprite) {
-        return collection;
-    }
+	@Override
+	public Collection<BlockElement> fixSeamsOnNeoForge(Collection<BlockElement> collection, TextureAtlasSprite textureAtlasSprite) {
+		return collection;
+	}
 
-    @Override
-    public void tessellateBlock(BlockAndTintGetter level, BakedModel model, BlockState state, BlockPos pos, PoseStack poseStack, VertexConsumer consumer,
-            RandomSource random, long seed) {
-        Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateBlock(
-                level,
-                model,
-                state,
-                pos,
-                poseStack,
-                consumer,
-                true,
-                random,
-                seed,
-                OverlayTexture.NO_OVERLAY);
-    }
+	@Override
+	public void tessellateBlock(BlockAndTintGetter level, BakedModel model, BlockState state, BlockPos pos, PoseStack poseStack, VertexConsumer consumer,
+	                            RandomSource random, long seed) {
+		Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateBlock(
+				level,
+				model,
+				state,
+				pos,
+				poseStack,
+				consumer,
+				true,
+				random,
+				seed,
+				OverlayTexture.NO_OVERLAY);
+	}
 
-    @Override
-    public BakedModel createCreativeOnlyModel(BakedModel model, Either<ResourceLocation, ResourceKey<Block>> requiredItem) {
-        return new CreativeOnlyBakedModel(model, requiredItem);
-    }
+	@Override
+	public BakedModel createCreativeOnlyModel(BakedModel model, Either<ResourceLocation, ResourceKey<Block>> requiredItem) {
+		return new CreativeOnlyBakedModel(model, requiredItem);
+	}
 
-    @Override
-    public void sendSuccessClient(CommandContext<?> context, Component component) {
-        ((FabricClientCommandSource)context.getSource()).sendFeedback(component);
-    }
+	@Override
+	public void sendSuccessClient(CommandContext<?> context, Component component) {
+		((FabricClientCommandSource) context.getSource()).sendFeedback(component);
+	}
 
-    @Override
-    public void sendFailureClient(CommandContext<?> context, Component component) {
-        ((FabricClientCommandSource)context.getSource()).sendError(component);
-    }
+	@Override
+	public void sendFailureClient(CommandContext<?> context, Component component) {
+		((FabricClientCommandSource) context.getSource()).sendError(component);
+	}
 
 }

@@ -7,6 +7,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(LevelRenderer.class)
 public interface LevelRendererInvoker {
-    @Invoker("setBlockDirty")
-    void barricade$invokeSetBlockDirty(BlockPos pos, boolean reRenderOnMainThread);
+	@Invoker("setBlockDirty")
+	void barricade$invokeSetBlockDirty(BlockPos pos, boolean reRenderOnMainThread);
 }

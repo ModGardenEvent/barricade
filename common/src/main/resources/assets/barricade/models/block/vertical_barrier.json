@@ -1,5 +1,5 @@
 {
-  "textures": {
-    "particle": "barricade:item/vertical_barrier"
-  }
+	"textures": {
+		"particle": "barricade:item/vertical_barrier"
+	}
 }

@@ -1,6 +1,6 @@
 {
-  "values": [
-    "#barricade:directional_barriers",
-    "#barricade:predicate_barriers"
-  ]
+	"values": [
+		"#barricade:directional_barriers",
+		"#barricade:predicate_barriers"
+	]
 }

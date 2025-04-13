@@ -15,8 +15,8 @@ import java.util.Map;
 
 @Mixin(ModelManager.class)
 public class ModelManagerMixin {
-    @Inject(method = "loadModels", at = @At("HEAD"))
-    private void barricade$captureModelBakery(ProfilerFiller profilerFiller, Map<ResourceLocation, AtlasSet.StitchResult> atlasPreparations, ModelBakery modelBakery, CallbackInfoReturnable<ModelManager.ReloadState> cir) {
-        BarricadeClient.setModelBakery(modelBakery);
-    }
+	@Inject(method = "loadModels", at = @At("HEAD"))
+	private void barricade$captureModelBakery(ProfilerFiller profilerFiller, Map<ResourceLocation, AtlasSet.StitchResult> atlasPreparations, ModelBakery modelBakery, CallbackInfoReturnable<ModelManager.ReloadState> cir) {
+		BarricadeClient.setModelBakery(modelBakery);
+	}
 }

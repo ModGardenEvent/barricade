@@ -1,5 +1,6 @@
 package net.modgarden.barricade.mixin.client;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.client.renderer.block.model.BlockElement;
 import net.minecraft.client.renderer.block.model.BlockModel;
@@ -21,20 +22,21 @@ import java.util.function.Function;
 
 @Mixin(ItemModelGenerator.class)
 public abstract class ItemModelGeneratorMixin {
-    @Shadow protected abstract List<BlockElement> processFrames(int tintIndex, String texture, SpriteContents sprite);
+	@Shadow
+	protected abstract List<BlockElement> processFrames(int tintIndex, String texture, SpriteContents sprite);
 
-    @Inject(method = "generateBlockModel", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", ordinal = 1), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void barricade$useBarricadeLayers(Function<Material, TextureAtlasSprite> spriteGetter, BlockModel model, CallbackInfoReturnable<BlockModel> cir, Map<String, Either<Material, String>> map, List<BlockElement> list) {
-        for (int i = 0; i < BarricadeClient.BARRICADE_LAYERS.size(); i++) {
-            String s = BarricadeClient.BARRICADE_LAYERS.get(i);
-            if (!model.hasTexture(s)) {
-                break;
-            }
+	@Inject(method = "generateBlockModel", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", ordinal = 1))
+	private void barricade$useBarricadeLayers(Function<Material, TextureAtlasSprite> spriteGetter, BlockModel model, CallbackInfoReturnable<BlockModel> cir, @Local Map<String, Either<Material, String>> map, @Local List<BlockElement> list) {
+		for (int i = 0; i < BarricadeClient.BARRICADE_LAYERS.size(); i++) {
+			String s = BarricadeClient.BARRICADE_LAYERS.get(i);
+			if (!model.hasTexture(s)) {
+				break;
+			}
 
-            Material material = model.getMaterial(s);
-            map.put(s, Either.left(material));
-            SpriteContents spritecontents = spriteGetter.apply(material).contents();
-            list.addAll(BarricadeClient.getHelper().fixSeamsOnNeoForge(processFrames(i, s, spritecontents), material.sprite()));
-        }
-    }
+			Material material = model.getMaterial(s);
+			map.put(s, Either.left(material));
+			SpriteContents spritecontents = spriteGetter.apply(material).contents();
+			list.addAll(BarricadeClient.getHelper().fixSeamsOnNeoForge(processFrames(i, s, spritecontents), material.sprite()));
+		}
+	}
 }

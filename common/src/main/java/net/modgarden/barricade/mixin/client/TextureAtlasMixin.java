@@ -15,9 +15,11 @@ import java.util.Map;
 
 @Mixin(TextureAtlas.class)
 public class TextureAtlasMixin {
-	@Shadow private @Nullable TextureAtlasSprite missingSprite;
+	@Shadow
+	private @Nullable TextureAtlasSprite missingSprite;
 
-	@Shadow private Map<ResourceLocation, TextureAtlasSprite> texturesByName;
+	@Shadow
+	private Map<ResourceLocation, TextureAtlasSprite> texturesByName;
 
 	@Inject(
 			method = "getSprite",

@@ -9,19 +9,20 @@ import net.minecraft.client.resources.model.ModelState;
 import net.modgarden.barricade.client.model.OperatorUnbakedModel;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
 public class CreativeOnlyUnbakedModelGeometry implements IUnbakedGeometry<CreativeOnlyUnbakedModelGeometry> {
-    private final OperatorUnbakedModel model;
+	private final OperatorUnbakedModel model;
 
-    public CreativeOnlyUnbakedModelGeometry(OperatorUnbakedModel model) {
-        this.model = model;
-    }
+	public CreativeOnlyUnbakedModelGeometry(OperatorUnbakedModel model) {
+		this.model = model;
+	}
 
-    @Override
-    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides) {
-        model.resolveParents(baker::getModel);
-        return model.bake(baker, spriteGetter, modelState);
-    }
+	@Override
+	public @NotNull BakedModel bake(@NotNull IGeometryBakingContext context, ModelBaker baker, @NotNull Function<Material, TextureAtlasSprite> spriteGetter, @NotNull ModelState modelState, @NotNull ItemOverrides overrides) {
+		model.resolveParents(baker::getModel);
+		return model.bake(baker, spriteGetter, modelState);
+	}
 }

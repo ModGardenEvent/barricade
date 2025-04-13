@@ -9,6 +9,6 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 @Mixin(ClientChunkCache.Storage.class)
 public interface ClientChunkCacheStorageAccessor {
-    @Accessor("chunks")
-    AtomicReferenceArray<LevelChunk> getChunks();
+	@Accessor("chunks")
+	AtomicReferenceArray<LevelChunk> getChunks();
 }

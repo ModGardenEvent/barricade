@@ -20,68 +20,69 @@ import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
 import net.modgarden.barricade.client.util.AdvancedBarrierModelValues;
 import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 import net.modgarden.barricade.registry.BarricadeBlocks;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<AdvancedBarrierBlockEntity> {
-    private static final Map<AdvancedBarrierModelValues, BakedModel> MODEL_MAP = new HashMap<>();
+	private static final Map<AdvancedBarrierModelValues, BakedModel> MODEL_MAP = new HashMap<>();
 
-    @Override
-    @SuppressWarnings("ConstantConditions")
-    public void render(AdvancedBarrierBlockEntity blockEntity, float partialTick, PoseStack pose, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        if (!Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState()) || !Minecraft.getInstance().player.getAbilities().instabuild ||
-                !BarricadeClient.CONFIG.get().everythingVisible() && BarricadeClient.CONFIG.get().visibleBlocks().stream().noneMatch(either ->
-                        either.map(tag ->
-                                        OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(blockEntity.getBlockState().getBlockHolder()),
-                                key ->
-                                        blockEntity.getBlockState().getBlockHolder().is(key)) && !Minecraft.getInstance().player.isHolding(stack -> ((OperatorBakedModelAccess)Minecraft.getInstance().getBlockRenderer().getBlockModel(Blocks.BARRIER.defaultBlockState())).requiredBlock().map(tag -> {
-                            if (stack.getItem() instanceof BlockItem blockItem)
-                                return tag.blocks().contains(blockItem.getBlock().builtInRegistryHolder());
-                            return false;
-                        }, key -> {
-                                            if (stack.getItem() instanceof BlockItem blockItem)
-                                                return blockItem.getBlock().builtInRegistryHolder().is(key);
-                                            return false;
-                                        })
-                        )
-                ) && !Minecraft.getInstance().player.isHolding(stack -> {
-                    BakedModel model = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(Blocks.BARRIER.defaultBlockState());
-                    if (model instanceof OperatorBakedModelAccess access) {
-                        return access.requiredBlock().map(
-                                tag -> tag.blocks().contains(blockEntity.getBlockState().getBlockHolder()),
-                                key -> blockEntity.getBlockState().is(key));
-                    }
-                    return false;
-                })
-        )
-            return;
+	@Override
+	@SuppressWarnings("ConstantConditions")
+	public void render(@NotNull AdvancedBarrierBlockEntity blockEntity, float partialTick, @NotNull PoseStack pose, @NotNull MultiBufferSource buffer, int packedLight, int packedOverlay) {
+		if (!Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState()) || !Minecraft.getInstance().player.getAbilities().instabuild ||
+				!BarricadeClient.CONFIG.get().everythingVisible() && BarricadeClient.CONFIG.get().visibleBlocks().stream().noneMatch(either ->
+						either.map(tag ->
+										OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(blockEntity.getBlockState().getBlockHolder()),
+								key ->
+										blockEntity.getBlockState().getBlockHolder().is(key)) && !Minecraft.getInstance().player.isHolding(stack -> ((OperatorBakedModelAccess) Minecraft.getInstance().getBlockRenderer().getBlockModel(Blocks.BARRIER.defaultBlockState())).requiredBlock().map(tag -> {
+									if (stack.getItem() instanceof BlockItem blockItem)
+										return tag.blocks().contains(blockItem.getBlock().builtInRegistryHolder());
+									return false;
+								}, key -> {
+									if (stack.getItem() instanceof BlockItem blockItem)
+										return blockItem.getBlock().builtInRegistryHolder().is(key);
+									return false;
+								})
+						)
+				) && !Minecraft.getInstance().player.isHolding(stack -> {
+					BakedModel model = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(Blocks.BARRIER.defaultBlockState());
+					if (model instanceof OperatorBakedModelAccess access) {
+						return access.requiredBlock().map(
+								tag -> tag.blocks().contains(blockEntity.getBlockState().getBlockHolder()),
+								key -> blockEntity.getBlockState().is(key));
+					}
+					return false;
+				})
+		)
+			return;
 
-        AdvancedBarrierModelValues components = new AdvancedBarrierModelValues(BarricadeBlocks.ADVANCED_BARRIER.directions(blockEntity.getBlockState()), blockEntity.getData().icon().orElse(null));
+		AdvancedBarrierModelValues components = new AdvancedBarrierModelValues(BarricadeBlocks.ADVANCED_BARRIER.directions(blockEntity.getBlockState()), blockEntity.getData().icon().orElse(null));
 
-        BarricadeClient.getHelper().tessellateBlock(
-                Minecraft.getInstance().level,
-                MODEL_MAP.computeIfAbsent(components, AdvancedBarrierBlockRenderer::createModel),
-                blockEntity.getBlockState(),
-                blockEntity.getBlockPos(),
-                pose,
-                buffer.getBuffer(RenderType.cutout()),
-                blockEntity.getLevel().random,
-                blockEntity.getBlockState().getSeed(blockEntity.getBlockPos())
-        );
-    }
+		BarricadeClient.getHelper().tessellateBlock(
+				Minecraft.getInstance().level,
+				MODEL_MAP.computeIfAbsent(components, AdvancedBarrierBlockRenderer::createModel),
+				blockEntity.getBlockState(),
+				blockEntity.getBlockPos(),
+				pose,
+				buffer.getBuffer(RenderType.cutout()),
+				blockEntity.getLevel().random,
+				blockEntity.getBlockState().getSeed(blockEntity.getBlockPos())
+		);
+	}
 
-    private static BakedModel createModel(AdvancedBarrierModelValues values) {
-        BlockModel blockModel = new AdvancedBarrierBlockUnbakedModel(values.directions(), values.icon());
-        return blockModel
-                .bake(
-                        BarricadeClient.getModelBakery().new ModelBakerImpl((modelLocation, material) -> material.sprite(), new ModelResourceLocation(Barricade.asResource("advanced_barrier_block_renderer"), values.getVariant())),
-                        Material::sprite,
-                        BlockModelRotation.X0_Y0
-                );
-    }
+	private static BakedModel createModel(AdvancedBarrierModelValues values) {
+		BlockModel blockModel = new AdvancedBarrierBlockUnbakedModel(values.directions(), values.icon());
+		return blockModel
+				.bake(
+						BarricadeClient.getModelBakery().new ModelBakerImpl((modelLocation, material) -> material.sprite(), new ModelResourceLocation(Barricade.asResource("advanced_barrier_block_renderer"), values.getVariant())),
+						Material::sprite,
+						BlockModelRotation.X0_Y0
+				);
+	}
 
-    public static void clearModelMap() {
-        MODEL_MAP.clear();
-    }
+	public static void clearModelMap() {
+		MODEL_MAP.clear();
+	}
 }

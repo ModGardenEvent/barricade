@@ -1,11 +1,11 @@
 {
-  "loader": "barricade:operator",
-  "operator_blocks": "#barricade:lights",
-  "model": {
-    "parent": "minecraft:block/cube_all",
-    "textures": {
-      "all": "minecraft:item/light_14"
-    },
-    "render_type": "cutout"
-  }
+	"loader": "barricade:operator",
+	"operator_blocks": "#barricade:lights",
+	"model": {
+		"parent": "minecraft:block/cube_all",
+		"textures": {
+			"all": "minecraft:item/light_14"
+		},
+		"render_type": "cutout"
+	}
 }

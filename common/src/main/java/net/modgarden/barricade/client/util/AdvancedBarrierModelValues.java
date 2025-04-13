@@ -7,26 +7,27 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public record AdvancedBarrierModelValues(BlockedDirections directions, @Nullable ResourceLocation icon) {
-    public String getVariant() {
-        String variant = "";
-        if (icon() != null)
-            variant = icon().toString();
+public record AdvancedBarrierModelValues(BlockedDirections directions,
+                                         @Nullable ResourceLocation icon) {
+	public String getVariant() {
+		String variant = "";
+		if (icon() != null)
+			variant = icon().toString();
 
-        if (!directions().doesNotBlock())
-            variant = (variant.isEmpty() ? "" : ",") + String.join(",", directions.directions().stream().map(Direction::getName).toList());
-        return variant;
-    }
+		if (!directions().doesNotBlock())
+			variant = (variant.isEmpty() ? "" : ",") + String.join(",", directions.directions().stream().map(Direction::getName).toList());
+		return variant;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof AdvancedBarrierModelValues values))
-            return false;
-        return values.directions.equals(directions) && (values.icon == null && icon == null || values.icon != null && values.icon.equals(icon) || icon != null && icon.equals(values.icon));
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof AdvancedBarrierModelValues(BlockedDirections directions1, ResourceLocation icon1)))
+			return false;
+		return directions1.equals(directions) && (icon1 == null && icon == null || icon1 != null && icon1.equals(icon) || icon != null && icon.equals(icon1));
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(directions, icon);
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(directions, icon);
+	}
 }

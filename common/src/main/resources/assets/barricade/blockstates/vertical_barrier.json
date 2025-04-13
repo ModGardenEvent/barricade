@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "barricade:block/vertical_barrier"
-    }
-  }
+	"variants": {
+		"": {
+			"model": "barricade:block/vertical_barrier"
+		}
+	}
 }

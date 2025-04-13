@@ -1,8 +1,8 @@
 {
-  "name": "Riding-Only Barrier",
-  "icon": "barricade:standing_steve",
-  "condition": {
-    "type": "silicate:inverted",
-    "condition": "test:is_riding"
-  }
+	"name": "Riding-Only Barrier",
+	"icon": "barricade:standing_steve",
+	"condition": {
+		"type": "silicate:inverted",
+		"condition": "test:is_riding"
+	}
 }

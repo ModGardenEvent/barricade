@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "barricade:block/east_barrier"
-    }
-  }
+	"variants": {
+		"": {
+			"model": "barricade:block/east_barrier"
+		}
+	}
 }

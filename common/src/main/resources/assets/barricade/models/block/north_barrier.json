@@ -1,5 +1,5 @@
 {
-  "textures": {
-    "particle": "barricade:item/north_barrier"
-  }
+	"textures": {
+		"particle": "barricade:item/north_barrier"
+	}
 }

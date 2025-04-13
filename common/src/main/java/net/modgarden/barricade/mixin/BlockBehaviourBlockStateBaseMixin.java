@@ -12,19 +12,20 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(BlockBehaviour.BlockStateBase.class)
 public abstract class BlockBehaviourBlockStateBaseMixin {
 
-    @Shadow protected abstract BlockState asState();
+	@Shadow
+	protected abstract BlockState asState();
 
-    @ModifyReturnValue(method = "getRenderShape", at = @At("RETURN"))
-    private RenderShape barricade$setRenderShapeDependingOnModel(RenderShape original) {
-        if (Barricade.isOperatorModel(asState()))
-            return RenderShape.MODEL;
-        return original;
-    }
+	@ModifyReturnValue(method = "getRenderShape", at = @At("RETURN"))
+	private RenderShape barricade$setRenderShapeDependingOnModel(RenderShape original) {
+		if (Barricade.isOperatorModel(asState()))
+			return RenderShape.MODEL;
+		return original;
+	}
 
-    @ModifyReturnValue(method = "shouldSpawnTerrainParticles", at = @At("RETURN"))
-    private boolean barricade$setRenderShapeDependingOnModel(boolean original) {
-        if (Barricade.isOperatorModel(asState()))
-            return false;
-        return original;
-    }
+	@ModifyReturnValue(method = "shouldSpawnTerrainParticles", at = @At("RETURN"))
+	private boolean barricade$setRenderShapeDependingOnModel(boolean original) {
+		if (Barricade.isOperatorModel(asState()))
+			return false;
+		return original;
+	}
 }

@@ -16,11 +16,14 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(AbstractArrow.class)
 public abstract class AbstractArrowMixin {
-    @ModifyVariable(method = "tick", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/block/state/BlockState;getCollisionShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/phys/shapes/VoxelShape;"))
-    private VoxelShape barricade$entityCollision(VoxelShape shape, @Local BlockPos pos, @Local BlockState state) {
-        Block block = state.getBlock();
-        if (block instanceof AdvancedBarrierBlock || block instanceof DirectionalBarrierBlock || block instanceof PredicateBarrierBlock)
-            return state.getCollisionShape(((AbstractArrow)(Object)this).level(), pos, CollisionContext.of((AbstractArrow)(Object)this));
-        return shape;
-    }
+	@SuppressWarnings({"InvalidInjectorMethodSignature", "LocalMayBeArgsOnly"}) // Mixin plugin is broken
+	@ModifyVariable(method = "tick", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/block/state/BlockState;getCollisionShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/phys/shapes/VoxelShape;"))
+	private VoxelShape barricade$entityCollision(VoxelShape shape, @Local BlockPos pos, @Local BlockState state) {
+		Block block = state.getBlock();
+		if (block instanceof AdvancedBarrierBlock || block instanceof DirectionalBarrierBlock || block instanceof PredicateBarrierBlock)
+			// IntelliJ doesn't like that we're getting this
+			//noinspection DataFlowIssue
+			return state.getCollisionShape(((AbstractArrow) (Object) this).level(), pos, CollisionContext.of((AbstractArrow) (Object) this));
+		return shape;
+	}
 }

@@ -1,17 +1,17 @@
-modLoader="javafml"
-loaderVersion="${neoforge_loader_version_range}"
+modLoader = "javafml"
+loaderVersion = "${neoforge_loader_version_range}"
 issueTrackerURL = "https://github.com/${sources}/issues"
-license="${mod_license}"
+license = "${mod_license}"
 
 [[mods]]
-modId="${mod_id}"
-version="${mod_version}+${minecraft_version}"
-displayName="${mod_name}"
-logoFile="${mod_id}.png"
-logoBlur=false
-authors="${mod_author}"
-credits="${neoforge_mod_contributors}"
-description='''
+modId = "${mod_id}"
+version = "${mod_version}+${minecraft_version}"
+displayName = "${mod_name}"
+logoFile = "${mod_id}.png"
+logoBlur = false
+authors = "${mod_author}"
+credits = "${neoforge_mod_contributors}"
+description = '''
 ${mod_description}
 '''
 
@@ -19,39 +19,39 @@ ${mod_description}
 config = "${mod_id}.mixins.json"
 
 [[accessTransformers]]
-file="${mod_id}.cfg"
+file = "${mod_id}.cfg"
 
-[[dependencies.${mod_id}]]
-modId="neoforge"
-mandatory=true
-versionRange="${neoforge_loader_version_range}"
-ordering="NONE"
-side="BOTH"
+[[dependencies.${ mod_id }]]
+modId = "neoforge"
+mandatory = true
+versionRange = "${neoforge_loader_version_range}"
+ordering = "NONE"
+side = "BOTH"
 
-[[dependencies.${mod_id}]]
-modId="minecraft"
-mandatory=true
-versionRange="${neoforge_minecraft_version_range}"
-ordering="NONE"
-side="BOTH"
+[[dependencies.${ mod_id }]]
+modId = "minecraft"
+mandatory = true
+versionRange = "${neoforge_minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
 
-[[dependencies.${mod_id}]]
-modId="silicate"
-mandatory=true
-versionRange="${silicate_version_range}"
-ordering="NONE"
-side="BOTH"
+[[dependencies.${ mod_id }]]
+modId = "silicate"
+mandatory = true
+versionRange = "${silicate_version_range}"
+ordering = "NONE"
+side = "BOTH"
 
-[[dependencies.${mod_id}]]
-modId="greenhouseconfig"
-mandatory=true
-versionRange="${greenhouse_config_version_range}"
-ordering="NONE"
-side="BOTH"
+[[dependencies.${ mod_id }]]
+modId = "greenhouseconfig"
+mandatory = true
+versionRange = "${greenhouse_config_version_range}"
+ordering = "NONE"
+side = "BOTH"
 
-[[dependencies.${mod_id}]]
-modId="greenhouseconfig_jsonc"
-mandatory=true
-versionRange="${greenhouse_config_jsonc_version_range}"
-ordering="NONE"
-side="BOTH"
+[[dependencies.${ mod_id }]]
+modId = "greenhouseconfig_jsonc"
+mandatory = true
+versionRange = "${greenhouse_config_jsonc_version_range}"
+ordering = "NONE"
+side = "BOTH"

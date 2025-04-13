@@ -15,80 +15,83 @@ import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.modgarden.barricade.data.BlockedDirections;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class DirectionalBarrierBlock extends BarrierBlock {
-    public static final MapCodec<DirectionalBarrierBlock> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            BlockedDirections.CODEC.fieldOf("directions").forGetter(DirectionalBarrierBlock::directions),
-            propertiesCodec()
-    ).apply(inst, DirectionalBarrierBlock::new));
-    private static final Map<Direction, DirectionalBarrierBlock> DIRECTION_MAP = new HashMap<>() {
-        @Override
-        public DirectionalBarrierBlock put(Direction key, DirectionalBarrierBlock value) {
-            if (containsKey(key))
-                throw new RuntimeException("Cannot add direction '" + key.getName() + "' to map when it has already been added.");
-            return super.put(key, value);
-        }
+	public static final MapCodec<DirectionalBarrierBlock> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+			BlockedDirections.CODEC.fieldOf("directions").forGetter(DirectionalBarrierBlock::directions),
+			propertiesCodec()
+	).apply(inst, DirectionalBarrierBlock::new));
+	private static final Map<Direction, DirectionalBarrierBlock> DIRECTION_MAP = new HashMap<>() {
+		@Override
+		public DirectionalBarrierBlock put(Direction key, DirectionalBarrierBlock value) {
+			if (containsKey(key))
+				throw new RuntimeException("Cannot add direction '" + key.getName() + "' to map when it has already been added.");
+			return super.put(key, value);
+		}
 
-        @Override
-        public void putAll(Map<? extends Direction, ? extends DirectionalBarrierBlock> m) {
-            if (m.keySet().stream().anyMatch(m::containsKey))
-                throw new RuntimeException("Cannot add directions to map when one has already been added.");
-            super.putAll(m);
-        }
-    };
+		@Override
+		public void putAll(Map<? extends Direction, ? extends DirectionalBarrierBlock> m) {
+			if (m.keySet().stream().anyMatch(m::containsKey))
+				throw new RuntimeException("Cannot add directions to map when one has already been added.");
+			super.putAll(m);
+		}
+	};
 
-    private final BlockedDirections directions;
+	private final BlockedDirections directions;
 
-    public DirectionalBarrierBlock(BlockedDirections directions, Properties properties) {
-        super(properties);
-        this.directions = directions;
-        if (directions.directions().size() == 1)
-            DIRECTION_MAP.put(directions.directions().stream().findFirst().get(), this);
-    }
+	public DirectionalBarrierBlock(BlockedDirections directions, Properties properties) {
+		super(properties);
+		this.directions = directions;
+		if (directions.directions().size() == 1)
+			DIRECTION_MAP.put(directions.directions().stream().findFirst().get(), this);
+	}
 
-    public BlockedDirections directions() {
-        return directions;
-    }
+	public BlockedDirections directions() {
+		return directions;
+	}
 
-    @Override
-    public MapCodec<BarrierBlock> codec() {
-        return CODEC.xmap(dir -> dir, barrierBlock -> (DirectionalBarrierBlock) barrierBlock);
-    }
+	@Override
+	public @NotNull MapCodec<BarrierBlock> codec() {
+		return CODEC.xmap(dir -> dir, barrierBlock -> (DirectionalBarrierBlock) barrierBlock);
+	}
 
-    @Override
-    protected boolean skipRendering(BlockState state, BlockState adjacentState, Direction direction) {
-        return adjacentState.is(state.getBlock()) && !directions.blocks(direction);
-    }
+	@Override
+	protected boolean skipRendering(BlockState state, BlockState adjacentState, @NotNull Direction direction) {
+		return adjacentState.is(state.getBlock()) && !directions.blocks(direction);
+	}
 
-    @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        if (!directions.doesNotBlock() && (directions.blocksAll() || directions.shouldBlock(pos, context)))
-            return Shapes.block();
-        return Shapes.empty();
-    }
+	@Override
+	public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+		if (!directions.doesNotBlock() && (directions.blocksAll() || directions.shouldBlock(pos, context)))
+			return Shapes.block();
+		return Shapes.empty();
+	}
 
-    @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        boolean isOperator = context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player && player.getAbilities().instabuild;
-        if (isOperator || !directions.doesNotBlock() && (directions.blocksAll() || directions.shouldBlock(pos, context)))
-            return super.getShape(state, level, pos, context);
-        return Shapes.empty();
-    }
+	@Override
+	public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+		boolean isOperator = context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player && player.getAbilities().instabuild;
+		if (isOperator || !directions.doesNotBlock() && (directions.blocksAll() || directions.shouldBlock(pos, context)))
+			return super.getShape(state, level, pos, context);
+		return Shapes.empty();
+	}
 
-    @Override
-    protected BlockState rotate(BlockState state, Rotation rot) {
-        if (!(state.getBlock() instanceof DirectionalBarrierBlock directional) || directional.directions.directions().size() != 1)
-            return state;
-        return DIRECTION_MAP.get(rot.rotate(directional.directions.directions().stream().findFirst().get())).defaultBlockState();
-    }
+	@SuppressWarnings("deprecation")
+	@Override
+	protected @NotNull BlockState rotate(BlockState state, @NotNull Rotation rot) {
+		if (!(state.getBlock() instanceof DirectionalBarrierBlock directional) || directional.directions.directions().size() != 1)
+			return state;
+		return DIRECTION_MAP.get(rot.rotate(directional.directions.directions().stream().findFirst().get())).defaultBlockState();
+	}
 
-    @Override
-    protected BlockState mirror(BlockState state, Mirror mirror) {
-        if (!(state.getBlock() instanceof DirectionalBarrierBlock directional) || directional.directions.directions().size() != 1)
-            return state;
-        return DIRECTION_MAP.get(mirror.mirror(directional.directions.directions().stream().findFirst().get())).defaultBlockState();
-    }
+	@SuppressWarnings("deprecation")
+	@Override
+	protected @NotNull BlockState mirror(BlockState state, @NotNull Mirror mirror) {
+		if (!(state.getBlock() instanceof DirectionalBarrierBlock directional) || directional.directions.directions().size() != 1)
+			return state;
+		return DIRECTION_MAP.get(mirror.mirror(directional.directions.directions().stream().findFirst().get())).defaultBlockState();
+	}
 }

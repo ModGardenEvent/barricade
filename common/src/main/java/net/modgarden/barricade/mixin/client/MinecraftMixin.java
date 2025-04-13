@@ -12,9 +12,9 @@ import java.util.concurrent.CompletableFuture;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
-    @Inject(method = "reloadResourcePacks()Ljava/util/concurrent/CompletableFuture;", at = @At("HEAD"))
-    private void barricade$resetAdvancedBarrierModels(CallbackInfoReturnable<CompletableFuture<Void>> cir) {
-        AdvancedBarrierBlockRenderer.clearModelMap();
-        AdvancedBarrierItemRenderer.clearModelMap();
-    }
+	@Inject(method = "reloadResourcePacks()Ljava/util/concurrent/CompletableFuture;", at = @At("HEAD"))
+	private void barricade$resetAdvancedBarrierModels(CallbackInfoReturnable<CompletableFuture<Void>> cir) {
+		AdvancedBarrierBlockRenderer.clearModelMap();
+		AdvancedBarrierItemRenderer.clearModelMap();
+	}
 }

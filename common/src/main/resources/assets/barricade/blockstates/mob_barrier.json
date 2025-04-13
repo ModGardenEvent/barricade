@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "barricade:block/mob_barrier"
-    }
-  }
+	"variants": {
+		"": {
+			"model": "barricade:block/mob_barrier"
+		}
+	}
 }

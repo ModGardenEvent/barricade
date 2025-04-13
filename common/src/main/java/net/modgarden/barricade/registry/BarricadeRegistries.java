@@ -6,5 +6,5 @@ import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.data.AdvancedBarrier;
 
 public class BarricadeRegistries {
-    public static final ResourceKey<Registry<AdvancedBarrier>> ADVANCED_BARRIER = ResourceKey.createRegistryKey(Barricade.asResource("advanced_barrier"));
+	public static final ResourceKey<Registry<AdvancedBarrier>> ADVANCED_BARRIER = ResourceKey.createRegistryKey(Barricade.asResource("advanced_barrier"));
 }

@@ -2,8 +2,6 @@ package net.modgarden.barricade.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.modgarden.silicate.api.condition.GameCondition;
-import net.modgarden.silicate.api.exception.InvalidContextParameterException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -20,64 +18,73 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.PredicateBarrierBlock;
 import net.modgarden.barricade.registry.BarricadeRegistries;
+import net.modgarden.silicate.api.condition.GameCondition;
+import net.modgarden.silicate.api.exception.InvalidContextParameterException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
 
-public record AdvancedBarrier(Optional<Component> name, BlockedDirections directions, Optional<ResourceLocation> icon, Optional<Holder<GameCondition<?>>> condition) {
-    public static final AdvancedBarrier DEFAULT = new AdvancedBarrier(Optional.empty(), BlockedDirections.of(Direction.values()), Optional.empty(), Optional.empty());
-    public static final ResourceLocation UNKNOWN_ICON = Barricade.asResource("barricade/icon/unknown");
+public record AdvancedBarrier(Optional<Component> name,
+                              BlockedDirections directions,
+                              Optional<ResourceLocation> icon,
+                              Optional<Holder<GameCondition<?>>> condition) {
+	public static final AdvancedBarrier DEFAULT = new AdvancedBarrier(Optional.empty(), BlockedDirections.of(Direction.values()), Optional.empty(), Optional.empty());
+	public static final ResourceLocation UNKNOWN_ICON = Barricade.asResource("barricade/icon/unknown");
 
-    public static final Codec<AdvancedBarrier> DIRECT_CODEC = RecordCodecBuilder.create(inst -> inst.group(
-            ComponentSerialization.CODEC.optionalFieldOf("name").forGetter(AdvancedBarrier::name),
-            BlockedDirections.CODEC.optionalFieldOf("directions", BlockedDirections.of(Direction.values())).forGetter(AdvancedBarrier::directions),
-            ResourceLocation.CODEC.optionalFieldOf("icon").forGetter(AdvancedBarrier::icon),
-            GameCondition.CODEC
-                .optionalFieldOf("condition")
-                .forGetter(AdvancedBarrier::condition)
-    ).apply(inst, AdvancedBarrier::new));
-    public static final Codec<Holder<AdvancedBarrier>> CODEC = RegistryFixedCodec.create(BarricadeRegistries.ADVANCED_BARRIER);
-    public static final StreamCodec<RegistryFriendlyByteBuf, Holder<AdvancedBarrier>> STREAM_CODEC = ByteBufCodecs.holderRegistry(BarricadeRegistries.ADVANCED_BARRIER);
+	public static final Codec<AdvancedBarrier> DIRECT_CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			ComponentSerialization.CODEC.optionalFieldOf("name").forGetter(AdvancedBarrier::name),
+			BlockedDirections.CODEC.optionalFieldOf("directions", BlockedDirections.of(Direction.values())).forGetter(AdvancedBarrier::directions),
+			ResourceLocation.CODEC.optionalFieldOf("icon").forGetter(AdvancedBarrier::icon),
+			GameCondition.CODEC
+					.optionalFieldOf("condition")
+					.forGetter(AdvancedBarrier::condition)
+	).apply(inst, AdvancedBarrier::new));
+	public static final Codec<Holder<AdvancedBarrier>> CODEC = RegistryFixedCodec.create(BarricadeRegistries.ADVANCED_BARRIER);
+	public static final StreamCodec<RegistryFriendlyByteBuf, Holder<AdvancedBarrier>> STREAM_CODEC = ByteBufCodecs.holderRegistry(BarricadeRegistries.ADVANCED_BARRIER);
 
-    public AdvancedBarrier(Optional<Component> name, BlockedDirections directions, Optional<ResourceLocation> icon, Optional<Holder<GameCondition<?>>> condition) {
-        this.name = name;
-        this.directions = directions;
-        Optional<ResourceLocation> finalIcon = icon.map(resourceLocation -> resourceLocation.withPath(s -> "barricade/icon/" + s));
-        // Sanity check for icon
-        if (condition.isPresent() && icon.isEmpty()) {
-            // Warn user
-            Component knownName = name.orElse(Component.literal("Unknown"));
-            Barricade.LOG.warn("Icon is missing for Advanced Barrier \"{}\"", knownName.getString());
-            // Use unknown icon
-            finalIcon = Optional.of(UNKNOWN_ICON);
-        }
-        this.icon = finalIcon;
-        this.condition = condition;
-    }
+	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+	public AdvancedBarrier(Optional<Component> name, BlockedDirections directions, Optional<ResourceLocation> icon, Optional<Holder<GameCondition<?>>> condition) {
+		this.name = name;
+		this.directions = directions;
+		Optional<ResourceLocation> finalIcon = icon.map(resourceLocation -> resourceLocation.withPath(s -> "barricade/icon/" + s));
+		// Sanity check for icon
+		if (condition.isPresent() && icon.isEmpty()) {
+			// Warn user
+			Component knownName = name.orElse(Component.literal("Unknown"));
+			Barricade.LOG.warn("Icon is missing for Advanced Barrier \"{}\"", knownName.getString());
+			// Use unknown icon
+			finalIcon = Optional.of(UNKNOWN_ICON);
+		}
+		this.icon = finalIcon;
+		this.condition = condition;
+	}
 
 
-    public boolean test(
-            @Nullable Level level,
-            @NotNull Entity entity,
-            BlockState state,
-            BlockPos pos
-    ) throws InvalidContextParameterException {
-        return condition.isPresent() && condition.get().value().test(
-            PredicateBarrierBlock.newContext(level, entity, state, pos)
-        );
-    }
+	public boolean test(
+			@Nullable Level level,
+			@NotNull Entity entity,
+			BlockState state,
+			BlockPos pos
+	) throws InvalidContextParameterException {
+		return condition.isPresent() && condition.get().value().test(
+				PredicateBarrierBlock.newContext(level, entity, state, pos)
+		);
+	}
 
-    @Override
-    public boolean equals(Object other) {
-        if (!(other instanceof AdvancedBarrier component))
-            return false;
-        return component.name.equals(name) && component.directions.equals(directions) && component.icon.equals(icon) && component.condition.equals(condition);
-    }
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof AdvancedBarrier(
+				Optional<Component> name1, BlockedDirections directions1, Optional<ResourceLocation> icon1,
+				Optional<Holder<GameCondition<?>>> condition1
+		)))
+			return false;
+		return name1.equals(name) && directions1.equals(directions) && icon1.equals(icon) && condition1.equals(condition);
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, directions, icon, condition);
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(name, directions, icon, condition);
+	}
 }

@@ -1,33 +1,117 @@
 {
-  "loader": "barricade:operator",
-  "operator_blocks": "#barricade:barriers",
-  "model": {
-    "parent": "minecraft:block/cube_all",
-    "textures": {
-      "all": "barricade:block/barrier"
-    },
-    "elements": [
-      {
-        "from": [0, 0, 0],
-        "to": [16, 16, 16],
-        "faces": {
-          "north": {"uv": [16, 0, 0, 16], "texture": "#all", "cullface": "north"},
-          "east": {"uv": [16, 0, 0, 16], "texture": "#all", "cullface": "east"},
-          "south": {"uv": [16, 0, 0, 16], "texture": "#all", "cullface": "south"},
-          "west": {"uv": [16, 0, 0, 16], "texture": "#all", "cullface": "west"}
-        }
-      },
-      {
-        "from": [15.998, 0.002, 0.002],
-        "to": [0.002, 15.998, 15.998],
-        "faces": {
-          "north": {"uv": [16, 0, 0, 16], "texture": "#all"},
-          "east": {"uv": [16, 0, 0, 16], "texture": "#all"},
-          "south": {"uv": [16, 0, 0, 16], "texture": "#all"},
-          "west": {"uv": [16, 0, 0, 16], "texture": "#all"}
-        }
-      }
-    ],
-    "render_type": "cutout"
-  }
+	"loader": "barricade:operator",
+	"operator_blocks": "#barricade:barriers",
+	"model": {
+		"parent": "minecraft:block/cube_all",
+		"textures": {
+			"all": "barricade:block/barrier"
+		},
+		"elements": [
+			{
+				"from": [
+					0,
+					0,
+					0
+				],
+				"to": [
+					16,
+					16,
+					16
+				],
+				"faces": {
+					"north": {
+						"uv": [
+							16,
+							0,
+							0,
+							16
+						],
+						"texture": "#all",
+						"cullface": "north"
+					},
+					"east": {
+						"uv": [
+							16,
+							0,
+							0,
+							16
+						],
+						"texture": "#all",
+						"cullface": "east"
+					},
+					"south": {
+						"uv": [
+							16,
+							0,
+							0,
+							16
+						],
+						"texture": "#all",
+						"cullface": "south"
+					},
+					"west": {
+						"uv": [
+							16,
+							0,
+							0,
+							16
+						],
+						"texture": "#all",
+						"cullface": "west"
+					}
+				}
+			},
+			{
+				"from": [
+					15.998,
+					0.002,
+					0.002
+				],
+				"to": [
+					0.002,
+					15.998,
+					15.998
+				],
+				"faces": {
+					"north": {
+						"uv": [
+							16,
+							0,
+							0,
+							16
+						],
+						"texture": "#all"
+					},
+					"east": {
+						"uv": [
+							16,
+							0,
+							0,
+							16
+						],
+						"texture": "#all"
+					},
+					"south": {
+						"uv": [
+							16,
+							0,
+							0,
+							16
+						],
+						"texture": "#all"
+					},
+					"west": {
+						"uv": [
+							16,
+							0,
+							0,
+							16
+						],
+						"texture": "#all"
+					}
+				}
+			}
+		],
+		"render_type": "cutout"
+	}
 }

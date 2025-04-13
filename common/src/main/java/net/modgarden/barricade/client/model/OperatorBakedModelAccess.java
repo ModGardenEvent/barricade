@@ -6,5 +6,5 @@ import net.minecraft.world.level.block.Block;
 import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 
 public interface OperatorBakedModelAccess {
-    Either<OperatorBlockPseudoTag, ResourceKey<Block>> requiredBlock();
+	Either<OperatorBlockPseudoTag, ResourceKey<Block>> requiredBlock();
 }

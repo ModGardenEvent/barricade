@@ -1,5 +1,8 @@
 {
-  "type": "silicate:player_game_type",
-  "param_type": "silicate:this_entity",
-  "game_types": ["survival", "adventure"]
+	"type": "silicate:player_game_type",
+	"param_type": "silicate:this_entity",
+	"game_types": [
+		"survival",
+		"adventure"
+	]
 }

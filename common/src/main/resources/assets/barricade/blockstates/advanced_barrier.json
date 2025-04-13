@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "barricade:block/advanced_barrier"
-    }
-  }
+	"variants": {
+		"": {
+			"model": "barricade:block/advanced_barrier"
+		}
+	}
 }

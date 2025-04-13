@@ -15,7 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,42 +28,42 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class BarricadeClientPlatformHelperNeoForge implements BarricadeClientPlatformHelper {
-    @Override
-    public Collection<BlockElement> fixSeamsOnNeoForge(Collection<BlockElement> collection, TextureAtlasSprite textureAtlasSprite) {
-        return ClientHooks.fixItemModelSeams(new ArrayList<>(collection), textureAtlasSprite);
-    }
+	@Override
+	public Collection<BlockElement> fixSeamsOnNeoForge(Collection<BlockElement> collection, TextureAtlasSprite textureAtlasSprite) {
+		return ClientHooks.fixItemModelSeams(new ArrayList<>(collection), textureAtlasSprite);
+	}
 
-    @Override
-    public void tessellateBlock(BlockAndTintGetter level, BakedModel model, BlockState state, BlockPos pos, PoseStack poseStack, VertexConsumer consumer,
-            RandomSource random, long seed) {
-        Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateBlock(
-                level,
-                model,
-                state,
-                pos,
-                poseStack,
-                consumer,
-                true,
-                random,
-                seed,
-                OverlayTexture.NO_OVERLAY,
-                model.getModelData(level, pos, state, ModelData.EMPTY),
-                RenderType.cutout());
-    }
+	@Override
+	public void tessellateBlock(BlockAndTintGetter level, BakedModel model, BlockState state, BlockPos pos, PoseStack poseStack, VertexConsumer consumer,
+	                            RandomSource random, long seed) {
+		Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateBlock(
+				level,
+				model,
+				state,
+				pos,
+				poseStack,
+				consumer,
+				true,
+				random,
+				seed,
+				OverlayTexture.NO_OVERLAY,
+				model.getModelData(level, pos, state, ModelData.EMPTY),
+				RenderType.cutout());
+	}
 
-    @Override
-    public BakedModel createCreativeOnlyModel(BakedModel model, Either<ResourceLocation, ResourceKey<Block>> operatorBlocks) {
-        return new CreativeOnlyBakedModel(model, operatorBlocks);
-    }
+	@Override
+	public BakedModel createCreativeOnlyModel(BakedModel model, Either<ResourceLocation, ResourceKey<Block>> operatorBlocks) {
+		return new CreativeOnlyBakedModel(model, operatorBlocks);
+	}
 
-    @Override
-    public void sendSuccessClient(CommandContext<?> context, Component component) {
-        ((ClientCommandSourceStack)context.getSource()).sendSuccess(() -> component, false);
-    }
+	@Override
+	public void sendSuccessClient(CommandContext<?> context, Component component) {
+		((ClientCommandSourceStack) context.getSource()).sendSuccess(() -> component, false);
+	}
 
-    @Override
-    public void sendFailureClient(CommandContext<?> context, Component component) {
-        ((ClientCommandSourceStack)context.getSource()).sendFailure(component);
-    }
+	@Override
+	public void sendFailureClient(CommandContext<?> context, Component component) {
+		((ClientCommandSourceStack) context.getSource()).sendFailure(component);
+	}
 
 }

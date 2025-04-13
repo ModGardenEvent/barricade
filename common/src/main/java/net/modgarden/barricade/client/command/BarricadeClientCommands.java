@@ -6,13 +6,13 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.commands.CommandBuildContext;
 
 public class BarricadeClientCommands {
-    public static void registerClientCommands(CommandDispatcher<?> dispatcher,  CommandBuildContext context) {
-        LiteralCommandNode<Object> rootNode = LiteralArgumentBuilder
-                .literal("barricade:client")
-                .build();
+	public static <T> void registerClientCommands(CommandDispatcher<T> dispatcher, CommandBuildContext context) {
+		LiteralCommandNode<T> rootNode = LiteralArgumentBuilder
+				.<T>literal("barricade:client")
+				.build();
 
-        VisibilityCommand.register(rootNode, context);
+		VisibilityCommand.register(rootNode, context);
 
-        ((CommandDispatcher)dispatcher).getRoot().addChild(rootNode);
-    }
+		dispatcher.getRoot().addChild(rootNode);
+	}
 }

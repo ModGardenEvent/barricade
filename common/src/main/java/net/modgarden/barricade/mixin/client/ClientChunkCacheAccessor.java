@@ -6,6 +6,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(ClientChunkCache.class)
 public interface ClientChunkCacheAccessor {
-    @Accessor("storage")
-    ClientChunkCache.Storage getStorage();
+	@Accessor("storage")
+	ClientChunkCache.Storage getStorage();
 }

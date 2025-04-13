@@ -7,15 +7,16 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.modgarden.barricade.client.renderer.item.AdvancedBarrierItemRenderer;
+import org.jetbrains.annotations.NotNull;
 
 public class BarricadeBEWLR extends BlockEntityWithoutLevelRenderer {
-    public static final BarricadeBEWLR INSTANCE = new BarricadeBEWLR();
+	public static final BarricadeBEWLR INSTANCE = new BarricadeBEWLR();
 
-    public BarricadeBEWLR() {
-        super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
-    }
+	public BarricadeBEWLR() {
+		super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
+	}
 
-    public void renderByItem(ItemStack stack, ItemDisplayContext transformType, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay) {
-        AdvancedBarrierItemRenderer.renderItem(stack, transformType, poseStack, bufferSource, light, overlay);
-    }
+	public void renderByItem(@NotNull ItemStack stack, @NotNull ItemDisplayContext transformType, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int light, int overlay) {
+		AdvancedBarrierItemRenderer.renderItem(stack, transformType, poseStack, bufferSource, light, overlay);
+	}
 }

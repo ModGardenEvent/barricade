@@ -7,8 +7,8 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(ModelBakery.class)
 public interface ModelBakeryAccessor {
-    @Accessor("ITEM_MODEL_GENERATOR")
-    static ItemModelGenerator getItemModelGenerator() {
-        throw new RuntimeException("");
-    }
+	@Accessor("ITEM_MODEL_GENERATOR")
+	static ItemModelGenerator getItemModelGenerator() {
+		throw new RuntimeException("");
+	}
 }
