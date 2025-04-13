@@ -8,6 +8,7 @@
 		"AbstractArrowMixin",
 		"BlockBehaviourBlockStateBaseMixin",
 		"BlockBehaviourMixin",
+		"BlockEntityMixin",
 		"BlockMixin"
 	],
 	"client": [

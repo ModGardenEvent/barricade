@@ -13,11 +13,15 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.data.AdvancedBarrier;
 import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeComponents;
+import net.modgarden.barricade.registry.BarricadeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.NoSuchElementException;
 
 public class AdvancedBarrierBlockEntity extends BlockEntity implements Nameable {
 	private Holder<AdvancedBarrier> data;
@@ -49,14 +53,27 @@ public class AdvancedBarrierBlockEntity extends BlockEntity implements Nameable 
 
 	@Override
 	protected void loadAdditional(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
-		if (tag.contains("data"))
+		if (tag.contains("data")) {
 			data = AdvancedBarrier.CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), tag.get("data")).getOrThrow();
+		}
+
+		if (tag.contains("a") && this.hasLevel()) {
+			assert this.getLevel() != null;
+			try {
+				data = this.getLevel().registryAccess().registryOrThrow(BarricadeRegistries.ADVANCED_BARRIER).getHolder(tag.getInt("a")).orElseThrow();
+			} catch (NoSuchElementException e) {
+				Barricade.LOG.error("Unknown Advanced Barrier of ID {}", tag.getInt("a"));
+			} catch (IllegalStateException e) {
+				Barricade.LOG.error("Error occurred while fetching registry", e);
+			}
+		}
 	}
 
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
-		if (data != null && data.unwrapKey().isPresent())
+		if (data != null && data.unwrapKey().isPresent()) {
 			tag.put("data", AdvancedBarrier.CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), data).getOrThrow());
+		}
 	}
 
 	@Nullable
