@@ -33,6 +33,7 @@ public class AdvancedBarrierBlockEntity extends BlockEntity implements Nameable 
 	}
 
 	public AdvancedBarrier getData() {
+		// Gracefully handle invalid data
 		if (data == null || !data.isBound())
 			return AdvancedBarrier.DEFAULT;
 		return data.value();
@@ -55,11 +56,17 @@ public class AdvancedBarrierBlockEntity extends BlockEntity implements Nameable 
 	@Override
 	protected void loadAdditional(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
 		if (tag.contains("data")) {
-			data = AdvancedBarrier.CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), tag.get("data")).getOrThrow();
+			// Gracefully handle invalid data
+			try {
+				data = AdvancedBarrier.CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), tag.get("data")).getOrThrow();
+			} catch (IllegalStateException e) {
+				Barricade.LOG.error("Failed to load advanced data", e);
+			}
 		}
 
 		if (tag.contains("a") && this.hasLevel()) {
 			assert this.getLevel() != null;
+			// Gracefully handle invalid data
 			try {
 				data = this.getLevel().registryAccess().registryOrThrow(BarricadeRegistries.ADVANCED_BARRIER).getHolder(tag.getInt("a")).orElseThrow();
 			} catch (NoSuchElementException e) {

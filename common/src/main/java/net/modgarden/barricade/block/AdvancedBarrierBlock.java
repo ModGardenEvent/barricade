@@ -25,12 +25,14 @@ import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
 import net.modgarden.barricade.data.AdvancedBarrier;
 import net.modgarden.barricade.data.BlockedDirections;
 import net.modgarden.barricade.registry.BarricadeComponents;
+import net.modgarden.barricade.registry.BarricadeRegistries;
 import net.modgarden.silicate.api.exception.InvalidContextParameterException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
@@ -153,8 +155,15 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
 	@Override
 	public @NotNull ItemStack getCloneItemStack(LevelReader level, @NotNull BlockPos pos, @NotNull BlockState state) {
 		ItemStack stack = new ItemStack(this);
-		if (level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity)
-			stack.set(BarricadeComponents.ADVANCED_BARRIER, blockEntity.getHolder());
+		if (level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity) {
+			Holder<AdvancedBarrier> data = blockEntity.getHolder();
+			// Switch to default barrier
+			if (blockEntity.getData().equals(AdvancedBarrier.DEFAULT)) {
+				data = Objects.requireNonNull(level).registryAccess().registryOrThrow(BarricadeRegistries.ADVANCED_BARRIER).getHolder(Barricade.asResource("default")).orElseThrow();
+			}
+
+			stack.set(BarricadeComponents.ADVANCED_BARRIER, data);
+		}
 		return stack;
 	}
 
