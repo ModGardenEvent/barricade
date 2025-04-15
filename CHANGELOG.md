@@ -1,2 +1,2 @@
-## Changes
-- Optimize Advanced Barriers over network.
+## Bugfixes
+- Rectify buggy implementation of Advanced Barriers.

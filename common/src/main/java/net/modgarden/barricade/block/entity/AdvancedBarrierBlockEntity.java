@@ -3,6 +3,7 @@ package net.modgarden.barricade.block.entity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -84,7 +85,14 @@ public class AdvancedBarrierBlockEntity extends BlockEntity implements Nameable 
 
 	@Override
 	public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider provider) {
-		return saveWithoutMetadata(provider);
+		CompoundTag tag = new CompoundTag();
+		if (this.hasLevel()) {
+			assert this.getLevel() != null;
+			Registry<AdvancedBarrier> registry = this.getLevel().registryAccess().registryOrThrow(BarricadeRegistries.ADVANCED_BARRIER);
+			tag.putInt("a", registry.getId(this.getData()));
+		}
+
+		return tag;
 	}
 
 	@Override
