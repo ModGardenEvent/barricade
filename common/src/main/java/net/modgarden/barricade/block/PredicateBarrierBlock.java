@@ -41,7 +41,7 @@ public class PredicateBarrierBlock extends BarrierBlock {
 					.fieldOf("icon")
 					.forGetter(PredicateBarrierBlock::icon),
 			GameCondition.CODEC
-					.fieldOf("conditions")
+					.fieldOf("condition")
 					.forGetter(PredicateBarrierBlock::rawCondition)
 	).apply(instance, PredicateBarrierBlock::new));
 	public static final ContextParamSet PARAM_SET = ContextParamSet.Builder
