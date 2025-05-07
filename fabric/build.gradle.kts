@@ -71,7 +71,6 @@ loom {
 				vmArg("-javaagent:$mixinJarFile")
 
 				property("mixin.hotSwap", "true")
-				property("mixin.debug.export", "true")
 
 				// Class redefinition (for JBR/DCEVM)
 				vmArg("-XX:+AllowEnhancedClassRedefinition")
