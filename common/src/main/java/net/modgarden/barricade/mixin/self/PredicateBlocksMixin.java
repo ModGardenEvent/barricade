@@ -40,7 +40,11 @@ public class PredicateBlocksMixin implements PredicateBlock {
 	)
 	private void init(BlockBehaviour.Properties properties, ResourceLocation icon, ResourceKey<GameCondition<?>> conditionTemplate, CallbackInfo ci) {
 		this.barricade$icon = icon;
-		this.barricade$registryToCondition = registryAccess -> registryAccess.registryOrThrow(SilicateRegistries.CONDITION_TEMPLATE).getHolderOrThrow(conditionTemplate);
+		this.barricade$registryToCondition = registryAccess -> {
+			Holder<GameCondition<?>> condition = registryAccess.registryOrThrow(SilicateRegistries.CONDITION_TEMPLATE).getHolderOrThrow(conditionTemplate);
+			barricade$condition = condition;
+			return condition;
+		};
 	}
 
 	@Inject(
@@ -49,7 +53,7 @@ public class PredicateBlocksMixin implements PredicateBlock {
 	)
 	private void init(BlockBehaviour.Properties properties, ResourceLocation icon, Holder<GameCondition<?>> condition, CallbackInfo ci) {
 		this.barricade$icon = icon;
-		this.barricade$registryToCondition = null;
+		this.barricade$registryToCondition = registryAccess -> condition;
 		this.barricade$condition = condition;
 	}
 
@@ -60,8 +64,11 @@ public class PredicateBlocksMixin implements PredicateBlock {
 
 	@Override
 	public Holder<GameCondition<?>> barricade$condition(RegistryAccess registries) {
-		if (barricade$condition == null && barricade$registryToCondition != null)
-			barricade$condition = barricade$registryToCondition.apply(registries);
+		return barricade$registryToCondition.apply(registries);
+	}
+
+	@Override
+	public @Nullable Holder<GameCondition<?>> barricade$rawCondition() {
 		return barricade$condition;
 	}
 
@@ -78,13 +85,13 @@ public class PredicateBlocksMixin implements PredicateBlock {
 
 	@Override
 	public final boolean barricade$test(GameContext context) {
-		if (context.getLevel() == null)
-			return barricade$rawCondition() != null && barricade$rawCondition().value().test(context);
-		return this.barricade$condition(context.getLevel().registryAccess()).value().test(context);
-	}
+		if (context.getLevel() == null) {
+			// IntelliJ doesn't see the null check.
+			//noinspection DataFlowIssue
+			return this.barricade$rawCondition() != null && this.barricade$rawCondition().value().test(context);
+		}
 
-	@Override
-	public Holder<GameCondition<?>> barricade$rawCondition() {
-		return barricade$condition;
+		Holder<GameCondition<?>> condition = this.barricade$condition(context.getLevel().registryAccess());
+		return condition.value().test(context);
 	}
 }

@@ -96,7 +96,7 @@ public interface PredicateBlock {
 		throw new IllegalStateException(MIXIN_NOT_APPLIED);
 	}
 
-	default Holder<GameCondition<?>> barricade$rawCondition() {
+	default @Nullable Holder<GameCondition<?>> barricade$rawCondition() {
 		throw new IllegalStateException(MIXIN_NOT_APPLIED);
 	}
 

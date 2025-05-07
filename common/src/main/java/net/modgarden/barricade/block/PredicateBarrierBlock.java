@@ -57,13 +57,17 @@ public class PredicateBarrierBlock extends BarrierBlock {
 	public PredicateBarrierBlock(Properties properties, ResourceLocation icon, ResourceKey<GameCondition<?>> conditionTemplate) {
 		super(properties);
 		this.icon = icon;
-		this.function = registryAccess -> registryAccess.registryOrThrow(SilicateRegistries.CONDITION_TEMPLATE).getHolderOrThrow(conditionTemplate);
+		this.function = registryAccess -> {
+			Holder<GameCondition<?>> condition = registryAccess.registryOrThrow(SilicateRegistries.CONDITION_TEMPLATE).getHolderOrThrow(conditionTemplate);
+			this.condition = condition;
+			return condition;
+		};
 	}
 
 	private PredicateBarrierBlock(Properties properties, ResourceLocation icon, Holder<GameCondition<?>> condition) {
 		super(properties);
 		this.icon = icon;
-		this.function = null;
+		this.function = registryAccess -> condition;
 		this.condition = condition;
 	}
 
@@ -72,9 +76,7 @@ public class PredicateBarrierBlock extends BarrierBlock {
 	}
 
 	public Holder<GameCondition<?>> condition(RegistryAccess registries) {
-		if (condition == null && function != null)
-			condition = function.apply(registries);
-		return condition;
+		return function.apply(registries);
 	}
 
 	private Holder<GameCondition<?>> rawCondition() {
