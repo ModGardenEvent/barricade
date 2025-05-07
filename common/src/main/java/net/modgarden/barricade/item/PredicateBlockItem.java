@@ -9,8 +9,8 @@ import net.modgarden.silicate.api.exception.InvalidContextParameterException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PredicateBlockItem<T extends Block, S extends PredicateBlock<T>> extends BlockItem {
-	public PredicateBlockItem(S block, Properties properties) {
+public class PredicateBlockItem<T extends Block & PredicateBlock> extends BlockItem {
+	public PredicateBlockItem(T block, Properties properties) {
 		super(block, properties);
 	}
 
@@ -18,7 +18,7 @@ public class PredicateBlockItem<T extends Block, S extends PredicateBlock<T>> ex
 	protected boolean canPlace(@NotNull BlockPlaceContext context, @NotNull BlockState state) {
 		if (super.canPlace(context, state) && context.getPlayer() != null) {
 			try {
-				return this.getBlock().test(context.getLevel(), context.getPlayer(), state, context.getClickedPos());
+				return this.getBlock().barricade$test(context.getLevel(), context.getPlayer(), state, context.getClickedPos());
 			} catch (InvalidContextParameterException e) {
 				throw new RuntimeException(e);
 			}
@@ -34,7 +34,7 @@ public class PredicateBlockItem<T extends Block, S extends PredicateBlock<T>> ex
 
 	@SuppressWarnings("unchecked") // It is illegal to have a this.block field not of type S
 	@Override
-	public @NotNull S getBlock() {
-		return (S) super.getBlock();
+	public @NotNull T getBlock() {
+		return (T) super.getBlock();
 	}
 }

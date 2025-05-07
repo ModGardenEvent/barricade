@@ -5,7 +5,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.block.LeverBlock;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.PredicateLeverBlock;
 import net.modgarden.barricade.item.AdvancedBarrierBlockItem;
@@ -38,7 +37,7 @@ public class BarricadeItems {
 	);
 
 	// Predicate Levers
-	public static final PredicateBlockItem<LeverBlock, PredicateLeverBlock> CREATIVE_ONLY_LEVER = new PredicateBlockItem<>(
+	public static final PredicateBlockItem<PredicateLeverBlock> CREATIVE_ONLY_LEVER = new PredicateBlockItem<>(
 			BarricadeBlocks.CREATIVE_ONLY_LEVER,
 			barrierProps()
 	);

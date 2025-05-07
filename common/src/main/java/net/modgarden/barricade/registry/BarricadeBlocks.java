@@ -10,9 +10,9 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.*;
 import net.modgarden.barricade.data.BlockedDirections;
-import net.modgarden.barricade.mixin.PredicateBlockAccessor;
 import net.modgarden.silicate.api.SilicateRegistries;
 import net.modgarden.silicate.api.condition.GameCondition;
+import org.jetbrains.annotations.NotNull;
 
 public class BarricadeBlocks {
 	public static final AdvancedBarrierBlock ADVANCED_BARRIER = new AdvancedBarrierBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
@@ -61,6 +61,7 @@ public class BarricadeBlocks {
 
 	// Predicate Levers
 	public static final PredicateLeverBlock CREATIVE_ONLY_LEVER = new PredicateLeverBlock(
+			leverProps(),
 			Barricade.asResource("barricade/icon/iron_sword"),
 			conditionTemplate("creative_only")
 	);
@@ -84,13 +85,7 @@ public class BarricadeBlocks {
 
 		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("creative_only_barrier"), CREATIVE_ONLY_BARRIER);
 
-		registerPredicate("creative_only_lever", CREATIVE_ONLY_LEVER);
-	}
-
-	private static <T extends Block, S extends PredicateBlock<T>> void registerPredicate(String name, S block) {
-		register(name, block);
-		// https://github.com/reactjs/react.dev/issues/3896
-		register("zz__" + name + "_secret_block_do_not_use_or_you_will_be_fired", ((PredicateBlockAccessor) block).getSimulated());
+		register("creative_only_lever", CREATIVE_ONLY_LEVER);
 	}
 
 	private static void register(String name, Block block) {
@@ -102,5 +97,9 @@ public class BarricadeBlocks {
 				SilicateRegistries.CONDITION_TEMPLATE,
 				Barricade.asResource(name)
 		);
+	}
+
+	private static BlockBehaviour.@NotNull Properties leverProps() {
+		return BlockBehaviour.Properties.ofFullCopy(Blocks.LEVER);
 	}
 }
