@@ -15,48 +15,43 @@ import net.modgarden.silicate.api.condition.GameCondition;
 import org.jetbrains.annotations.NotNull;
 
 public class BarricadeBlocks {
-	public static final AdvancedBarrierBlock ADVANCED_BARRIER = new AdvancedBarrierBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
+	public static final AdvancedBarrierBlock ADVANCED_BARRIER = new AdvancedBarrierBlock(barrierProps());
 
-	public static final DirectionalBarrierBlock DOWN_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.DOWN), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
-	public static final DirectionalBarrierBlock UP_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.UP), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
-	public static final DirectionalBarrierBlock SOUTH_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.SOUTH), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
-	public static final DirectionalBarrierBlock NORTH_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.NORTH), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
-	public static final DirectionalBarrierBlock EAST_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.EAST), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
-	public static final DirectionalBarrierBlock WEST_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.WEST), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
-	public static final DirectionalBarrierBlock HORIZONTAL_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.WEST, Direction.EAST, Direction.NORTH, Direction.SOUTH), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
-	public static final DirectionalBarrierBlock VERTICAL_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.UP, Direction.DOWN), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
+	public static final DirectionalBarrierBlock DOWN_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.DOWN), barrierProps());
+	public static final DirectionalBarrierBlock UP_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.UP), barrierProps());
+	public static final DirectionalBarrierBlock SOUTH_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.SOUTH), barrierProps());
+	public static final DirectionalBarrierBlock NORTH_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.NORTH), barrierProps());
+	public static final DirectionalBarrierBlock EAST_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.EAST), barrierProps());
+	public static final DirectionalBarrierBlock WEST_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.WEST), barrierProps());
+	public static final DirectionalBarrierBlock HORIZONTAL_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.WEST, Direction.EAST, Direction.NORTH, Direction.SOUTH), barrierProps());
+	public static final DirectionalBarrierBlock VERTICAL_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.UP, Direction.DOWN), barrierProps());
 
 	// Predicate Barriers
 	public static final PredicateBarrierBlock CREATIVE_ONLY_BARRIER = new PredicateBarrierBlock(
-			BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
-					.dynamicShape(),
+			barrierProps(),
 			Barricade.asResource("barricade/icon/iron_sword"),
-			ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("creative_only"))
+			conditionTemplate("creative_only")
 	);
 
 	public static final PredicateBarrierBlock PLAYER_BARRIER = new PredicateBarrierBlock(
-			BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
-					.dynamicShape(),
+			barrierProps(),
 			Barricade.asResource("barricade/icon/steve"),
-			ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("player"))
+			conditionTemplate("player")
 	);
 	public static final PredicateBarrierBlock MOB_BARRIER = new PredicateBarrierBlock(
-			BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
-					.dynamicShape(),
+			barrierProps(),
 			Barricade.asResource("barricade/icon/pig"),
-			ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("mob"))
+			conditionTemplate("mob")
 	);
 	public static final PredicateBarrierBlock PASSIVE_BARRIER = new PredicateBarrierBlock(
-			BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
-					.dynamicShape(),
+			barrierProps(),
 			Barricade.asResource("barricade/icon/parrot"),
-			ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("passive"))
+			conditionTemplate("passive")
 	);
 	public static final PredicateBarrierBlock HOSTILE_BARRIER = new PredicateBarrierBlock(
-			BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
-					.dynamicShape(),
+			barrierProps(),
 			Barricade.asResource("barricade/icon/creeper"),
-			ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("hostile"))
+			conditionTemplate("hostile")
 	);
 
 	// Predicate Levers
@@ -67,23 +62,23 @@ public class BarricadeBlocks {
 	);
 
 	public static void registerAll() {
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("advanced_barrier"), ADVANCED_BARRIER);
+		register("advanced_barrier", ADVANCED_BARRIER);
 
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("down_barrier"), DOWN_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("up_barrier"), UP_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("south_barrier"), SOUTH_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("north_barrier"), NORTH_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("east_barrier"), EAST_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("west_barrier"), WEST_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("horizontal_barrier"), HORIZONTAL_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("vertical_barrier"), VERTICAL_BARRIER);
+		register("down_barrier", DOWN_BARRIER);
+		register("up_barrier", UP_BARRIER);
+		register("south_barrier", SOUTH_BARRIER);
+		register("north_barrier", NORTH_BARRIER);
+		register("east_barrier", EAST_BARRIER);
+		register("west_barrier", WEST_BARRIER);
+		register("horizontal_barrier", HORIZONTAL_BARRIER);
+		register("vertical_barrier", VERTICAL_BARRIER);
 
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("player_barrier"), PLAYER_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("mob_barrier"), MOB_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("passive_barrier"), PASSIVE_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("hostile_barrier"), HOSTILE_BARRIER);
+		register("player_barrier", PLAYER_BARRIER);
+		register("mob_barrier", MOB_BARRIER);
+		register("passive_barrier", PASSIVE_BARRIER);
+		register("hostile_barrier", HOSTILE_BARRIER);
 
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("creative_only_barrier"), CREATIVE_ONLY_BARRIER);
+		register("creative_only_barrier", CREATIVE_ONLY_BARRIER);
 
 		register("creative_only_lever", CREATIVE_ONLY_LEVER);
 	}
@@ -97,6 +92,11 @@ public class BarricadeBlocks {
 				SilicateRegistries.CONDITION_TEMPLATE,
 				Barricade.asResource(name)
 		);
+	}
+
+	private static BlockBehaviour.@NotNull Properties barrierProps() {
+		return BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
+				.dynamicShape();
 	}
 
 	private static BlockBehaviour.@NotNull Properties leverProps() {

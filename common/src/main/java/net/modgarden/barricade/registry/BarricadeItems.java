@@ -43,23 +43,23 @@ public class BarricadeItems {
 	);
 
 	public static void registerAll() {
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("advanced_barrier"), ADVANCED_BARRIER);
+		register("advanced_barrier", ADVANCED_BARRIER);
 
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("down_barrier"), DOWN_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("up_barrier"), UP_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("south_barrier"), SOUTH_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("north_barrier"), NORTH_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("east_barrier"), EAST_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("west_barrier"), WEST_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("horizontal_barrier"), HORIZONTAL_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("vertical_barrier"), VERTICAL_BARRIER);
+		register("down_barrier", DOWN_BARRIER);
+		register("up_barrier", UP_BARRIER);
+		register("south_barrier", SOUTH_BARRIER);
+		register("north_barrier", NORTH_BARRIER);
+		register("east_barrier", EAST_BARRIER);
+		register("west_barrier", WEST_BARRIER);
+		register("horizontal_barrier", HORIZONTAL_BARRIER);
+		register("vertical_barrier", VERTICAL_BARRIER);
 
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("player_barrier"), PLAYER_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("mob_barrier"), MOB_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("passive_barrier"), PASSIVE_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("hostile_barrier"), HOSTILE_BARRIER);
+		register("player_barrier", PLAYER_BARRIER);
+		register("mob_barrier", MOB_BARRIER);
+		register("passive_barrier", PASSIVE_BARRIER);
+		register("hostile_barrier", HOSTILE_BARRIER);
 
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("creative_only_barrier"), CREATIVE_ONLY_BARRIER);
+		register("creative_only_barrier", CREATIVE_ONLY_BARRIER);
 
 		register("creative_only_lever", CREATIVE_ONLY_LEVER);
 	}
