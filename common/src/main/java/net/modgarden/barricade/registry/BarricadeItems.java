@@ -5,10 +5,13 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.block.LeverBlock;
 import net.modgarden.barricade.Barricade;
+import net.modgarden.barricade.block.PredicateLeverBlock;
 import net.modgarden.barricade.item.AdvancedBarrierBlockItem;
 import net.modgarden.barricade.item.DirectionalBarrierBlockItem;
 import net.modgarden.barricade.item.EntityCheckBarrierBlockItem;
+import net.modgarden.barricade.item.PredicateBlockItem;
 import org.jetbrains.annotations.NotNull;
 
 public class BarricadeItems {
@@ -34,6 +37,12 @@ public class BarricadeItems {
 			barrierProps()
 	);
 
+	// Predicate Levers
+	public static final PredicateBlockItem<LeverBlock, PredicateLeverBlock> CREATIVE_ONLY_LEVER = new PredicateBlockItem<>(
+			BarricadeBlocks.CREATIVE_ONLY_LEVER,
+			barrierProps()
+	);
+
 	public static void registerAll() {
 		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("advanced_barrier"), ADVANCED_BARRIER);
 
@@ -52,6 +61,12 @@ public class BarricadeItems {
 		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("hostile_barrier"), HOSTILE_BARRIER);
 
 		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("creative_only_barrier"), CREATIVE_ONLY_BARRIER);
+
+		register("creative_only_lever", CREATIVE_ONLY_LEVER);
+	}
+
+	private static void register(String name, BlockItem blockItem) {
+		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource(name), blockItem);
 	}
 
 	private static Item.@NotNull Properties barrierProps() {

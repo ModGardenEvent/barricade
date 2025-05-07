@@ -1,2 +1,2 @@
 ## Bugfixes
-- Rectify buggy implementation of Advanced Barriers.
+- typo: `condition` field (previously `conditions`) in `PredicateBarrierBlock`

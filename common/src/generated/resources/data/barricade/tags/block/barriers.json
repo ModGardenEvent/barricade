@@ -1,7 +1,7 @@
 {
-	"values": [
-		"minecraft:barrier",
-		"#barricade:directional_barriers",
-		"#barricade:predicate_barriers"
-	]
+  "values": [
+    "minecraft:barrier",
+    "#barricade:directional_barriers",
+    "#barricade:predicate_barriers"
+  ]
 }

@@ -4,14 +4,15 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.modgarden.barricade.Barricade;
-import net.modgarden.barricade.block.AdvancedBarrierBlock;
-import net.modgarden.barricade.block.DirectionalBarrierBlock;
-import net.modgarden.barricade.block.PredicateBarrierBlock;
+import net.modgarden.barricade.block.*;
 import net.modgarden.barricade.data.BlockedDirections;
+import net.modgarden.barricade.mixin.PredicateBlockAccessor;
 import net.modgarden.silicate.api.SilicateRegistries;
+import net.modgarden.silicate.api.condition.GameCondition;
 
 public class BarricadeBlocks {
 	public static final AdvancedBarrierBlock ADVANCED_BARRIER = new AdvancedBarrierBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
@@ -58,6 +59,12 @@ public class BarricadeBlocks {
 			ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("hostile"))
 	);
 
+	// Predicate Levers
+	public static final PredicateLeverBlock CREATIVE_ONLY_LEVER = new PredicateLeverBlock(
+			Barricade.asResource("barricade/icon/iron_sword"),
+			conditionTemplate("creative_only")
+	);
+
 	public static void registerAll() {
 		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("advanced_barrier"), ADVANCED_BARRIER);
 
@@ -76,5 +83,24 @@ public class BarricadeBlocks {
 		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("hostile_barrier"), HOSTILE_BARRIER);
 
 		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("creative_only_barrier"), CREATIVE_ONLY_BARRIER);
+
+		registerPredicate("creative_only_lever", CREATIVE_ONLY_LEVER);
+	}
+
+	private static <T extends Block, S extends PredicateBlock<T>> void registerPredicate(String name, S block) {
+		register(name, block);
+		// https://github.com/reactjs/react.dev/issues/3896
+		register("zz__" + name + "_secret_block_do_not_use_or_you_will_be_fired", ((PredicateBlockAccessor) block).getSimulated());
+	}
+
+	private static void register(String name, Block block) {
+		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource(name), block);
+	}
+
+	private static ResourceKey<GameCondition<?>> conditionTemplate(String name) {
+		return ResourceKey.create(
+				SilicateRegistries.CONDITION_TEMPLATE,
+				Barricade.asResource(name)
+		);
 	}
 }
