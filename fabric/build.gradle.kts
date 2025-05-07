@@ -59,6 +59,24 @@ loom {
 		}
 	}
 	runs {
+		afterEvaluate {
+			val mixinJarFile = configurations.runtimeClasspath.get().incoming.artifactView {
+				componentFilter {
+					it is ModuleComponentIdentifier && it.group == "net.fabricmc" && it.module == "sponge-mixin"
+				}
+			}.files.first()
+
+			configureEach {
+				// Mixin hotswapping
+				vmArg("-javaagent:$mixinJarFile")
+
+				property("mixin.hotSwap", "true")
+				property("mixin.debug.export", "true")
+
+				// Class redefinition (for JBR/DCEVM)
+				vmArg("-XX:+AllowEnhancedClassRedefinition")
+			}
+		}
 		named("client") {
 			client()
 			configName = "Fabric Client"
