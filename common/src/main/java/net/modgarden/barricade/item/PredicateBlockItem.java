@@ -5,11 +5,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.modgarden.barricade.block.PredicateBlock;
-import net.modgarden.silicate.api.exception.InvalidContextParameterException;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import static net.modgarden.barricade.Barricade.LOG;
 
 public class PredicateBlockItem<T extends Block & PredicateBlock> extends BlockItem {
 	public PredicateBlockItem(T block, Properties properties) {
@@ -19,23 +15,13 @@ public class PredicateBlockItem<T extends Block & PredicateBlock> extends BlockI
 	@Override
 	protected boolean canPlace(@NotNull BlockPlaceContext context, @NotNull BlockState state) {
 		if (super.canPlace(context, state) && context.getPlayer() != null) {
-			try {
-				return this.getBlock().barricade$test(context.getLevel(), context.getPlayer(), state, context.getClickedPos());
-			} catch (InvalidContextParameterException e) {
-				LOG.error("Failed to test condition", e);
-				return false;
-			}
+			return context.getPlayer().getAbilities().instabuild;
 		} else {
 			return false;
 		}
 	}
 
-	@Override
-	protected @Nullable BlockState getPlacementState(@NotNull BlockPlaceContext context) {
-		return super.getPlacementState(context);
-	}
-
-	@SuppressWarnings("unchecked") // It is illegal to have a this.block field not of type S
+	@SuppressWarnings("unchecked") // It is illegal to have a this.block field not of type T
 	@Override
 	public @NotNull T getBlock() {
 		return (T) super.getBlock();
