@@ -4,11 +4,10 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.modgarden.barricade.block.PredicateBlock;
 import org.jetbrains.annotations.NotNull;
 
-public class PredicateBlockItem<T extends Block & PredicateBlock> extends BlockItem {
-	public PredicateBlockItem(T block, Properties properties) {
+public class OperatorBlockItem<T extends Block> extends BlockItem {
+	public OperatorBlockItem(T block, Properties properties) {
 		super(block, properties);
 	}
 

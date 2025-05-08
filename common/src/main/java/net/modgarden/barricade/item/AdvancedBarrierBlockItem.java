@@ -20,13 +20,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AdvancedBarrierBlockItem extends EntityCheckBarrierBlockItem {
+public class AdvancedBarrierBlockItem extends OperatorBlockItem<Block> {
 	public AdvancedBarrierBlockItem(Block block, Properties properties) {
 		super(block, properties);
 	}
 
 	@Override
 	protected boolean canPlace(@NotNull BlockPlaceContext context, @NotNull BlockState state) {
+		if (!super.canPlace(context, state)) return false;
+
 		ItemStack stack = context.getItemInHand();
 		boolean collision;
 		if (!stack.has(BarricadeComponents.ADVANCED_BARRIER)) {
