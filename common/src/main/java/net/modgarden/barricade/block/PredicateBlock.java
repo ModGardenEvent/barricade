@@ -116,6 +116,10 @@ public interface PredicateBlock {
 		throw new IllegalStateException(MIXIN_NOT_APPLIED);
 	}
 
+	/**
+	 * Checks if the entity in the collision context passes the condition.
+	 * @return If the entity in the context passes the condition.
+	 */
 	default boolean isShaped(
 			@NotNull BlockState state,
 			@NotNull BlockGetter blockGetter,

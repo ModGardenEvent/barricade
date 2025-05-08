@@ -16,7 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.modgarden.barricade.Barricade;
-import net.modgarden.barricade.block.PredicateBarrierBlock;
+import net.modgarden.barricade.block.PredicateBlock;
 import net.modgarden.barricade.registry.BarricadeRegistries;
 import net.modgarden.silicate.api.condition.GameCondition;
 import net.modgarden.silicate.api.exception.InvalidContextParameterException;
@@ -69,7 +69,7 @@ public record AdvancedBarrier(Optional<Component> name,
 			BlockPos pos
 	) throws InvalidContextParameterException {
 		return condition.isPresent() && condition.get().value().test(
-				PredicateBarrierBlock.newContext(level, entity, state, pos)
+				PredicateBlock.newContext(level, entity, state, pos)
 		);
 	}
 

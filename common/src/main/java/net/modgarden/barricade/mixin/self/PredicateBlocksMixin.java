@@ -9,6 +9,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.modgarden.barricade.block.PredicateBarrierBlock;
 import net.modgarden.barricade.block.PredicateBlock;
 import net.modgarden.barricade.block.PredicateLeverBlock;
 import net.modgarden.silicate.api.SilicateRegistries;
@@ -25,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.function.Function;
 
-@Mixin({PredicateLeverBlock.class})
+@Mixin({PredicateBarrierBlock.class, PredicateLeverBlock.class})
 public class PredicateBlocksMixin implements PredicateBlock {
 	@Unique
 	private ResourceLocation barricade$icon;

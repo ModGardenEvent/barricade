@@ -95,7 +95,7 @@ public class ClientLevelMixin {
 			BarrierRenderUtils.createAdvancedParticle(blockEntity.getData().directions(), blockEntity.getData().icon().orElse(null), particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
 			return;
 		} else if (blockState.getBlock() instanceof PredicateBarrierBlock predicateBarrierBlock) {
-			BarrierRenderUtils.createAdvancedParticle(new BlockedDirections(EnumSet.allOf(Direction.class)), predicateBarrierBlock.icon(), particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
+			BarrierRenderUtils.createAdvancedParticle(new BlockedDirections(EnumSet.allOf(Direction.class)), predicateBarrierBlock.barricade$icon(), particleOptions -> original.call(instance, particleOptions, x, y, z, xSpeed, ySpeed, zSpeed), blockPos.immutable());
 			return;
 		}
 		original.call(instance, particleData, x, y, z, xSpeed, ySpeed, zSpeed);
