@@ -19,6 +19,8 @@ import net.modgarden.silicate.api.condition.GameCondition;
 import net.modgarden.silicate.api.exception.InvalidContextParameterException;
 import org.jetbrains.annotations.NotNull;
 
+import static net.modgarden.barricade.Barricade.LOG;
+
 public class PredicateLeverBlock extends LeverBlock implements PredicateBlock {
 	@SuppressWarnings("unused")
 	public PredicateLeverBlock(Properties properties, ResourceLocation icon, ResourceKey<GameCondition<?>> conditionTemplate) {
@@ -63,7 +65,8 @@ public class PredicateLeverBlock extends LeverBlock implements PredicateBlock {
 				return InteractionResult.PASS;
 			}
 		} catch (InvalidContextParameterException e) {
-			throw new RuntimeException(e);
+			LOG.error("Failed to test condition", e);
+			return InteractionResult.FAIL;
 		}
 	}
 }

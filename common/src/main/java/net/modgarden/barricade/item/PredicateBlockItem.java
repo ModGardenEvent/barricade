@@ -9,6 +9,8 @@ import net.modgarden.silicate.api.exception.InvalidContextParameterException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static net.modgarden.barricade.Barricade.LOG;
+
 public class PredicateBlockItem<T extends Block & PredicateBlock> extends BlockItem {
 	public PredicateBlockItem(T block, Properties properties) {
 		super(block, properties);
@@ -20,7 +22,8 @@ public class PredicateBlockItem<T extends Block & PredicateBlock> extends BlockI
 			try {
 				return this.getBlock().barricade$test(context.getLevel(), context.getPlayer(), state, context.getClickedPos());
 			} catch (InvalidContextParameterException e) {
-				throw new RuntimeException(e);
+				LOG.error("Failed to test condition", e);
+				return false;
 			}
 		} else {
 			return false;
