@@ -1,0 +1,17 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "net.modgarden.barricade.datagen.mixin",
+	"refmap": "${mod_id}.refmap.json",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"BlockFamilyProviderAccessor",
+		"BlockModelGeneratorsAccessor"
+	],
+	"client": [
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
+

@@ -23,6 +23,9 @@
 			"net.modgarden.barricade.datagen.BarricadeDataGen"
 		]
 	},
+	"mixins": [
+		"${mod_id}.datagen.mixins.json"
+	],
 	"depends": {
 		"fabricloader": "${fabric_loader_range}",
 		"fabric-api": "*",

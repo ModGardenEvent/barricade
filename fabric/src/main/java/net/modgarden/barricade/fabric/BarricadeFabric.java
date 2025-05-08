@@ -60,7 +60,8 @@ public class BarricadeFabric implements ModInitializer {
 					BarricadeItems.PASSIVE_BARRIER,
 					BarricadeItems.HOSTILE_BARRIER,
 					BarricadeItems.CREATIVE_ONLY_BARRIER,
-					BarricadeItems.CREATIVE_ONLY_LEVER);
+					BarricadeItems.CREATIVE_ONLY_LEVER,
+					BarricadeItems.CREATIVE_ONLY_BUTTON);
 		});
 	}
 }

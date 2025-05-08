@@ -16,6 +16,7 @@ import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.data.models.model.TextureMapping;
+import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
@@ -26,6 +27,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.modgarden.barricade.datagen.mixin.BlockFamilyProviderAccessor;
+import net.modgarden.barricade.datagen.mixin.BlockModelGeneratorsAccessor;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeTags;
 import org.jetbrains.annotations.Nullable;
@@ -50,6 +53,8 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 		@Override
 		public void generateBlockStateModels(BlockModelGenerators generators) {
 			createLever(generators, BarricadeBlocks.CREATIVE_ONLY_LEVER);
+			family(generators, Blocks.STONE)
+					.button(BarricadeBlocks.CREATIVE_ONLY_BUTTON);
 		}
 
 		@Override
@@ -104,6 +109,11 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 													)
 									)
 					);
+		}
+
+		private static BlockModelGenerators.BlockFamilyProvider family(BlockModelGenerators generators, Block block) {
+			TexturedModel texturedModel = ((BlockModelGeneratorsAccessor) generators).getTexturedModels().getOrDefault(block, TexturedModel.CUBE.get(block));
+			return BlockFamilyProviderAccessor.init(generators, texturedModel.getMapping());
 		}
 
 		private static void createSimpleFlatItemModel(BlockModelGenerators generators, Block flatBlock, Block textureBlock) {

@@ -6,6 +6,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.modgarden.barricade.Barricade;
+import net.modgarden.barricade.block.PredicateButtonBlock;
 import net.modgarden.barricade.block.PredicateLeverBlock;
 import net.modgarden.barricade.item.AdvancedBarrierBlockItem;
 import net.modgarden.barricade.item.DirectionalBarrierBlockItem;
@@ -42,6 +43,12 @@ public class BarricadeItems {
 			barrierProps()
 	);
 
+	// Predicate Buttons
+	public static final PredicateBlockItem<PredicateButtonBlock> CREATIVE_ONLY_BUTTON = new PredicateBlockItem<>(
+			BarricadeBlocks.CREATIVE_ONLY_BUTTON,
+			barrierProps()
+	);
+
 	public static void registerAll() {
 		register("advanced_barrier", ADVANCED_BARRIER);
 
@@ -62,6 +69,8 @@ public class BarricadeItems {
 		register("creative_only_barrier", CREATIVE_ONLY_BARRIER);
 
 		register("creative_only_lever", CREATIVE_ONLY_LEVER);
+
+		register("creative_only_button", CREATIVE_ONLY_BUTTON);
 	}
 
 	private static void register(String name, BlockItem blockItem) {

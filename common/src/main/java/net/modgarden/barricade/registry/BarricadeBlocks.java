@@ -61,6 +61,13 @@ public class BarricadeBlocks {
 			conditionTemplate("creative_only")
 	);
 
+	// Predicate Buttons
+	public static final PredicateButtonBlock CREATIVE_ONLY_BUTTON = new PredicateButtonBlock(
+			buttonProps(),
+			Barricade.asResource("barricade/icon/iron_sword"),
+			conditionTemplate("creative_only")
+	);
+
 	public static void registerAll() {
 		register("advanced_barrier", ADVANCED_BARRIER);
 
@@ -81,6 +88,8 @@ public class BarricadeBlocks {
 		register("creative_only_barrier", CREATIVE_ONLY_BARRIER);
 
 		register("creative_only_lever", CREATIVE_ONLY_LEVER);
+
+		register("creative_only_button", CREATIVE_ONLY_BUTTON);
 	}
 
 	private static void register(String name, Block block) {
@@ -101,5 +110,9 @@ public class BarricadeBlocks {
 
 	private static BlockBehaviour.@NotNull Properties leverProps() {
 		return BlockBehaviour.Properties.ofFullCopy(Blocks.LEVER);
+	}
+
+	private static BlockBehaviour.@NotNull Properties buttonProps() {
+		return BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON);
 	}
 }
