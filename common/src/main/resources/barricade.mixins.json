@@ -10,6 +10,7 @@
 		"BlockBehaviourBlockStateBaseMixin",
 		"BlockBehaviourMixin",
 		"BlockMixin",
+		"self.BarricadeMixin",
 		"self.PredicateBlocksMixin"
 	],
 	"client": [
