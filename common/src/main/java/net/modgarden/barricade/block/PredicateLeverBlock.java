@@ -5,11 +5,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -50,6 +52,21 @@ public class PredicateLeverBlock extends LeverBlock implements PredicateBlock {
 	}
 
 	@Override
+	protected @NotNull InteractionResult useWithoutItem(
+			@NotNull BlockState state,
+			@NotNull Level level,
+			@NotNull BlockPos pos,
+			@NotNull Player player,
+			@NotNull BlockHitResult hitResult) {
+		if (level.isClientSide()) {
+			return super.useWithoutItem(state, level, pos, player, hitResult);
+		} else {
+			this.pull(state, level, pos, player);
+			return InteractionResult.CONSUME;
+		}
+	}
+
+	@Override
 	public void pull(
 			@NotNull BlockState state,
 			@NotNull Level level,
@@ -60,7 +77,8 @@ public class PredicateLeverBlock extends LeverBlock implements PredicateBlock {
 
 		try {
 			if (level.isClientSide() || this.barricade$test(level, player, state, pos)) {
-				super.pull(state, level, pos, player);
+				// Passing the player into pull will prevent them from hearing the sound event.
+				super.pull(state, level, pos, null);
 			}
 		} catch (InvalidContextParameterException e) {
 			LOG.error("Failed to test condition", e);
