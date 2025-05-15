@@ -27,8 +27,8 @@ object Versions {
 	const val FABRIC_MIXIN = "0.15.5+mixin.0.8.7"
 	const val MIXIN_EXTRAS = "0.4.1"
 	const val SILICATE = "0.7.1+1.21.1"
-	const val GREENHOUSE_CONFIG = "1.0.1+1.21.1"
-	const val GREENHOUSE_CONFIG_JSONC = "1.0.0"
+	const val GREENHOUSE_CONFIG = "2.0.0+1.21.1"
+	const val GREENHOUSE_CONFIG_JSONC = "1.0.1"
 
 	const val SODIUM = "mc1.21.1-0.6.5"
 	const val FORGIFIED_FABRIC_API = "0.104.0+2.0.18+1.21.1"
