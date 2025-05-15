@@ -6,9 +6,12 @@
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 		"AbstractArrowMixin",
+		"BlockBehaviourAccessor",
 		"BlockBehaviourBlockStateBaseMixin",
 		"BlockBehaviourMixin",
-		"BlockMixin"
+		"BlockMixin",
+		"self.BarricadeMixin",
+		"self.PredicateBlocksMixin"
 	],
 	"client": [
 		"client.ClientChunkCacheAccessor",

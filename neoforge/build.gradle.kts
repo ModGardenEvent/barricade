@@ -55,6 +55,9 @@ neoForge {
 			systemProperty("forge.logging.markers", "REGISTRIES")
 			systemProperty("forge.logging.console.level", "debug")
 			systemProperty("neoforge.enabledGameTestNamespaces", Properties.MOD_ID)
+
+			// Class redefinition (for JBR/DCEVM)
+			jvmArgument("-XX:+AllowEnhancedClassRedefinition")
 		}
 		create("client") {
 			client()

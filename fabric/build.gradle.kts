@@ -59,6 +59,12 @@ loom {
 		}
 	}
 	runs {
+		afterEvaluate {
+			configureEach {
+				// Class redefinition (for JBR/DCEVM)
+				vmArg("-XX:+AllowEnhancedClassRedefinition")
+			}
+		}
 		named("client") {
 			client()
 			configName = "Fabric Client"

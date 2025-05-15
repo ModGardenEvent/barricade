@@ -15,6 +15,7 @@ public class Barricade {
 	public static final String MOD_ID = "barricade";
 	public static final String MOD_NAME = "Barricade";
 	public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
+	public static final String MIXIN_NOT_APPLIED = "Mixin not applied";
 	private static BarricadePlatformHelper helper;
 
 	public static boolean serverContext;

@@ -7,6 +7,9 @@ This mod may also change barrier and light block rendering, to be friendlier to 
 
 You can enable/disable the above by applying/removing the Barricade Rendering resource pack.
 
+## Contribution
+Please read the `CONTRIBUTING.md` document before contributing or if you have any issues building the mod.
+
 ## Client-side Only
 
 This mod is able to run on clients without having it on the server. When run like this, the mod will only apply the

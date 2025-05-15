@@ -3,13 +3,32 @@ package net.modgarden.barricade.datagen;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.data.models.BlockModelGenerators;
+import net.minecraft.data.models.ItemModelGenerators;
+import net.minecraft.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.data.models.blockstates.PropertyDispatch;
+import net.minecraft.data.models.blockstates.Variant;
+import net.minecraft.data.models.blockstates.VariantProperties;
+import net.minecraft.data.models.model.ModelLocationUtils;
+import net.minecraft.data.models.model.ModelTemplates;
+import net.minecraft.data.models.model.TextureMapping;
+import net.minecraft.data.models.model.TexturedModel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.properties.AttachFace;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.modgarden.barricade.datagen.mixin.BlockFamilyProviderAccessor;
+import net.modgarden.barricade.datagen.mixin.BlockModelGeneratorsAccessor;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeTags;
 import org.jetbrains.annotations.Nullable;
@@ -23,6 +42,86 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 		BlockTagProvider blockTagProvider = pack.addProvider(BlockTagProvider::new);
 		pack.addProvider(EntityTypeTagProvider::new);
 		pack.addProvider((output, registries) -> new ItemTagProvider(output, registries, blockTagProvider));
+		pack.addProvider(ModelProvider::new);
+	}
+
+	private static class ModelProvider extends FabricModelProvider {
+		public ModelProvider(FabricDataOutput output) {
+			super(output);
+		}
+
+		@Override
+		public void generateBlockStateModels(BlockModelGenerators generators) {
+			createLever(generators, BarricadeBlocks.CREATIVE_ONLY_LEVER);
+			family(generators, Blocks.STONE)
+					.button(BarricadeBlocks.CREATIVE_ONLY_BUTTON);
+		}
+
+		@Override
+		public void generateItemModels(ItemModelGenerators generators) {
+		}
+
+		private static void createLever(BlockModelGenerators generators, Block block) {
+			ResourceLocation resourceLocation = ModelLocationUtils.getModelLocation(Blocks.LEVER);
+			ResourceLocation resourceLocation2 = ModelLocationUtils.getModelLocation(Blocks.LEVER, "_on");
+			createSimpleFlatItemModel(generators, block, Blocks.LEVER);
+			generators.blockStateOutput
+					.accept(
+							MultiVariantGenerator.multiVariant(block)
+									.with(BlockModelGenerators.createBooleanModelDispatch(BlockStateProperties.POWERED, resourceLocation, resourceLocation2))
+									.with(
+											PropertyDispatch.properties(BlockStateProperties.ATTACH_FACE, BlockStateProperties.HORIZONTAL_FACING)
+													.select(
+															AttachFace.CEILING,
+															Direction.NORTH,
+															Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R180).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180)
+													)
+													.select(
+															AttachFace.CEILING,
+															Direction.EAST,
+															Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R180).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270)
+													)
+													.select(AttachFace.CEILING, Direction.SOUTH, Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R180))
+													.select(
+															AttachFace.CEILING,
+															Direction.WEST,
+															Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R180).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90)
+													)
+													.select(AttachFace.FLOOR, Direction.NORTH, Variant.variant())
+													.select(AttachFace.FLOOR, Direction.EAST, Variant.variant().with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
+													.select(AttachFace.FLOOR, Direction.SOUTH, Variant.variant().with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
+													.select(AttachFace.FLOOR, Direction.WEST, Variant.variant().with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
+													.select(AttachFace.WALL, Direction.NORTH, Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R90))
+													.select(
+															AttachFace.WALL,
+															Direction.EAST,
+															Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R90).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90)
+													)
+													.select(
+															AttachFace.WALL,
+															Direction.SOUTH,
+															Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R90).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180)
+													)
+													.select(
+															AttachFace.WALL,
+															Direction.WEST,
+															Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R90).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270)
+													)
+									)
+					);
+		}
+
+		private static BlockModelGenerators.BlockFamilyProvider family(BlockModelGenerators generators, Block block) {
+			TexturedModel texturedModel = ((BlockModelGeneratorsAccessor) generators).getTexturedModels().getOrDefault(block, TexturedModel.CUBE.get(block));
+			return BlockFamilyProviderAccessor.init(generators, texturedModel.getMapping());
+		}
+
+		private static void createSimpleFlatItemModel(BlockModelGenerators generators, Block flatBlock, Block textureBlock) {
+			Item item = flatBlock.asItem();
+			if (item != Items.AIR) {
+				ModelTemplates.FLAT_ITEM.create(ModelLocationUtils.getModelLocation(item), TextureMapping.layer0(textureBlock), generators.modelOutput);
+			}
+		}
 	}
 
 	private static class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
