@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -44,7 +45,7 @@ public class AdvancedBarrierBlockEntity extends BlockEntity implements Nameable 
 	}
 
 	@Override
-	protected void applyImplicitComponents(BlockEntity.DataComponentInput components) {
+	protected void applyImplicitComponents(DataComponentGetter components) {
 		data = components.get(BarricadeComponents.ADVANCED_BARRIER);
 	}
 
@@ -68,7 +69,7 @@ public class AdvancedBarrierBlockEntity extends BlockEntity implements Nameable 
 			assert this.getLevel() != null;
 			// Gracefully handle invalid data
 			try {
-				data = this.getLevel().registryAccess().registryOrThrow(BarricadeRegistries.ADVANCED_BARRIER).getHolder(tag.getInt("a")).orElseThrow();
+				data = this.getLevel().registryAccess().getOrThrow(BarricadeRegistries.ADVANCED_BARRIER).value().get(tag.getInt("a").orElseThrow()).orElseThrow();
 			} catch (NoSuchElementException e) {
 				Barricade.LOG.error("Unknown Advanced Barrier of ID {}", tag.getInt("a"));
 			} catch (IllegalStateException e) {
@@ -95,7 +96,7 @@ public class AdvancedBarrierBlockEntity extends BlockEntity implements Nameable 
 		CompoundTag tag = new CompoundTag();
 		if (this.hasLevel()) {
 			assert this.getLevel() != null;
-			Registry<AdvancedBarrier> registry = this.getLevel().registryAccess().registryOrThrow(BarricadeRegistries.ADVANCED_BARRIER);
+			Registry<AdvancedBarrier> registry = this.getLevel().registryAccess().lookupOrThrow(BarricadeRegistries.ADVANCED_BARRIER);
 			tag.putInt("a", registry.getId(this.getData()));
 		}
 

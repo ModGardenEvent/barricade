@@ -1,88 +1,21 @@
 package net.modgarden.barricade.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.level.block.Blocks;
-import net.modgarden.barricade.Barricade;
+import net.minecraft.world.phys.Vec3;
 import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
-import net.modgarden.barricade.client.BarricadeClient;
-import net.modgarden.barricade.client.model.AdvancedBarrierBlockUnbakedModel;
-import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
-import net.modgarden.barricade.client.util.AdvancedBarrierModelValues;
-import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
-import net.modgarden.barricade.registry.BarricadeBlocks;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class AdvancedBarrierBlockRenderer implements BlockEntityRenderer<AdvancedBarrierBlockEntity> {
-	private static final Map<AdvancedBarrierModelValues, BakedModel> MODEL_MAP = new HashMap<>();
-
 	@Override
-	@SuppressWarnings("ConstantConditions")
-	public void render(@NotNull AdvancedBarrierBlockEntity blockEntity, float partialTick, @NotNull PoseStack pose, @NotNull MultiBufferSource buffer, int packedLight, int packedOverlay) {
-		if (!Barricade.isOperatorModel(Blocks.BARRIER.defaultBlockState()) || !Minecraft.getInstance().player.getAbilities().instabuild ||
-				!BarricadeClient.CONFIG.get().everythingVisible() && BarricadeClient.CONFIG.get().visibleBlocks().stream().noneMatch(either ->
-						either.map(tag ->
-										OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(blockEntity.getBlockState().getBlockHolder()),
-								key ->
-										blockEntity.getBlockState().getBlockHolder().is(key)) && !Minecraft.getInstance().player.isHolding(stack -> ((OperatorBakedModelAccess) Minecraft.getInstance().getBlockRenderer().getBlockModel(Blocks.BARRIER.defaultBlockState())).requiredBlock().map(tag -> {
-									if (stack.getItem() instanceof BlockItem blockItem)
-										return tag.blocks().contains(blockItem.getBlock().builtInRegistryHolder());
-									return false;
-								}, key -> {
-									if (stack.getItem() instanceof BlockItem blockItem)
-										return blockItem.getBlock().builtInRegistryHolder().is(key);
-									return false;
-								})
-						)
-				) && !Minecraft.getInstance().player.isHolding(stack -> {
-					BakedModel model = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(Blocks.BARRIER.defaultBlockState());
-					if (model instanceof OperatorBakedModelAccess access) {
-						return access.requiredBlock().map(
-								tag -> tag.blocks().contains(blockEntity.getBlockState().getBlockHolder()),
-								key -> blockEntity.getBlockState().is(key));
-					}
-					return false;
-				})
-		)
-			return;
-
-		AdvancedBarrierModelValues components = new AdvancedBarrierModelValues(BarricadeBlocks.ADVANCED_BARRIER.directions(blockEntity.getBlockState()), blockEntity.getData().icon().orElse(null));
-
-		BarricadeClient.getHelper().tessellateBlock(
-				Minecraft.getInstance().level,
-				MODEL_MAP.computeIfAbsent(components, AdvancedBarrierBlockRenderer::createModel),
-				blockEntity.getBlockState(),
-				blockEntity.getBlockPos(),
-				pose,
-				buffer.getBuffer(RenderType.cutout()),
-				blockEntity.getLevel().random,
-				blockEntity.getBlockState().getSeed(blockEntity.getBlockPos())
-		);
-	}
-
-	private static BakedModel createModel(AdvancedBarrierModelValues values) {
-		BlockModel blockModel = new AdvancedBarrierBlockUnbakedModel(values.directions(), values.icon());
-		return blockModel
-				.bake(
-						BarricadeClient.getModelBakery().new ModelBakerImpl((modelLocation, material) -> material.sprite(), new ModelResourceLocation(Barricade.asResource("advanced_barrier_block_renderer"), values.getVariant())),
-						Material::sprite,
-						BlockModelRotation.X0_Y0
-				);
-	}
-
-	public static void clearModelMap() {
-		MODEL_MAP.clear();
+	public void render(
+			AdvancedBarrierBlockEntity blockEntity,
+			float partialTick,
+			PoseStack poseStack,
+			MultiBufferSource bufferSource,
+			int packedLight,
+			int packedOverlay,
+			Vec3 cameraPos
+	) {
 	}
 }

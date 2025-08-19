@@ -13,11 +13,10 @@ public class BarricadeClient {
 	public static ModelBakery modelBakery;
 	public static BarricadeClientPlatformHelper helper;
 
-	public static final GreenhouseConfigHolder<BarricadeClientConfig> CONFIG = GreenhouseConfigHolder.<BarricadeClientConfig>builder("barricade", JsonCLang.INSTANCE)
+	public static final GreenhouseConfigHolder<BarricadeClientConfig> CONFIG = GreenhouseConfigHolder.client("barricade", BarricadeClientConfig.CODEC, BarricadeClientConfig.DEFAULT, JsonCLang.INSTANCE)
 			.schemaVersion(2)
-			.client(BarricadeClientConfig.CODEC, BarricadeClientConfig.DEFAULT)
-			.dataFixerClient(BarricadeClientConfig.Fixer.INSTANCE)
-			.buildAndRegister();
+			.dataFixer(BarricadeClientConfig.Fixer.INSTANCE)
+			.build();
 
 	public static void init(BarricadeClientPlatformHelper helper) {
 		if (BarricadeClient.helper != null)
