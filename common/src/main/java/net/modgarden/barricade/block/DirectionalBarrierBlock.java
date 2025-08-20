@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.BarrierBlock;
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DirectionalBarrierBlock extends BarrierBlock {
+public class DirectionalBarrierBlock extends StaticBarrierBlock {
 	public static final MapCodec<DirectionalBarrierBlock> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 			BlockedDirections.CODEC.fieldOf("directions").forGetter(DirectionalBarrierBlock::directions),
 			propertiesCodec()
@@ -48,6 +49,10 @@ public class DirectionalBarrierBlock extends BarrierBlock {
 		this.directions = directions;
 		if (directions.directions().size() == 1)
 			DIRECTION_MAP.put(directions.directions().stream().findFirst().get(), this);
+	}
+
+	public DirectionalBarrierBlock(Properties properties, Direction ...blockedDirections) {
+		this(BlockedDirections.of(blockedDirections), properties);
 	}
 
 	public BlockedDirections directions() {
@@ -79,7 +84,6 @@ public class DirectionalBarrierBlock extends BarrierBlock {
 		return Shapes.empty();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected @NotNull BlockState rotate(BlockState state, @NotNull Rotation rot) {
 		if (!(state.getBlock() instanceof DirectionalBarrierBlock directional) || directional.directions.directions().size() != 1)
@@ -87,11 +91,20 @@ public class DirectionalBarrierBlock extends BarrierBlock {
 		return DIRECTION_MAP.get(rot.rotate(directional.directions.directions().stream().findFirst().get())).defaultBlockState();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected @NotNull BlockState mirror(BlockState state, @NotNull Mirror mirror) {
 		if (!(state.getBlock() instanceof DirectionalBarrierBlock directional) || directional.directions.directions().size() != 1)
 			return state;
 		return DIRECTION_MAP.get(mirror.mirror(directional.directions.directions().stream().findFirst().get())).defaultBlockState();
+	}
+
+	@Override
+	public BlockedDirections getBlockedDirections() {
+		return this.directions;
+	}
+
+	@Override
+	public ResourceLocation getIcon() {
+		return null;
 	}
 }

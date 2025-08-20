@@ -37,7 +37,7 @@ public class AdvancedBarrierBlockItem extends EntityCheckBarrierBlockItem {
 			assert advancedBarrierHolder != null; // We already checked if it's present.
 			AdvancedBarrier advancedBarrier = advancedBarrierHolder.value();
 
-			BlockedDirections directions = directions(advancedBarrier.directions(), BarricadeBlocks.ADVANCED_BARRIER.directions(state));
+			BlockedDirections directions = directions(advancedBarrier.directions(), BarricadeBlocks.ADVANCED_BARRIER.get().directions(state));
 
 			collision = context.getLevel().getEntities(null, Shapes.block().move(context.getClickedPos().getX(), context.getClickedPos().getY(), context.getClickedPos().getZ()).bounds()).stream().allMatch(entity -> {
 				CollisionContext ctx = CollisionContext.of(entity);

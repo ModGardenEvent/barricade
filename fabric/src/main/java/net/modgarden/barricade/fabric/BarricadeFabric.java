@@ -47,19 +47,19 @@ public class BarricadeFabric implements ModInitializer {
 			if (!entries.shouldShowOpRestrictedItems() || !Barricade.serverContext)
 				return;
 			entries.addAfter(Items.BARRIER,
-					BarricadeItems.UP_BARRIER,
-					BarricadeItems.DOWN_BARRIER,
-					BarricadeItems.NORTH_BARRIER,
-					BarricadeItems.SOUTH_BARRIER,
-					BarricadeItems.WEST_BARRIER,
-					BarricadeItems.EAST_BARRIER,
-					BarricadeItems.HORIZONTAL_BARRIER,
-					BarricadeItems.VERTICAL_BARRIER,
-					BarricadeItems.PLAYER_BARRIER,
-					BarricadeItems.MOB_BARRIER,
-					BarricadeItems.PASSIVE_BARRIER,
-					BarricadeItems.HOSTILE_BARRIER,
-					BarricadeItems.CREATIVE_ONLY_BARRIER);
+					BarricadeItems.UP_BARRIER.get(),
+					BarricadeItems.DOWN_BARRIER.get(),
+					BarricadeItems.NORTH_BARRIER.get(),
+					BarricadeItems.SOUTH_BARRIER.get(),
+					BarricadeItems.WEST_BARRIER.get(),
+					BarricadeItems.EAST_BARRIER.get(),
+					BarricadeItems.HORIZONTAL_BARRIER.get(),
+					BarricadeItems.VERTICAL_BARRIER.get(),
+					BarricadeItems.PLAYER_BARRIER.get(),
+					BarricadeItems.MOB_BARRIER.get(),
+					BarricadeItems.PASSIVE_BARRIER.get(),
+					BarricadeItems.HOSTILE_BARRIER.get(),
+					BarricadeItems.CREATIVE_ONLY_BARRIER.get());
 		});
 	}
 }

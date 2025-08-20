@@ -1,23 +1,16 @@
 package net.modgarden.barricade.fabric.client;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderType;
@@ -25,20 +18,16 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.command.BarricadeClientCommands;
-import net.modgarden.barricade.client.model.OperatorUnbakedModel;
 import net.modgarden.barricade.client.particle.AdvancedBarrierParticle;
 import net.modgarden.barricade.client.renderer.block.AdvancedBarrierBlockRenderer;
-import net.modgarden.barricade.client.renderer.item.AdvancedBarrierItemRenderer;
+import net.modgarden.barricade.client.renderer.block.BakedRegion;
 import net.modgarden.barricade.client.util.BarrierRenderUtils;
 import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 import net.modgarden.barricade.fabric.client.platform.BarricadeClientPlatformHelperFabric;
@@ -46,17 +35,11 @@ import net.modgarden.barricade.network.clientbound.SetServerContextClientboundPa
 import net.modgarden.barricade.particle.AdvancedBarrierParticleOptions;
 import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeBlocks;
-import net.modgarden.barricade.registry.BarricadeItems;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.stream.Collectors;
 
 public class BarricadeFabricClient implements ClientModInitializer {
 	private static boolean previousInstabuildState = false;
@@ -65,15 +48,10 @@ public class BarricadeFabricClient implements ClientModInitializer {
 	private static ItemStack lastItemInMainHand = ItemStack.EMPTY;
 	private static ItemStack lastItemInOffHand = ItemStack.EMPTY;
 
-	private static final Gson GSON = new GsonBuilder()
-			.registerTypeAdapter(OperatorUnbakedModel.class, new OperatorUnbakedModel.Deserializer())
-			.create();
-
 	@Override
 	public void onInitializeClient() {
 		BarricadeClient.init(new BarricadeClientPlatformHelperFabric());
-		BlockEntityRenderers.register(BarricadeBlockEntityTypes.ADVANCED_BARRIER, context -> new AdvancedBarrierBlockRenderer());
-		BuiltinItemRendererRegistry.INSTANCE.register(BarricadeItems.ADVANCED_BARRIER, AdvancedBarrierItemRenderer::renderItem);
+		BlockEntityRenderers.register(BarricadeBlockEntityTypes.ADVANCED_BARRIER, AdvancedBarrierBlockRenderer::new);
 
 		ClientConfigurationNetworking.registerGlobalReceiver(SetServerContextClientboundPacket.TYPE, (packet, ctx) -> packet.handle());
 		ClientLoginConnectionEvents.DISCONNECT.register((listener, minecraft) -> Barricade.serverContext = false);
@@ -81,25 +59,22 @@ public class BarricadeFabricClient implements ClientModInitializer {
 
 		ClientCommandRegistrationCallback.EVENT.register(BarricadeClientCommands::registerClientCommands);
 
-		PreparableModelLoadingPlugin.register(BarricadeFabricClient::getCreativeUnbakedModels, (data, pluginContext) ->
-			pluginContext.resolveModel().register((context) -> {
-				if (data.containsKey(context.id()))
-					return data.get(context.id());
-				return null;
-			})
-		);
-
 		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new IdentifiableResourceReloadListener() {
 			private final OperatorBlockPseudoTag.Loader listener = OperatorBlockPseudoTag.Loader.INSTANCE;
 
 			@Override
-			public ResourceLocation getFabricId() {
-				return Barricade.asResource("operator_blocks");
+			public @NotNull CompletableFuture<Void> reload(
+					PreparationBarrier barrier,
+					ResourceManager manager,
+					Executor backgroundExecutor,
+					Executor gameExecutor
+			) {
+				return listener.reload(barrier, manager, backgroundExecutor, gameExecutor);
 			}
 
 			@Override
-			public @NotNull CompletableFuture<Void> reload(@NotNull PreparationBarrier preparationBarrier, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller preparationsProfiler, @NotNull ProfilerFiller reloadProfiler, @NotNull Executor backgroundExecutor, @NotNull Executor gameExecutor) {
-				return listener.reload(preparationBarrier, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor);
+			public ResourceLocation getFabricId() {
+				return Barricade.asResource("operator_blocks");
 			}
 		});
 
@@ -127,8 +102,8 @@ public class BarricadeFabricClient implements ClientModInitializer {
 			if (previousAllVisibleState)
 				return;
 
-			ItemStack mainHand = player.getInventory().items.get(player.getInventory().selected);
-			ItemStack offHand = player.getInventory().offhand.getFirst();
+			ItemStack mainHand = player.getMainHandItem();
+			ItemStack offHand = player.getOffhandItem();
 
 
 			if (!ItemStack.isSameItemSameComponents(mainHand, lastItemInMainHand)) {
@@ -144,47 +119,24 @@ public class BarricadeFabricClient implements ClientModInitializer {
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(),
 				Blocks.BARRIER,
 				Blocks.LIGHT,
-				BarricadeBlocks.ADVANCED_BARRIER,
-				BarricadeBlocks.UP_BARRIER,
-				BarricadeBlocks.DOWN_BARRIER,
-				BarricadeBlocks.NORTH_BARRIER,
-				BarricadeBlocks.SOUTH_BARRIER,
-				BarricadeBlocks.WEST_BARRIER,
-				BarricadeBlocks.EAST_BARRIER,
-				BarricadeBlocks.HORIZONTAL_BARRIER,
-				BarricadeBlocks.VERTICAL_BARRIER,
-				BarricadeBlocks.PLAYER_BARRIER,
-				BarricadeBlocks.MOB_BARRIER,
-				BarricadeBlocks.PASSIVE_BARRIER,
-				BarricadeBlocks.HOSTILE_BARRIER,
-				BarricadeBlocks.CREATIVE_ONLY_BARRIER
+				BarricadeBlocks.ADVANCED_BARRIER.get(),
+				BarricadeBlocks.UP_BARRIER.get(),
+				BarricadeBlocks.DOWN_BARRIER.get(),
+				BarricadeBlocks.NORTH_BARRIER.get(),
+				BarricadeBlocks.SOUTH_BARRIER.get(),
+				BarricadeBlocks.WEST_BARRIER.get(),
+				BarricadeBlocks.EAST_BARRIER.get(),
+				BarricadeBlocks.HORIZONTAL_BARRIER.get(),
+				BarricadeBlocks.VERTICAL_BARRIER.get(),
+				BarricadeBlocks.PLAYER_BARRIER.get(),
+				BarricadeBlocks.MOB_BARRIER.get(),
+				BarricadeBlocks.PASSIVE_BARRIER.get(),
+				BarricadeBlocks.HOSTILE_BARRIER.get(),
+				BarricadeBlocks.CREATIVE_ONLY_BARRIER.get()
 		);
-	}
 
-	private static CompletableFuture<Map<ResourceLocation, OperatorUnbakedModel>> getCreativeUnbakedModels(ResourceManager manager, Executor executor) {
-		return CompletableFuture.supplyAsync(() -> manager.listResources("models", fileName -> fileName.getPath().endsWith(".json")), executor).thenCompose(models -> {
-			ArrayList<CompletableFuture<Pair<ResourceLocation, OperatorUnbakedModel>>> creativeModels = new ArrayList<>();
-			for (Map.Entry<ResourceLocation, Resource> resource : models.entrySet()) {
-				creativeModels.add(CompletableFuture.supplyAsync(() -> {
-					try {
-						ResourceLocation resourceLocation = resource.getKey().withPath(s -> s.substring(7, s.length() - 5));
-						Reader reader = resource.getValue().openAsReader();
-						JsonElement element = JsonParser.parseReader(reader);
-						reader.close();
-						if (!element.isJsonObject() || !element.getAsJsonObject().has("loader"))
-							return null;
-						String loaderKey = GsonHelper.getAsString(element.getAsJsonObject(), "loader");
-						if (!loaderKey.equals(OperatorUnbakedModel.Deserializer.ID.toString()))
-							return null;
+		ClientPlayerBlockBreakEvents.AFTER.register((level, player, pos, state) -> BakedRegion.markRegionDirty(BakedRegion.BakedRegionPos.fromBlockPos(pos)));
 
-						return Pair.of(resourceLocation, GSON.fromJson(element, OperatorUnbakedModel.class));
-					} catch (Exception ex) {
-						Barricade.LOG.error("Failed to load 'barricade:creative_mode' model", ex);
-					}
-					return null;
-				}, executor));
-			}
-			return Util.sequenceFailFast(creativeModels).thenApply(pairs -> pairs.stream().filter(Objects::nonNull).collect(Collectors.toMap(Pair::getFirst, Pair::getSecond)));
-		});
+		WorldRenderEvents.START.register(context -> BakedRegion.buildDirty(new BakedRegion.UploadContext(context.world(), context.matrixStack())));
 	}
 }

@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -105,7 +106,7 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
 	}
 
 	public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState, Direction dir) {
-		return neighborState.is(state.getBlock()) && (!(level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity) || level.getBlockEntity(pos.offset(dir.getNormal())) instanceof AdvancedBarrierBlockEntity neighborEntity && neighborEntity.getData().equals(blockEntity.getData()) || directions(state) == null || !directions(state).blocks(dir));
+		return neighborState.is(state.getBlock()) && (!(level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity) || level.getBlockEntity(pos.offset(dir.getOpposite().getUnitVec3i())) instanceof AdvancedBarrierBlockEntity neighborEntity && neighborEntity.getData().equals(blockEntity.getData()) || directions(state) == null || !directions(state).blocks(dir));
 	}
 
 	@Override
@@ -153,13 +154,19 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
 	}
 
 	@Override
-	public @NotNull ItemStack getCloneItemStack(LevelReader level, @NotNull BlockPos pos, @NotNull BlockState state) {
+	public @NotNull ItemStack getCloneItemStack(LevelReader level, @NotNull BlockPos pos, @NotNull BlockState state, boolean includeData) {
 		ItemStack stack = new ItemStack(this);
 		if (level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity) {
 			Holder<AdvancedBarrier> data = blockEntity.getHolder();
 			// Switch to default barrier
 			if (blockEntity.getData().equals(AdvancedBarrier.DEFAULT)) {
-				data = Objects.requireNonNull(level).registryAccess().registryOrThrow(BarricadeRegistries.ADVANCED_BARRIER).getHolder(Barricade.asResource("default")).orElseThrow();
+				data = Objects.requireNonNull(level).registryAccess()
+						.getOrThrow(BarricadeRegistries.ADVANCED_BARRIER)
+						.value()
+						.getOrThrow(ResourceKey.create(
+								BarricadeRegistries.ADVANCED_BARRIER,
+								Barricade.asResource("default")
+						));
 			}
 
 			stack.set(BarricadeComponents.ADVANCED_BARRIER, data);

@@ -30,6 +30,10 @@ public record BlockedDirections(EnumSet<Direction> directions) {
 		return new BlockedDirections(EnumSet.copyOf(Arrays.stream(directions).toList()));
 	}
 
+	public static BlockedDirections all() {
+		return BlockedDirections.of(EnumSet.allOf(Direction.class).toArray(new Direction[0]));
+	}
+
 	public boolean shouldBlock(BlockPos pos, CollisionContext context) {
 		if (!(context instanceof EntityCollisionContext entityContext) || entityContext.getEntity() == null)
 			return true;

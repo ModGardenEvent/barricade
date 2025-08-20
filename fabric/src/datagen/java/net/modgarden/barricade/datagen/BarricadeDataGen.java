@@ -34,27 +34,27 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 		protected void addTags(HolderLookup.Provider lookup) {
 			getOrCreateTagBuilder(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS)
 					.add(
-							BarricadeBlocks.ADVANCED_BARRIER,
-							BarricadeBlocks.DOWN_BARRIER,
-							BarricadeBlocks.UP_BARRIER,
-							BarricadeBlocks.NORTH_BARRIER,
-							BarricadeBlocks.SOUTH_BARRIER,
-							BarricadeBlocks.EAST_BARRIER,
-							BarricadeBlocks.WEST_BARRIER,
-							BarricadeBlocks.HORIZONTAL_BARRIER,
-							BarricadeBlocks.VERTICAL_BARRIER
+							BarricadeBlocks.ADVANCED_BARRIER.get(),
+							BarricadeBlocks.DOWN_BARRIER.get(),
+							BarricadeBlocks.UP_BARRIER.get(),
+							BarricadeBlocks.NORTH_BARRIER.get(),
+							BarricadeBlocks.SOUTH_BARRIER.get(),
+							BarricadeBlocks.EAST_BARRIER.get(),
+							BarricadeBlocks.WEST_BARRIER.get(),
+							BarricadeBlocks.HORIZONTAL_BARRIER.get(),
+							BarricadeBlocks.VERTICAL_BARRIER.get()
 					);
 			getOrCreateTagBuilder(BarricadeTags.BlockTags.ENTITY_BARRIERS)
 					.add(
-							BarricadeBlocks.ADVANCED_BARRIER,
-							BarricadeBlocks.PLAYER_BARRIER,
-							BarricadeBlocks.MOB_BARRIER,
-							BarricadeBlocks.PASSIVE_BARRIER,
-							BarricadeBlocks.HOSTILE_BARRIER
+							BarricadeBlocks.ADVANCED_BARRIER.get(),
+							BarricadeBlocks.PLAYER_BARRIER.get(),
+							BarricadeBlocks.MOB_BARRIER.get(),
+							BarricadeBlocks.PASSIVE_BARRIER.get(),
+							BarricadeBlocks.HOSTILE_BARRIER.get()
 					);
 			getOrCreateTagBuilder(BarricadeTags.BlockTags.PREDICATE_BARRIERS)
 					.forceAddTag(BarricadeTags.BlockTags.ENTITY_BARRIERS)
-					.add(BarricadeBlocks.CREATIVE_ONLY_BARRIER);
+					.add(BarricadeBlocks.CREATIVE_ONLY_BARRIER.get());
 			getOrCreateTagBuilder(BarricadeTags.BlockTags.BARRIERS)
 					.add(Blocks.BARRIER)
 					.forceAddTag(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS)

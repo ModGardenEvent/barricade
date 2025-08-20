@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import java.util.Collection;
 
 public interface BarricadeClientPlatformHelper {
-
 	Collection<BlockElement> fixSeamsOnNeoForge(Collection<BlockElement> collection, TextureAtlasSprite textureAtlasSprite);
 
 	void sendSuccessClient(CommandContext<?> context, Component component);

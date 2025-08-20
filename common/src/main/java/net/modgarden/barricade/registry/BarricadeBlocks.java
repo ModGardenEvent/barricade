@@ -4,77 +4,117 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.AdvancedBarrierBlock;
 import net.modgarden.barricade.block.DirectionalBarrierBlock;
 import net.modgarden.barricade.block.PredicateBarrierBlock;
-import net.modgarden.barricade.data.BlockedDirections;
+import net.modgarden.barricade.block.StaticBarrierBlock;
 import net.modgarden.silicate.api.SilicateRegistries;
 
-public class BarricadeBlocks {
-	public static final AdvancedBarrierBlock ADVANCED_BARRIER = new AdvancedBarrierBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-	public static final DirectionalBarrierBlock DOWN_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.DOWN), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
-	public static final DirectionalBarrierBlock UP_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.UP), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
-	public static final DirectionalBarrierBlock SOUTH_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.SOUTH), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
-	public static final DirectionalBarrierBlock NORTH_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.NORTH), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
-	public static final DirectionalBarrierBlock EAST_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.EAST), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
-	public static final DirectionalBarrierBlock WEST_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.WEST), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
-	public static final DirectionalBarrierBlock HORIZONTAL_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.WEST, Direction.EAST, Direction.NORTH, Direction.SOUTH), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
-	public static final DirectionalBarrierBlock VERTICAL_BARRIER = new DirectionalBarrierBlock(BlockedDirections.of(Direction.UP, Direction.DOWN), BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape());
+public class BarricadeBlocks {
+	private static final RegistryContext<Block> CONTEXT = new RegistryContext<>(
+			BuiltInRegistries.BLOCK,
+			Barricade.MOD_ID
+	);
+
+	public static Supplier<AdvancedBarrierBlock> ADVANCED_BARRIER = CONTEXT.defer(
+			"advanced_barrier",
+			withProperties(AdvancedBarrierBlock::new)
+	);
+
+	public static final Supplier<DirectionalBarrierBlock> DOWN_BARRIER = CONTEXT.defer(
+			"down_barrier",
+			withProperties(properties -> new DirectionalBarrierBlock(properties, Direction.DOWN))
+	);
+	public static final Supplier<DirectionalBarrierBlock> UP_BARRIER = CONTEXT.defer(
+			"up_barrier",
+			withProperties(properties -> new DirectionalBarrierBlock(properties, Direction.UP))
+	);
+	public static final Supplier<DirectionalBarrierBlock> SOUTH_BARRIER = CONTEXT.defer(
+			"south_barrier",
+			withProperties(properties -> new DirectionalBarrierBlock(properties, Direction.SOUTH))
+	);
+	public static final Supplier<DirectionalBarrierBlock> NORTH_BARRIER = CONTEXT.defer(
+			"north_barrier",
+			withProperties(properties -> new DirectionalBarrierBlock(properties, Direction.NORTH))
+	);
+	public static final Supplier<DirectionalBarrierBlock> EAST_BARRIER = CONTEXT.defer(
+			"east_barrier",
+			withProperties(properties -> new DirectionalBarrierBlock(properties, Direction.EAST))
+	);
+	public static final Supplier<DirectionalBarrierBlock> WEST_BARRIER = CONTEXT.defer(
+			"west_barrier",
+			withProperties(properties -> new DirectionalBarrierBlock(properties, Direction.WEST))
+	);
+	public static final Supplier<DirectionalBarrierBlock> HORIZONTAL_BARRIER = CONTEXT.defer(
+			"horizontal_barrier",
+			withProperties(properties -> new DirectionalBarrierBlock(properties, Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST))
+	);
+	public static final Supplier<DirectionalBarrierBlock> VERTICAL_BARRIER = CONTEXT.defer(
+			"vertical_barrier",
+			withProperties(properties -> new DirectionalBarrierBlock(properties, Direction.UP, Direction.DOWN))
+	);
 
 	// Predicate Barriers
-	public static final PredicateBarrierBlock CREATIVE_ONLY_BARRIER = new PredicateBarrierBlock(
-			BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
-					.dynamicShape(),
-			Barricade.asResource("barricade/icon/iron_sword"),
-			ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("creative_only"))
+	public static final Supplier<PredicateBarrierBlock> CREATIVE_ONLY_BARRIER = CONTEXT.defer(
+			"creative_only_barrier",
+			withProperties(properties -> new PredicateBarrierBlock(
+					properties,
+					Barricade.asResource("barricade/icon/iron_sword"),
+					ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("creative_only"))
+			))
 	);
 
-	public static final PredicateBarrierBlock PLAYER_BARRIER = new PredicateBarrierBlock(
-			BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
-					.dynamicShape(),
-			Barricade.asResource("barricade/icon/steve"),
-			ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("player"))
+	public static final Supplier<PredicateBarrierBlock> PLAYER_BARRIER = CONTEXT.defer(
+			"player_barrier",
+			withProperties(properties -> new PredicateBarrierBlock(
+					properties,
+					Barricade.asResource("barricade/icon/steve"),
+					ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("player"))
+			))
 	);
-	public static final PredicateBarrierBlock MOB_BARRIER = new PredicateBarrierBlock(
-			BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
-					.dynamicShape(),
-			Barricade.asResource("barricade/icon/pig"),
-			ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("mob"))
+	public static final Supplier<PredicateBarrierBlock> MOB_BARRIER = CONTEXT.defer(
+			"mob_barrier",
+			withProperties(properties -> new PredicateBarrierBlock(
+					properties,
+					Barricade.asResource("barricade/icon/pig"),
+					ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("mob"))
+			))
 	);
-	public static final PredicateBarrierBlock PASSIVE_BARRIER = new PredicateBarrierBlock(
-			BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
-					.dynamicShape(),
-			Barricade.asResource("barricade/icon/parrot"),
-			ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("passive"))
+	public static final Supplier<PredicateBarrierBlock> PASSIVE_BARRIER = CONTEXT.defer(
+			"passive_barrier",
+			withProperties(properties -> new PredicateBarrierBlock(
+					properties,
+					Barricade.asResource("barricade/icon/parrot"),
+					ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("passive"))
+			))
 	);
-	public static final PredicateBarrierBlock HOSTILE_BARRIER = new PredicateBarrierBlock(
-			BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)
-					.dynamicShape(),
-			Barricade.asResource("barricade/icon/creeper"),
-			ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("hostile"))
+	public static final Supplier<PredicateBarrierBlock> HOSTILE_BARRIER = CONTEXT.defer(
+			"hostile_barrier",
+			withProperties(properties -> new PredicateBarrierBlock(
+					properties,
+					Barricade.asResource("barricade/icon/creeper"),
+					ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("hostile"))
+			))
 	);
 
 	public static void registerAll() {
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("advanced_barrier"), ADVANCED_BARRIER);
+		CONTEXT.register();
+	}
 
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("down_barrier"), DOWN_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("up_barrier"), UP_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("south_barrier"), SOUTH_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("north_barrier"), NORTH_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("east_barrier"), EAST_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("west_barrier"), WEST_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("horizontal_barrier"), HORIZONTAL_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("vertical_barrier"), VERTICAL_BARRIER);
+	private static void register(String path, StaticBarrierBlock block) {
+		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource(path), (Block) block);
+		StaticBarrierBlock.BARRIERS.put(Barricade.asResource(path), block);
+	}
 
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("player_barrier"), PLAYER_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("mob_barrier"), MOB_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("passive_barrier"), PASSIVE_BARRIER);
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("hostile_barrier"), HOSTILE_BARRIER);
-
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource("creative_only_barrier"), CREATIVE_ONLY_BARRIER);
+	@SuppressWarnings("unchecked") // ResourceKey<T> is always ResourceKey<Block>
+	private static <T extends Block> Function<ResourceKey<T>, T> withProperties(Function<BlockBehaviour.Properties, T> callback) {
+		return key -> callback.apply(BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape().setId((ResourceKey<Block>) key));
 	}
 }

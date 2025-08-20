@@ -2,7 +2,6 @@ package net.modgarden.barricade.client.util;
 
 import com.mojang.datafixers.util.Either;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -24,14 +23,11 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.BarricadeClient;
-import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
 import net.modgarden.barricade.data.BlockedDirections;
-import net.modgarden.barricade.item.AdvancedBarrierBlockItem;
 import net.modgarden.barricade.mixin.client.ClientChunkCacheAccessor;
 import net.modgarden.barricade.mixin.client.ClientChunkCacheStorageAccessor;
 import net.modgarden.barricade.mixin.client.LevelRendererInvoker;
 import net.modgarden.barricade.particle.AdvancedBarrierParticleOptions;
-import net.modgarden.barricade.registry.BarricadeItems;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -47,66 +43,6 @@ public class BarrierRenderUtils {
 
 		if (testOtherStack(stack, otherHandStack) || testOtherStack(previousStack, otherHandStack))
 			return;
-
-		if ((stack.getItem() instanceof AdvancedBarrierBlockItem advancedBarrier && !OperatorBlockPseudoTag.Registry.get(Barricade.asResource("barriers")).blocks().contains(advancedBarrier.getBlock().builtInRegistryHolder())) || (previousStack.getItem() instanceof AdvancedBarrierBlockItem previousAdvancedBarrier && !OperatorBlockPseudoTag.Registry.get(Barricade.asResource("barriers")).blocks().contains(previousAdvancedBarrier.getBlock().builtInRegistryHolder()))) {
-			Holder<Block> currentBlock = null;
-			Holder<Block> previousBlock = null;
-			Either<OperatorBlockPseudoTag, ResourceKey<Block>> current = null;
-			Either<OperatorBlockPseudoTag, ResourceKey<Block>> previous = null;
-			if (stack.getItem() instanceof BlockItem blockItem) {
-				BlockState state = previousStack.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY).apply(blockItem.getBlock().defaultBlockState());
-				if (BarricadeClient.CONFIG.get().visibleBlocks().stream().noneMatch(either -> either.map(tag -> OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(state.getBlockHolder()), key -> state.getBlockHolder().is(key))) &&
-						Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof OperatorBakedModelAccess model) {
-					currentBlock = state.getBlockHolder();
-					current = model.requiredBlock();
-				}
-			}
-
-			if (previousStack.getItem() instanceof BlockItem blockItem) {
-				BlockState state = previousStack.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY).apply(blockItem.getBlock().defaultBlockState());
-				if (BarricadeClient.CONFIG.get().visibleBlocks().stream().noneMatch(either -> either.map(tag -> OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(state.getBlockHolder()), key -> state.getBlockHolder().is(key))) &&
-						Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof OperatorBakedModelAccess model) {
-					previousBlock = state.getBlockHolder();
-					previous = model.requiredBlock();
-				}
-			}
-
-			if (stack.is(BarricadeItems.ADVANCED_BARRIER))
-				current = Either.left(OperatorBlockPseudoTag.Registry.get(Barricade.asResource("barriers")));
-			if (previousStack.is(BarricadeItems.ADVANCED_BARRIER))
-				previous = Either.left(OperatorBlockPseudoTag.Registry.get(Barricade.asResource("barriers")));
-
-			refreshOperatorSections(currentBlock, previousBlock, current, previous);
-		} else if (
-				stack.getItem() instanceof BlockItem blockItem && BarricadeClient.CONFIG.get().visibleBlocks().stream().noneMatch(either -> either.map(tag -> OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(blockItem.getBlock().builtInRegistryHolder()), key -> blockItem.getBlock().defaultBlockState().is(key))) &&
-						previousStack.getItem() instanceof BlockItem previousBlockItem && BarricadeClient.CONFIG.get().visibleBlocks().stream().noneMatch(either -> either.map(tag -> OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(previousBlockItem.getBlock().builtInRegistryHolder()), key -> previousBlockItem.getBlock().defaultBlockState().is(key)))
-		) {
-			BlockState state = stack.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY).apply(blockItem.getBlock().defaultBlockState());
-			BlockState previousState = previousStack.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY).apply(previousBlockItem.getBlock().defaultBlockState());
-			BakedModel model = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state);
-			BakedModel previousModel = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(previousState);
-			if (!(model instanceof OperatorBakedModelAccess) && (!(previousModel instanceof OperatorBakedModelAccess)))
-				return;
-			if (testForOpposites(model, previousModel))
-				refreshOperatorSections(state.getBlockHolder(), previousState.getBlockHolder(), model instanceof OperatorBakedModelAccess operatorModel ? operatorModel.requiredBlock() : null, previousModel instanceof OperatorBakedModelAccess operatorModel ? operatorModel.requiredBlock() : null);
-		} else if (stack.getItem() instanceof BlockItem blockItem &&
-				BarricadeClient.CONFIG.get().visibleBlocks().stream().noneMatch(either -> either.map(tag -> OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(blockItem.getBlock().builtInRegistryHolder()), key -> blockItem.getBlock().defaultBlockState().is(key)))) {
-			BlockState state = stack.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY).apply(blockItem.getBlock().defaultBlockState());
-			if (Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof OperatorBakedModelAccess model)
-				refreshOperatorSections(state.getBlockHolder(), null, model.requiredBlock(), null);
-		} else if (previousStack.getItem() instanceof BlockItem blockItem &&
-				BarricadeClient.CONFIG.get().visibleBlocks().stream().noneMatch(either -> either.map(tag -> OperatorBlockPseudoTag.Registry.get(tag).blocks().contains(blockItem.getBlock().builtInRegistryHolder()), key -> blockItem.getBlock().defaultBlockState().is(key)))) {
-			BlockState state = previousStack.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY).apply(blockItem.getBlock().defaultBlockState());
-			if (Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof OperatorBakedModelAccess model)
-				refreshOperatorSections(null, state.getBlockHolder(), null, model.requiredBlock());
-		}
-	}
-
-	private static boolean testForOpposites(BakedModel model, BakedModel previousModel) {
-		if (!(model instanceof OperatorBakedModelAccess) && !(previousModel instanceof OperatorBakedModelAccess))
-			return false;
-
-		return !(model instanceof OperatorBakedModelAccess operatorModel) || !(previousModel instanceof OperatorBakedModelAccess previousOperatorModel) || !operatorModel.requiredBlock().equals(previousOperatorModel.requiredBlock());
 	}
 
 	private static boolean testOtherStack(ItemStack stack, ItemStack otherHandStack) {
@@ -114,9 +50,7 @@ public class BarrierRenderUtils {
 			return false;
 		BlockState state = stack.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY).apply(blockItem.getBlock().defaultBlockState());
 		BlockState otherState = stack.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY).apply(otherBlockItem.getBlock().defaultBlockState());
-		if (!(Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof OperatorBakedModelAccess model) || !(Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(otherState) instanceof OperatorBakedModelAccess otherModel))
-			return false;
-		return model.requiredBlock().map(tag -> tag.blocks().contains(otherBlockItem.getBlock().builtInRegistryHolder()), key -> otherBlockItem.getBlock().builtInRegistryHolder().is(key)) || otherModel.requiredBlock().map(tag -> tag.blocks().contains(blockItem.getBlock().builtInRegistryHolder()), key -> blockItem.getBlock().builtInRegistryHolder().is(key));
+		return false;
 	}
 
 	public static void refreshAllOperatorBlocks() {
@@ -127,8 +61,10 @@ public class BarrierRenderUtils {
 			LevelChunk chunk = chunks.get(i);
 			if (chunk == null)
 				continue;
-			chunk.findBlocks(state -> Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof OperatorBakedModelAccess, (pos, state) ->
-				setBlockDirty(pos, operatedSectionPos)
+			chunk.findBlocks(
+					Barricade::isOperatorModel,
+					(pos, state) ->
+							setBlockDirty(pos, operatedSectionPos)
 			);
 		}
 	}
@@ -141,8 +77,6 @@ public class BarrierRenderUtils {
 			LevelChunk chunk = chunks.get(i);
 			if (chunk == null)
 				continue;
-			chunk.findBlocks(state -> Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof OperatorBakedModelAccess model && (block != null && current != null && model.requiredBlock().map(tag -> tag.blocks().contains(block), block::is) || lastBlock != null && previous != null && model.requiredBlock().map(tag -> tag.blocks().contains(lastBlock), lastBlock::is)), (pos, state) ->
-					setBlockDirty(pos, operatedSectionPos));
 		}
 	}
 

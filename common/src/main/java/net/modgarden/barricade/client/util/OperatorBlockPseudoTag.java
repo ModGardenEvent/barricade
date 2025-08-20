@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
@@ -96,7 +95,7 @@ public record OperatorBlockPseudoTag(HolderSet<Block> blocks, boolean replace) {
 		public static final Loader INSTANCE = new OperatorBlockPseudoTag.Loader();
 		private final HolderLookup.Provider provider = new HolderLookup.Provider() {
 			@Override
-			public @NotNull Stream<ResourceKey<? extends net.minecraft.core.Registry<?>>> listRegistries() {
+			public @NotNull Stream<ResourceKey<? extends net.minecraft.core.Registry<?>>> listRegistryKeys() {
 				return Stream.of(Registries.BLOCK);
 			}
 
@@ -104,7 +103,7 @@ public record OperatorBlockPseudoTag(HolderSet<Block> blocks, boolean replace) {
 			@Override
 			public <T> @NotNull Optional<HolderLookup.RegistryLookup<T>> lookup(ResourceKey<? extends net.minecraft.core.Registry<? extends T>> registryKey) {
 				if (registryKey.equals(Registries.BLOCK)) {
-					return Optional.of((HolderLookup.RegistryLookup<T>) BuiltInRegistries.BLOCK.asLookup());
+					return Optional.of((HolderLookup.RegistryLookup<T>) BuiltInRegistries.BLOCK);
 				}
 				return Optional.empty();
 			}

@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -19,6 +20,7 @@ import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.modgarden.barricade.Barricade;
+import net.modgarden.barricade.data.BlockedDirections;
 import net.modgarden.silicate.api.SilicateRegistries;
 import net.modgarden.silicate.api.condition.GameCondition;
 import net.modgarden.silicate.api.context.GameContext;
@@ -34,7 +36,7 @@ import java.util.function.Function;
 /**
  * A type of {@link BarrierBlock} that uses {@link GameCondition} to determine if an entity collides.
  */
-public class PredicateBarrierBlock extends BarrierBlock {
+public class PredicateBarrierBlock extends StaticBarrierBlock {
 	private static final MapCodec<PredicateBarrierBlock> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			propertiesCodec(),
 			ResourceLocation.CODEC
@@ -57,7 +59,7 @@ public class PredicateBarrierBlock extends BarrierBlock {
 	public PredicateBarrierBlock(Properties properties, ResourceLocation icon, ResourceKey<GameCondition<?>> conditionTemplate) {
 		super(properties);
 		this.icon = icon;
-		this.function = registryAccess -> registryAccess.registryOrThrow(SilicateRegistries.CONDITION_TEMPLATE).getHolderOrThrow(conditionTemplate);
+		this.function = registryAccess -> registryAccess.lookupOrThrow(SilicateRegistries.CONDITION_TEMPLATE).getOrThrow(conditionTemplate);
 	}
 
 	private PredicateBarrierBlock(Properties properties, ResourceLocation icon, Holder<GameCondition<?>> condition) {
@@ -174,5 +176,15 @@ public class PredicateBarrierBlock extends BarrierBlock {
 			}
 		}
 		return super.getShape(state, blockGetter, pos, context);
+	}
+
+	@Override
+	public BlockedDirections getBlockedDirections() {
+		return BlockedDirections.all();
+	}
+
+	@Override
+	public ResourceLocation getIcon() {
+		return BuiltInRegistries.BLOCK.getKey(this).withPrefix("block/");
 	}
 }

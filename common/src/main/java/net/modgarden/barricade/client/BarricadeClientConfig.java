@@ -7,7 +7,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import house.greenhouse.greenhouseconfig.api.codec.GreenhouseConfigCodecs;
+import house.greenhouse.greenhouseconfig.api.util.DefaultFieldUtil;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -22,24 +22,24 @@ public record BarricadeClientConfig(boolean everythingVisible,
                                     Set<Either<ResourceLocation, ResourceKey<Block>>> visibleBlocks) {
 	public static final BarricadeClientConfig DEFAULT = new BarricadeClientConfig(false, Set.of());
 	public static final Codec<BarricadeClientConfig> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			GreenhouseConfigCodecs.defaultFieldCodec(
-					GreenhouseConfigCodecs.commentedCodec(
-							Codec.BOOL,
-							"If all invisible blocks are visible to you, not accounting the item you are holding.",
-							"The player must be in creative to see barriers."
-					), "everything_visible", DEFAULT.everythingVisible()
+			DefaultFieldUtil.codecWithComments(
+					Codec.BOOL,
+					"everything_visible",
+					DEFAULT.everythingVisible(),
+					"If all invisible blocks are visible to you, not accounting the item you are holding.",
+					"The player must be in creative to see barriers."
 			).forGetter(BarricadeClientConfig::everythingVisible),
-			GreenhouseConfigCodecs.defaultFieldCodec(
-					GreenhouseConfigCodecs.commentedCodec(
-							Codec.either(Codec.STRING.comapFlatMap(s -> {
-								if (s.startsWith("#"))
-									return DataResult.success(ResourceLocation.tryParse(s.substring(1)));
-								return DataResult.error(() -> "Not an operator block tag");
-							}, rl -> "#" + rl.toString()), ResourceKey.codec(Registries.BLOCK)).listOf().xmap(Set::copyOf, List::copyOf),
-							"Which operator blocks are visible to you, not accounting the item you are holding.",
-							"Accepts a list of mixed block ids or operator blocks tags found within assets/<namespace>/barricade/operator_blocks/<path>.json",
-							"The player must be in creative to see barriers."
-					), "visible_blocks", DEFAULT.visibleBlocks()
+			DefaultFieldUtil.codecWithComments(
+					Codec.either(Codec.STRING.comapFlatMap(s -> {
+						if (s.startsWith("#"))
+							return DataResult.success(ResourceLocation.tryParse(s.substring(1)));
+						return DataResult.error(() -> "Not an operator block tag");
+					}, rl -> "#" + rl.toString()), ResourceKey.codec(Registries.BLOCK)).listOf().xmap(Set::copyOf, List::copyOf),
+					"visible_blocks",
+					DEFAULT.visibleBlocks(),
+					"Which operator blocks are visible to you, not accounting the item you are holding.",
+					"Accepts a list of mixed block ids or operator blocks tags found within assets/<namespace>/barricade/operator_blocks/<path>.json",
+					"The player must be in creative to see barriers."
 			).forGetter(BarricadeClientConfig::visibleBlocks)
 	).apply(inst, BarricadeClientConfig::new));
 

@@ -32,6 +32,7 @@ public record AdvancedBarrier(Optional<Component> name,
                               Optional<Holder<GameCondition<?>>> condition) {
 	public static AdvancedBarrier DEFAULT = new AdvancedBarrier(Optional.empty(), BlockedDirections.of(Direction.values()), Optional.empty(), Optional.empty());
 	public static final ResourceLocation UNKNOWN_ICON = Barricade.asResource("barricade/icon/unknown");
+	public static final AdvancedBarrier UNKNOWN = new AdvancedBarrier(Optional.empty(), BlockedDirections.of(Direction.values()), Optional.of(UNKNOWN_ICON), Optional.empty());
 
 	public static final Codec<AdvancedBarrier> DIRECT_CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			ComponentSerialization.CODEC.optionalFieldOf("name").forGetter(AdvancedBarrier::name),

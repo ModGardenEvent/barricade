@@ -8,11 +8,11 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.util.BarrierRenderUtils;
 import net.modgarden.barricade.data.BlockedDirections;
@@ -42,6 +42,7 @@ public class AdvancedBarrierParticle extends TextureSheetParticle {
 		this.relative = blockedDirections.blocksAll() || blockedDirections.doesNotBlock() ? blockedDirections : origin.map(pos -> BarrierRenderUtils.relativeDirectionsComponent(blockedDirections, pos)).orElse(blockedDirections);
 	}
 
+	@SuppressWarnings("deprecation") // No alternative for LOCATION_BLOCKS
 	@Override
 	public void render(@NotNull VertexConsumer buffer, @NotNull Camera renderInfo, float partialTicks) {
 		if (blockedDirections != null && origin.isPresent() && !blockedDirections.blocksAll() && !blockedDirections.doesNotBlock() && !relative.equals(BarrierRenderUtils.relativeDirectionsComponent(blockedDirections, origin.get()))) {
@@ -57,26 +58,26 @@ public class AdvancedBarrierParticle extends TextureSheetParticle {
 		}
 
 		if (!relative.blocksAll()) {
-			this.setSprite(Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(Barricade.asResource("item/barricade/no_barrier")));
+			this.setSprite(Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(Barricade.asResource("item/barricade/no_barrier")));
 			this.renderRotatedQuad(buffer, renderInfo, quaternionf, partialTicks);
 		}
 		if (icon != null) {
 			try {
-				this.setSprite(Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(icon));
+				this.setSprite(Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(icon));
 			} catch (IllegalStateException ex) {
-				this.setSprite(Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(ResourceLocation.withDefaultNamespace("missingno")));
+				this.setSprite(Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(ResourceLocation.withDefaultNamespace("missingno")));
 			}
 			this.renderRotatedQuad(buffer, renderInfo, quaternionf, partialTicks);
 		}
 		if (!relative.blocksAll()) {
 			for (Direction direction : relative.directions()) {
-				this.setSprite(Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(Barricade.asResource("item/barricade/direction/" + direction.getName())));
+				this.setSprite(Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(Barricade.asResource("item/barricade/direction/" + direction.getName())));
 				this.renderRotatedQuad(buffer, renderInfo, quaternionf, partialTicks);
 			}
 		}
 
 		if (relative.blocksAll()) {
-			this.setSprite(Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(ResourceLocation.withDefaultNamespace("item/barrier")));
+			this.setSprite(Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(ResourceLocation.withDefaultNamespace("item/barrier")));
 			this.renderRotatedQuad(buffer, renderInfo, quaternionf, partialTicks);
 		}
 	}

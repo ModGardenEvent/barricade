@@ -1,60 +1,93 @@
 package net.modgarden.barricade.registry;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.block.Block;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.item.AdvancedBarrierBlockItem;
 import net.modgarden.barricade.item.DirectionalBarrierBlockItem;
 import net.modgarden.barricade.item.EntityCheckBarrierBlockItem;
-import org.jetbrains.annotations.NotNull;
+
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class BarricadeItems {
-	public static final BlockItem ADVANCED_BARRIER = new AdvancedBarrierBlockItem(BarricadeBlocks.ADVANCED_BARRIER, barrierProps());
+	private static final RegistryContext<Item> CONTEXT = new RegistryContext<>(
+			BuiltInRegistries.ITEM,
+			Barricade.MOD_ID
+	);
 
-	public static final BlockItem HORIZONTAL_BARRIER = new DirectionalBarrierBlockItem(BarricadeBlocks.HORIZONTAL_BARRIER, barrierProps());
-	public static final BlockItem VERTICAL_BARRIER = new DirectionalBarrierBlockItem(BarricadeBlocks.VERTICAL_BARRIER, barrierProps());
-	public static final BlockItem DOWN_BARRIER = new DirectionalBarrierBlockItem(BarricadeBlocks.DOWN_BARRIER, barrierProps());
-	public static final BlockItem UP_BARRIER = new DirectionalBarrierBlockItem(BarricadeBlocks.UP_BARRIER, barrierProps());
-	public static final BlockItem SOUTH_BARRIER = new DirectionalBarrierBlockItem(BarricadeBlocks.SOUTH_BARRIER, barrierProps());
-	public static final BlockItem NORTH_BARRIER = new DirectionalBarrierBlockItem(BarricadeBlocks.NORTH_BARRIER, barrierProps());
-	public static final BlockItem EAST_BARRIER = new DirectionalBarrierBlockItem(BarricadeBlocks.EAST_BARRIER, barrierProps());
-	public static final BlockItem WEST_BARRIER = new DirectionalBarrierBlockItem(BarricadeBlocks.WEST_BARRIER, barrierProps());
+	public static final Supplier<BlockItem> ADVANCED_BARRIER = CONTEXT.defer(
+			"advanced_barrier",
+			withProperties(BarricadeBlocks.ADVANCED_BARRIER, AdvancedBarrierBlockItem::new)
+	);
 
-	public static final BlockItem PLAYER_BARRIER = new EntityCheckBarrierBlockItem(BarricadeBlocks.PLAYER_BARRIER, barrierProps());
-	public static final BlockItem MOB_BARRIER = new EntityCheckBarrierBlockItem(BarricadeBlocks.MOB_BARRIER, barrierProps());
-	public static final BlockItem PASSIVE_BARRIER = new EntityCheckBarrierBlockItem(BarricadeBlocks.PASSIVE_BARRIER, barrierProps());
-	public static final BlockItem HOSTILE_BARRIER = new EntityCheckBarrierBlockItem(BarricadeBlocks.HOSTILE_BARRIER, barrierProps());
+	public static final Supplier<BlockItem> HORIZONTAL_BARRIER = CONTEXT.defer(
+			"horizontal_barrier",
+			withProperties(BarricadeBlocks.HORIZONTAL_BARRIER, DirectionalBarrierBlockItem::new)
+	);
+	public static final Supplier<BlockItem> VERTICAL_BARRIER = CONTEXT.defer(
+			"vertical_barrier",
+			withProperties(BarricadeBlocks.VERTICAL_BARRIER, DirectionalBarrierBlockItem::new)
+	);
+	public static final Supplier<BlockItem> DOWN_BARRIER = CONTEXT.defer(
+			"down_barrier",
+			withProperties(BarricadeBlocks.DOWN_BARRIER, DirectionalBarrierBlockItem::new)
+	);
+	public static final Supplier<BlockItem> UP_BARRIER = CONTEXT.defer(
+			"up_barrier",
+			withProperties(BarricadeBlocks.UP_BARRIER, DirectionalBarrierBlockItem::new)
+	);
+	public static final Supplier<BlockItem> SOUTH_BARRIER = CONTEXT.defer(
+			"south_barrier",
+			withProperties(BarricadeBlocks.SOUTH_BARRIER, DirectionalBarrierBlockItem::new)
+	);
+	public static final Supplier<BlockItem> NORTH_BARRIER = CONTEXT.defer(
+			"north_barrier",
+			withProperties(BarricadeBlocks.NORTH_BARRIER, DirectionalBarrierBlockItem::new)
+	);
+	public static final Supplier<BlockItem> EAST_BARRIER = CONTEXT.defer(
+			"east_barrier",
+			withProperties(BarricadeBlocks.EAST_BARRIER, DirectionalBarrierBlockItem::new)
+	);
+	public static final Supplier<BlockItem> WEST_BARRIER = CONTEXT.defer(
+			"west_barrier",
+			withProperties(BarricadeBlocks.WEST_BARRIER, DirectionalBarrierBlockItem::new)
+	);
 
 	// Predicate Barriers
-	public static final BlockItem CREATIVE_ONLY_BARRIER = new BlockItem(
-			BarricadeBlocks.CREATIVE_ONLY_BARRIER,
-			barrierProps()
+	public static final Supplier<BlockItem> PLAYER_BARRIER = CONTEXT.defer(
+			"player_barrier",
+			withProperties(BarricadeBlocks.PLAYER_BARRIER, EntityCheckBarrierBlockItem::new)
+	);
+	public static final Supplier<BlockItem> MOB_BARRIER = CONTEXT.defer(
+			"mob_barrier",
+			withProperties(BarricadeBlocks.MOB_BARRIER, EntityCheckBarrierBlockItem::new)
+	);
+	public static final Supplier<BlockItem> PASSIVE_BARRIER = CONTEXT.defer(
+			"passive_barrier",
+			withProperties(BarricadeBlocks.PASSIVE_BARRIER, EntityCheckBarrierBlockItem::new)
+	);
+	public static final Supplier<BlockItem> HOSTILE_BARRIER = CONTEXT.defer(
+			"hostile_barrier",
+			withProperties(BarricadeBlocks.HOSTILE_BARRIER, EntityCheckBarrierBlockItem::new)
+	);
+
+	public static final Supplier<BlockItem> CREATIVE_ONLY_BARRIER = CONTEXT.defer(
+			"creative_only_barrier",
+			withProperties(BarricadeBlocks.CREATIVE_ONLY_BARRIER, BlockItem::new)
 	);
 
 	public static void registerAll() {
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("advanced_barrier"), ADVANCED_BARRIER);
-
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("down_barrier"), DOWN_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("up_barrier"), UP_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("south_barrier"), SOUTH_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("north_barrier"), NORTH_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("east_barrier"), EAST_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("west_barrier"), WEST_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("horizontal_barrier"), HORIZONTAL_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("vertical_barrier"), VERTICAL_BARRIER);
-
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("player_barrier"), PLAYER_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("mob_barrier"), MOB_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("passive_barrier"), PASSIVE_BARRIER);
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("hostile_barrier"), HOSTILE_BARRIER);
-
-		Registry.register(BuiltInRegistries.ITEM, Barricade.asResource("creative_only_barrier"), CREATIVE_ONLY_BARRIER);
+		CONTEXT.register();
 	}
 
-	private static Item.@NotNull Properties barrierProps() {
-		return new Item.Properties().rarity(Rarity.EPIC);
+	@SuppressWarnings("unchecked") // ResourceKey<T> is always ResourceKey<Item>
+	private static <T extends Item, B extends Block> Function<ResourceKey<T>, T> withProperties(Supplier<B> block, BiFunction<Block, Item.Properties, T> callback) {
+		return key -> callback.apply(block.get(), new Item.Properties().rarity(Rarity.EPIC).setId((ResourceKey<Item>) key));
 	}
 }

@@ -1,13 +1,11 @@
 package net.modgarden.barricade;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.modgarden.barricade.client.BarricadeClient;
-import net.modgarden.barricade.client.model.OperatorBakedModelAccess;
 import net.modgarden.barricade.platform.BarricadePlatformHelper;
 import net.modgarden.barricade.registry.BarricadeBlocks;
+import net.modgarden.barricade.registry.BarricadeTags;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +20,7 @@ public class Barricade {
 	public static boolean isOperatorModel(BlockState state) {
 		if (state.getBlock() == BarricadeBlocks.ADVANCED_BARRIER)
 			state = Blocks.BARRIER.defaultBlockState();
-		return BarricadeClient.getHelper() != null && Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state) instanceof OperatorBakedModelAccess;
+		return state.is(BarricadeTags.BlockTags.BARRIERS);
 	}
 
 	public static ResourceLocation asResource(String path) {

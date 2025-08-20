@@ -47,20 +47,20 @@ public class ClientLevelMixin {
 	@Inject(method = "<clinit>", at = @At("TAIL"))
 	private static void barricade$addToMarkerParticles(CallbackInfo ci) {
 		Set<Item> set = new HashSet<>(MARKER_PARTICLE_ITEMS);
-		set.add(BarricadeItems.ADVANCED_BARRIER);
-		set.add(BarricadeItems.UP_BARRIER);
-		set.add(BarricadeItems.DOWN_BARRIER);
-		set.add(BarricadeItems.NORTH_BARRIER);
-		set.add(BarricadeItems.SOUTH_BARRIER);
-		set.add(BarricadeItems.WEST_BARRIER);
-		set.add(BarricadeItems.EAST_BARRIER);
-		set.add(BarricadeItems.HORIZONTAL_BARRIER);
-		set.add(BarricadeItems.VERTICAL_BARRIER);
-		set.add(BarricadeItems.PLAYER_BARRIER);
-		set.add(BarricadeItems.MOB_BARRIER);
-		set.add(BarricadeItems.PASSIVE_BARRIER);
-		set.add(BarricadeItems.HOSTILE_BARRIER);
-		set.add(BarricadeItems.CREATIVE_ONLY_BARRIER);
+		set.add(BarricadeItems.ADVANCED_BARRIER.get());
+		set.add(BarricadeItems.UP_BARRIER.get());
+		set.add(BarricadeItems.DOWN_BARRIER.get());
+		set.add(BarricadeItems.NORTH_BARRIER.get());
+		set.add(BarricadeItems.SOUTH_BARRIER.get());
+		set.add(BarricadeItems.WEST_BARRIER.get());
+		set.add(BarricadeItems.EAST_BARRIER.get());
+		set.add(BarricadeItems.HORIZONTAL_BARRIER.get());
+		set.add(BarricadeItems.VERTICAL_BARRIER.get());
+		set.add(BarricadeItems.PLAYER_BARRIER.get());
+		set.add(BarricadeItems.MOB_BARRIER.get());
+		set.add(BarricadeItems.PASSIVE_BARRIER.get());
+		set.add(BarricadeItems.HOSTILE_BARRIER.get());
+		set.add(BarricadeItems.CREATIVE_ONLY_BARRIER.get());
 		MARKER_PARTICLE_ITEMS = Set.copyOf(set);
 	}
 

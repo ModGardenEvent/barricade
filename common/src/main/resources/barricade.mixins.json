@@ -11,13 +11,12 @@
 		"BlockMixin"
 	],
 	"client": [
+		"client.BarrierBlockMixin",
 		"client.ClientChunkCacheAccessor",
 		"client.ClientChunkCacheStorageAccessor",
 		"client.ClientLevelMixin",
-		"client.ItemModelGeneratorMixin",
 		"client.LevelRendererInvoker",
 		"client.MinecraftMixin",
-		"client.ModelBakeryAccessor",
 		"client.ModelManagerMixin",
 		"client.StructureBlockRendererMixin",
 		"client.TextureAtlasMixin"
