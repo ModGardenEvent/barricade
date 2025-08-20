@@ -69,7 +69,7 @@ public class AdvancedBarrierBlockEntity extends BlockEntity implements Nameable 
 			assert this.getLevel() != null;
 			// Gracefully handle invalid data
 			try {
-				data = this.getLevel().registryAccess().getOrThrow(BarricadeRegistries.ADVANCED_BARRIER).value().get(tag.getInt("a").orElseThrow()).orElseThrow();
+				data = this.getLevel().registryAccess().lookupOrThrow(BarricadeRegistries.ADVANCED_BARRIER).get(tag.getInt("a").orElseThrow()).orElseThrow();
 			} catch (NoSuchElementException e) {
 				Barricade.LOG.error("Unknown Advanced Barrier of ID {}", tag.getInt("a"));
 			} catch (IllegalStateException e) {
