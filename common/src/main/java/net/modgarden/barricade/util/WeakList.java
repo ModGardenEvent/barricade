@@ -11,6 +11,16 @@ public final class WeakList<T> {
 		delegate.add(new WeakReference<>(element));
 	}
 
+	public void addWeak(WeakReference<T> element) {
+		if (element.get() != null) {
+			delegate.add(element);
+		}
+	}
+
+	public void removeWeak(WeakReference<T> element) {
+		delegate.remove(element);
+	}
+
 	public void forEach(Consumer<? super T> action) {
 		for (WeakReference<T> ref : delegate) {
 			T element = ref.get();

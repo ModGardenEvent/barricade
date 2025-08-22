@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import net.modgarden.barricade.Barricade;
+import net.modgarden.barricade.util.WeakList;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
@@ -25,12 +26,12 @@ public class BakedRegion {
 	public static final int SIZE_XYZ = 16;
 	static final Object2ReferenceMap<BakedRegionPos, BakedRegion> REGIONS = new Object2ReferenceArrayMap<>();
 	static final Set<BakedRegionPos> DIRTY_REGIONS = new HashSet<>();
-	private static final List<WeakReference<RegionBaker>> REGION_BAKERS = new ArrayList<>();
+	private static final WeakList<RegionBaker> REGION_BAKERS = new WeakList<>();
 
 	private final BakedRegionPos pos;
-	private final List<WeakReference<RegionBaker>> regionBakers;
+	private final WeakList<RegionBaker> regionBakers;
 
-	public BakedRegion(BakedRegionPos pos, List<WeakReference<RegionBaker>> regionBakers) {
+	public BakedRegion(BakedRegionPos pos, WeakList<RegionBaker> regionBakers) {
 		this.pos = pos;
 		this.regionBakers = regionBakers;
 	}
@@ -71,14 +72,14 @@ public class BakedRegion {
 	 * Register a new {@link RegionBaker} for baking.
 	 */
 	public static void registerRegionBaker(WeakReference<RegionBaker> baker) {
-		REGION_BAKERS.add(baker);
+		REGION_BAKERS.addWeak(baker);
 	}
 
 	/**
 	 * Remove a {@link RegionBaker}.
 	 */
 	public static void removeRegionBaker(WeakReference<RegionBaker> baker) {
-		REGION_BAKERS.remove(baker);
+		REGION_BAKERS.removeWeak(baker);
 	}
 
 	/**
@@ -87,7 +88,7 @@ public class BakedRegion {
 	public void render() {
 		if (DIRTY_REGIONS.contains(this.pos)) return;
 		try {
-			this.regionBakers.forEach(baker -> Objects.requireNonNull(baker.get(), "Destroyed RegionBaker WeakReference was not cleared!").render());
+			this.regionBakers.forEach(RegionBaker::render);
 		} catch(Exception e) {
 			Barricade.LOG.error("Exception during BakedRegion rendering", e);
 		}
@@ -99,8 +100,7 @@ public class BakedRegion {
 	public void upload(UploadContext context) {
 		DIRTY_REGIONS.remove(this.pos);
 		try {
-			this.regionBakers.forEach(ref -> {
-				RegionBaker baker = Objects.requireNonNull(ref.get(), "Destroyed RegionBaker WeakReference was not cleared!");
+			this.regionBakers.forEach(baker -> {
 				baker.bake(context, this.pos);
 				baker.getBufferSource().upload();
 			});
