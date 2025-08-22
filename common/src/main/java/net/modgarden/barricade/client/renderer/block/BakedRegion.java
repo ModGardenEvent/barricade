@@ -58,13 +58,13 @@ public class BakedRegion {
 	 */
 	static void putRegion(BakedRegionPos pos) {
 		REGIONS.putIfAbsent(pos, new BakedRegion(pos, REGION_BAKERS));
+		markRegionDirty(pos);
 	}
 
 	/**
 	 * Mark the {@link BakedRegion} to be rebuilt.
 	 */
 	public static void markRegionDirty(BakedRegionPos pos) {
-		putRegion(pos);
 		DIRTY_REGIONS.add(pos);
 	}
 

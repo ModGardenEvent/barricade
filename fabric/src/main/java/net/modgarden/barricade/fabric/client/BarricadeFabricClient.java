@@ -138,5 +138,7 @@ public class BarricadeFabricClient implements ClientModInitializer {
 		ClientPlayerBlockBreakEvents.AFTER.register((level, player, pos, state) -> BakedRegion.markRegionDirty(BakedRegion.BakedRegionPos.fromBlockPos(pos)));
 
 		WorldRenderEvents.START.register(context -> BakedRegion.buildDirty(new BakedRegion.UploadContext(context.world(), context.matrixStack())));
+
+		WorldRenderEvents.AFTER_ENTITIES.register(context -> BakedRegion.renderRegions());
 	}
 }
