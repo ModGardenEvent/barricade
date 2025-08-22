@@ -25,7 +25,7 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 		this.context = context;
 		WeakReference<RegionBaker> baker = new WeakReference<>(this);
 		BakedRegion.registerRegionBaker(baker);
-		CLEANER.register(this, () -> BakedRegion.removeRegionBaker(baker));
+		CLEANER.register(this, new CleanerState(baker));
 	}
 
 	@Override

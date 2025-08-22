@@ -21,15 +21,15 @@ import java.util.Map;
 
 public final class BakedBarrierBlockRenderer implements RegionBaker {
 	public static final Map<ResourceLocation, BlockStateModel> MODELS = new HashMap<>();
-	public static final BakedBarrierBlockRenderer INSTANCE = new BakedBarrierBlockRenderer();
 	public static final RenderType RENDER_TYPE = RenderType.cutout();
 	private static final Cleaner CLEANER = Cleaner.create();
 	private final BakedRegion.CachedMultiBufferSource cachedBufferSource = new BakedRegion.CachedMultiBufferSource();
+	public static final BakedBarrierBlockRenderer INSTANCE = new BakedBarrierBlockRenderer();
 
 	private BakedBarrierBlockRenderer() {
 		WeakReference<RegionBaker> baker = new WeakReference<>(this);
 		BakedRegion.registerRegionBaker(baker);
-		CLEANER.register(this, () -> BakedRegion.removeRegionBaker(baker));
+		CLEANER.register(this, new CleanerState(baker));
 	}
 
 	public static void reloadModels() {
