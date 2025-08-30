@@ -8,6 +8,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 
@@ -30,11 +32,12 @@ public interface RegionBaker {
 				mc.getMainRenderTarget().getDepthTexture(),
 				OptionalDouble.empty()
 		)) {
+			List<Runnable> removeTasks = new ArrayList<>();
 			BakedRegion.REGIONS.forEach((pos, region) -> {
 				if (BakedRegion.DIRTY_REGIONS.contains(pos)) return;
 				if (mc.getCameraEntity() == null) return;
 				if (!mc.getCameraEntity().position().closerThan(pos.center(), mc.levelRenderer.getLastViewDistance())) {
-					BakedRegion.REGIONS.remove(pos);
+					removeTasks.add(() -> BakedRegion.REGIONS.remove(pos));
 					return;
 				}
 				GpuBuffer indexBuffer = this.getBufferSource().getIndexBuffer(RENDER_TYPE);
@@ -43,6 +46,7 @@ public interface RegionBaker {
 				renderPass.setIndexBuffer(indexBuffer, VertexFormat.IndexType.INT);
 				renderPass.drawIndexed(0, indexBuffer.size());
 			});
+			removeTasks.forEach(Runnable::run);
 		}
 	}
 
