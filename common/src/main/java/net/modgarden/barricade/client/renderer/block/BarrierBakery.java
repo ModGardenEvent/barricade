@@ -33,6 +33,7 @@ public final class BarrierBakery {
 						id -> createBlockModel(advancedBarrierRegistry.get(id).orElseThrow().value())
 				));
 		ModelDiscovery modelDiscovery = new ModelDiscovery(unbakedModelMap, UNKNOWN_UNBAKED_MODEL);
+		unbakedModelMap.forEach(modelDiscovery::addSpecialModel);
 		Baker baker = new Baker(modelDiscovery);
 		for (AdvancedBarrier data : advancedBarrierRegistry) {
 			ResourceLocation id = advancedBarrierRegistry.getKey(data);
@@ -97,7 +98,7 @@ public final class BarrierBakery {
 								new Material(TextureAtlas.LOCATION_BLOCKS, Barricade.asResource("block/barrier"))
 						)
 						.build(),
-				Barricade.asResource("block/advanced_barrier")
+				null
 		);
 	}
 
@@ -123,7 +124,7 @@ public final class BarrierBakery {
 				false,
 				ItemTransforms.NO_TRANSFORMS,
 				slots.build(),
-				Barricade.asResource("block/advanced_barrier")
+				null
 		);
 	}
 
