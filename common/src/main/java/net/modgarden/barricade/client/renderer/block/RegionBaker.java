@@ -37,8 +37,9 @@ public interface RegionBaker {
 					BakedRegion.REGIONS.remove(pos);
 					return;
 				}
-				renderPass.setVertexBuffer(0, this.getBufferSource().getVertexBuffer(RENDER_TYPE));
 				GpuBuffer indexBuffer = this.getBufferSource().getIndexBuffer(RENDER_TYPE);
+				if (indexBuffer == null) return;
+				renderPass.setVertexBuffer(0, this.getBufferSource().getVertexBuffer(RENDER_TYPE));
 				renderPass.setIndexBuffer(indexBuffer, VertexFormat.IndexType.INT);
 				renderPass.drawIndexed(0, indexBuffer.size());
 			});

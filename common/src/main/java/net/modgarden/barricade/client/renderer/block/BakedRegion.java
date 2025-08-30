@@ -12,6 +12,7 @@ import net.minecraft.world.phys.Vec3;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.util.WeakList;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
@@ -51,6 +52,7 @@ public class BakedRegion {
 			BakedRegion region = REGIONS.get(pos);
 			region.upload(context);
 		}
+		DIRTY_REGIONS.clear();
 	}
 
 	/**
@@ -98,7 +100,6 @@ public class BakedRegion {
 	 * Upload this region to the GPU.
 	 */
 	public void upload(UploadContext context) {
-		DIRTY_REGIONS.remove(this.pos);
 		try {
 			this.regionBakers.forEach(baker -> {
 				baker.bake(context, this.pos);
@@ -155,7 +156,7 @@ public class BakedRegion {
 			return this.vertexBuffers.get(renderType);
 		}
 
-		public GpuBuffer getIndexBuffer(RenderType renderType) {
+		public @Nullable GpuBuffer getIndexBuffer(RenderType renderType) {
 			return this.indexBuffers.get(renderType);
 		}
 
