@@ -9,8 +9,6 @@ import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
-import org.joml.Matrix4fStack;
 
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
@@ -57,12 +55,9 @@ public interface RegionBaker {
 						(float) -cameraPos.y(),
 						(float) -cameraPos.z()
 				);
-				Matrix4fStack matrix4fStack = RenderSystem.getModelViewStack();
-				matrix4fStack.pushMatrix();
 				renderPass.setVertexBuffer(0, this.getBufferSource().getVertexBuffer(RENDER_TYPE));
 				renderPass.setIndexBuffer(indexBuffer, VertexFormat.IndexType.SHORT);
 				renderPass.drawIndexed(0, indexBuffer.size());
-				matrix4fStack.popMatrix();
 				RENDER_TYPE.clearRenderState();
 			});
 		}

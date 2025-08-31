@@ -145,6 +145,6 @@ public class BarricadeFabricClient implements ClientModInitializer {
 			poseStack.popPose();
 		});
 
-		WorldRenderEvents.AFTER_ENTITIES.register(context -> BakedRegion.renderRegions(new BakedRegion.RenderContext(context.tickCounter().getGameTimeDeltaPartialTick(true), context.positionMatrix())));
+		WorldRenderEvents.AFTER_ENTITIES.register(context -> BakedRegion.renderRegions(new BakedRegion.RenderContext()));
 	}
 }

@@ -17,7 +17,6 @@ import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.util.WeakList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
@@ -129,7 +128,7 @@ public class BakedRegion {
 
 	public record UploadContext(LevelAccessor level, PoseStack poseStack) {}
 
-	public record RenderContext(float tickDelta, Matrix4f positionMatrix) {}
+	public record RenderContext() {}
 
 	public static class CachedMultiBufferSource implements MultiBufferSource, AutoCloseable {
 		private final Map<RenderType, BufferBuilder> buffers = new HashMap<>();
