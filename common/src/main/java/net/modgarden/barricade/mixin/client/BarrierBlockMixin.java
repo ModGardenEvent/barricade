@@ -25,7 +25,7 @@ public abstract class BarrierBlockMixin extends Block {
 	) {
 		super.onPlace(state, level, pos, oldState, movedByPiston);
 		if (level.isClientSide) {
-			BakedRegion.markRegionDirty(BakedRegion.BakedRegionPos.fromBlockPos(pos));
+			BakedRegion.putRegion(BakedRegion.BakedRegionPos.fromBlockPos(pos));
 		}
 	}
 }

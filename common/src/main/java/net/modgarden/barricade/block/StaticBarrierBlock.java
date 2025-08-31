@@ -33,6 +33,6 @@ public abstract class StaticBarrierBlock extends BarrierBlock {
 			boolean movedByPiston
 	) {
 		super.onPlace(state, level, pos, oldState, movedByPiston);
-		BakedRegion.markRegionDirty(BakedRegion.BakedRegionPos.fromBlockPos(pos));
+		BakedRegion.putRegion(BakedRegion.BakedRegionPos.fromBlockPos(pos));
 	}
 }

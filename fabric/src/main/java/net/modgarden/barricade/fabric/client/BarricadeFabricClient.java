@@ -36,6 +36,7 @@ import net.modgarden.barricade.network.clientbound.SetServerContextClientboundPa
 import net.modgarden.barricade.particle.AdvancedBarrierParticleOptions;
 import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeBlocks;
+import net.modgarden.barricade.registry.BarricadeTags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
@@ -136,7 +137,11 @@ public class BarricadeFabricClient implements ClientModInitializer {
 				BarricadeBlocks.CREATIVE_ONLY_BARRIER.get()
 		);
 
-		ClientPlayerBlockBreakEvents.AFTER.register((level, player, pos, state) -> BakedRegion.markRegionDirty(BakedRegion.BakedRegionPos.fromBlockPos(pos)));
+		ClientPlayerBlockBreakEvents.AFTER.register((level, player, pos, state) -> {
+			if (state.is(BarricadeTags.BlockTags.BARRIERS)) {
+				BakedRegion.putRegion(BakedRegion.BakedRegionPos.fromBlockPos(pos));
+			}
+		});
 
 		WorldRenderEvents.START.register(context -> {
 			PoseStack poseStack = new PoseStack();
