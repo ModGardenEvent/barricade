@@ -21,7 +21,7 @@ import static net.modgarden.barricade.client.renderer.block.BakedBarrierBlockRen
 public interface RegionBaker {
 	BakedRegion.CachedMultiBufferSource getBufferSource();
 
-	default void render(BakedRegion.RenderContext context) {
+	default void render(BakedRegion.RenderContext ignoredContext) {
 		Minecraft mc = Minecraft.getInstance();
 		GpuDevice device = RenderSystem.getDevice();
 		CommandEncoder commandEncoder = device.createCommandEncoder();
@@ -63,5 +63,13 @@ public interface RegionBaker {
 		}
 	}
 
-	void bake(BakedRegion.UploadContext context, BakedRegion.BakedRegionPos pos);
+	void bake(BakedRegion.UploadContext context);
+
+	/**
+	 * It's like two in the morning and I couldn't think of anything better to call a "baker factory."
+	 */
+	@FunctionalInterface
+	interface CulinarySchool {
+		RegionBaker graduate(BakedRegion.BakedRegionPos pos);
+	}
 }

@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public final class WeakList<T> {
 	private final ArrayList<WeakReference<T>> delegate = new ArrayList<>();
@@ -20,6 +21,12 @@ public final class WeakList<T> {
 
 	public void removeWeak(WeakReference<T> element) {
 		delegate.remove(element);
+	}
+
+	public Stream<T> stream() {
+		this.forEach(element -> {});
+		return delegate.stream()
+				.map(WeakReference::get);
 	}
 
 	public void forEach(Consumer<? super T> action) {

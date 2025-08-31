@@ -15,22 +15,17 @@ import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.StaticBarrierBlock;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 
-import java.lang.ref.Cleaner;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
 public final class BakedBarrierBlockRenderer implements RegionBaker {
 	public static final Map<ResourceLocation, BlockStateModel> MODELS = new HashMap<>();
 	public static final RenderType RENDER_TYPE = RenderType.cutout();
-	private static final Cleaner CLEANER = Cleaner.create();
 	private final BakedRegion.CachedMultiBufferSource cachedBufferSource = new BakedRegion.CachedMultiBufferSource();
-	public static final BakedBarrierBlockRenderer INSTANCE = new BakedBarrierBlockRenderer();
+	private final BakedRegion.BakedRegionPos pos;
 
-	private BakedBarrierBlockRenderer() {
-		WeakReference<RegionBaker> baker = new WeakReference<>(this);
-		BakedRegion.registerRegionBaker(baker);
-		CLEANER.register(this, new CleanerState(baker));
+	public BakedBarrierBlockRenderer(BakedRegion.BakedRegionPos pos) {
+		this.pos = pos;
 	}
 
 	public static void reloadModels() {
@@ -44,12 +39,12 @@ public final class BakedBarrierBlockRenderer implements RegionBaker {
 	}
 
 	@Override
-	public void bake(BakedRegion.UploadContext context, BakedRegion.BakedRegionPos pos) {
-		ChunkAccess chunk = context.level().getChunk(pos.x(), pos.z());
-		PalettedContainer<BlockState> states = chunk.getSection(chunk.getSectionIndexFromSectionY(pos.y())).getStates();
+	public void bake(BakedRegion.UploadContext context) {
+		ChunkAccess chunk = context.level().getChunk(this.pos.x(), this.pos.z());
+		PalettedContainer<BlockState> states = chunk.getSection(chunk.getSectionIndexFromSectionY(this.pos.y())).getStates();
 		Minecraft mc = Minecraft.getInstance();
 		VertexConsumer vertexConsumer = cachedBufferSource.getBuffer(RENDER_TYPE);
-		BlockPos regionPos = pos.lowerCorner();
+		BlockPos regionPos = this.pos.lowerCorner();
 		BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {

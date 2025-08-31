@@ -9,23 +9,16 @@ import net.minecraft.world.phys.Vec3;
 import net.modgarden.barricade.util.WeakList;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.ref.Cleaner;
-import java.lang.ref.WeakReference;
-
 /**
  * Inspired by Glowcase's <a href="https://github.com/ModFest/glowcase/blob/b3681b46158733e632af22ea6c53afc342d9cf2e/src/main/java/dev/hephaestus/glowcase/client/render/block/entity/BakedBlockEntityRenderer.java">BakedBlockEntityRenderer</a>.
  */
-public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements BlockEntityRenderer<T>, RegionBaker {
-	private static final Cleaner CLEANER = Cleaner.create();
+public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements BlockEntityRenderer<T> {
 	private final BlockEntityRendererProvider.Context context;
-	private final BakedRegion.CachedMultiBufferSource cachedBufferSource = new BakedRegion.CachedMultiBufferSource();
 	private final WeakList<T> blockEntities = new WeakList<>();
 
 	public BakedBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
 		this.context = context;
-		WeakReference<RegionBaker> baker = new WeakReference<>(this);
-		BakedRegion.registerRegionBaker(baker);
-		CLEANER.register(this, new CleanerState(baker));
+		BakedRegion.registerRegionBaker(Baker::new);
 	}
 
 	@Override
@@ -80,27 +73,6 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 			MultiBufferSource bufferSource
 	);
 
-	@Override
-	public BakedRegion.CachedMultiBufferSource getBufferSource() {
-		return this.cachedBufferSource;
-	}
-
-	@Override
-	public void bake(
-			BakedRegion.UploadContext context,
-			BakedRegion.BakedRegionPos pos
-	) {
-		this.blockEntities.forEach(blockEntity -> {
-			if (this.shouldBake(blockEntity)) {
-				this.renderBaked(
-						blockEntity,
-						context.poseStack(),
-						this.cachedBufferSource
-				);
-			}
-		});
-	}
-
 	/**
 	 * @return whether this {@link T} should be baked.
 	 */
@@ -108,5 +80,30 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 
 	protected BlockEntityRendererProvider.Context getContext() {
 		return this.context;
+	}
+
+	public class Baker implements RegionBaker {
+		private final BakedRegion.CachedMultiBufferSource cachedBufferSource = new BakedRegion.CachedMultiBufferSource();
+
+		public Baker(BakedRegion.BakedRegionPos pos) {
+		}
+
+		@Override
+		public BakedRegion.CachedMultiBufferSource getBufferSource() {
+			return this.cachedBufferSource;
+		}
+
+		@Override
+		public void bake(BakedRegion.UploadContext context) {
+			BakedBlockEntityRenderer.this.blockEntities.forEach(blockEntity -> {
+				if (BakedBlockEntityRenderer.this.shouldBake(blockEntity)) {
+					BakedBlockEntityRenderer.this.renderBaked(
+							blockEntity,
+							context.poseStack(),
+							this.cachedBufferSource
+					);
+				}
+			});
+		}
 	}
 }

@@ -14,12 +14,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import net.modgarden.barricade.Barricade;
-import net.modgarden.barricade.util.WeakList;
+import net.modgarden.barricade.client.renderer.block.RegionBaker.CulinarySchool;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.ref.WeakReference;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A region in which block entity vertices are baked.
@@ -31,13 +31,13 @@ public class BakedRegion {
 	public static final int SIZE_XYZ = 16;
 	static final Object2ReferenceMap<BakedRegionPos, BakedRegion> REGIONS = new Object2ReferenceArrayMap<>();
 	static final Set<BakedRegionPos> DIRTY_REGIONS = new HashSet<>();
-	private static final WeakList<RegionBaker> REGION_BAKERS = new WeakList<>();
+	private static final Set<CulinarySchool> CULINARY_SCHOOLS = new HashSet<>();
 	private static final List<Runnable> REGION_REMOVE_TASKS = new ArrayList<>();
 
 	private final BakedRegionPos pos;
-	private final WeakList<RegionBaker> regionBakers;
+	private final List<RegionBaker> regionBakers;
 
-	public BakedRegion(BakedRegionPos pos, WeakList<RegionBaker> regionBakers) {
+	public BakedRegion(BakedRegionPos pos, List<RegionBaker> regionBakers) {
 		this.pos = pos;
 		this.regionBakers = regionBakers;
 	}
@@ -73,7 +73,7 @@ public class BakedRegion {
 	 * Register a region if it does not already exist.
 	 */
 	public static void putRegion(BakedRegionPos pos) {
-		REGIONS.putIfAbsent(pos, new BakedRegion(pos, REGION_BAKERS));
+		REGIONS.putIfAbsent(pos, new BakedRegion(pos, graduateBakers(pos)));
 		markRegionDirty(pos);
 	}
 
@@ -85,17 +85,16 @@ public class BakedRegion {
 	}
 
 	/**
-	 * Register a new {@link RegionBaker} for baking.
+	 * Register a new {@link CulinarySchool} for baking.
 	 */
-	public static void registerRegionBaker(WeakReference<RegionBaker> baker) {
-		REGION_BAKERS.addWeak(baker);
+	public static void registerRegionBaker(CulinarySchool baker) {
+		CULINARY_SCHOOLS.add(baker);
 	}
 
-	/**
-	 * Remove a {@link RegionBaker}.
-	 */
-	public static void removeRegionBaker(WeakReference<RegionBaker> baker) {
-		REGION_BAKERS.removeWeak(baker);
+	private static List<RegionBaker> graduateBakers(BakedRegionPos pos) {
+		return CULINARY_SCHOOLS.stream()
+				.map(baker -> baker.graduate(pos))
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -119,7 +118,7 @@ public class BakedRegion {
 				if (baker.getBufferSource().isUploaded()) {
 					baker.getBufferSource().flush();
 				}
-				baker.bake(context, this.pos);
+				baker.bake(context);
 				baker.getBufferSource().upload();
 			});
 		} catch(Exception e) {

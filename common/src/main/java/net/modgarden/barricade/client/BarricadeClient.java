@@ -5,6 +5,8 @@ import house.greenhouse.greenhouseconfig.api.GreenhouseConfigHolder;
 import house.greenhouse.greenhouseconfig.jsonc.JsonCLang;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.modgarden.barricade.client.platform.BarricadeClientPlatformHelper;
+import net.modgarden.barricade.client.renderer.block.BakedBarrierBlockRenderer;
+import net.modgarden.barricade.client.renderer.block.BakedRegion;
 
 import java.util.List;
 
@@ -23,6 +25,8 @@ public class BarricadeClient {
 			return;
 
 		BarricadeClient.helper = helper;
+
+		BakedRegion.registerRegionBaker(BakedBarrierBlockRenderer::new);
 	}
 
 	public static BarricadeClientPlatformHelper getHelper() {
