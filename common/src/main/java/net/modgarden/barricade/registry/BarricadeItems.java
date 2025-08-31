@@ -88,6 +88,6 @@ public class BarricadeItems {
 
 	@SuppressWarnings("unchecked") // ResourceKey<T> is always ResourceKey<Item>
 	private static <T extends Item, B extends Block> Function<ResourceKey<T>, T> withProperties(Supplier<B> block, BiFunction<Block, Item.Properties, T> callback) {
-		return key -> callback.apply(block.get(), new Item.Properties().rarity(Rarity.EPIC).setId((ResourceKey<Item>) key));
+		return key -> callback.apply(block.get(), new Item.Properties().rarity(Rarity.EPIC).setId((ResourceKey<Item>) key).useBlockDescriptionPrefix());
 	}
 }
