@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -16,14 +15,11 @@ import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.command.BarricadeClientCommands;
 import net.modgarden.barricade.client.model.OperatorUnbakedModel;
-import net.modgarden.barricade.client.particle.AdvancedBarrierParticle;
 import net.modgarden.barricade.client.renderer.block.AdvancedBarrierBlockRenderer;
-import net.modgarden.barricade.client.util.BarrierRenderUtils;
 import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 import net.modgarden.barricade.neoforge.client.bewlr.BarricadeBEWLR;
 import net.modgarden.barricade.neoforge.client.model.CreativeOnlyUnbakedModelGeometry;
 import net.modgarden.barricade.neoforge.client.platform.BarricadeClientPlatformHelperNeoForge;
-import net.modgarden.barricade.particle.AdvancedBarrierParticleOptions;
 import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeItems;
 import net.neoforged.api.distmarker.Dist;
@@ -69,51 +65,6 @@ public class BarricadeNeoForgeClient {
 			Barricade.serverContext = false;
 		}
 
-		@SubscribeEvent
-		public static void onRenderLevel(RenderLevelStageEvent event) {
-			if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
-				LocalPlayer player = Minecraft.getInstance().player;
-				if (player == null)
-					return;
-
-				if (previousInstabuildState != player.getAbilities().instabuild) {
-					BarrierRenderUtils.refreshAllOperatorBlocks();
-					previousInstabuildState = player.getAbilities().instabuild;
-					return;
-				}
-
-				if (!previousInstabuildState)
-					return;
-
-				if (previousAllVisibleState != BarricadeClient.CONFIG.get().everythingVisible() || !previousVisibleBlocks.equals(BarricadeClient.CONFIG.get().visibleBlocks())) {
-					BarrierRenderUtils.refreshAllOperatorBlocks();
-					previousAllVisibleState = BarricadeClient.CONFIG.get().everythingVisible();
-					previousVisibleBlocks = BarricadeClient.CONFIG.get().visibleBlocks();
-					return;
-				}
-
-				if (previousAllVisibleState)
-					return;
-
-				ItemStack mainHand = player.getInventory().items.get(player.getInventory().selected);
-				ItemStack offHand = player.getInventory().offhand.getFirst();
-
-				if (previousInstabuildState != player.getAbilities().instabuild) {
-					BarrierRenderUtils.refreshAllOperatorBlocks();
-					previousInstabuildState = player.getAbilities().instabuild;
-				}
-				if (!ItemStack.isSameItemSameComponents(mainHand, lastItemInMainHand)) {
-					BarrierRenderUtils.refreshOperatorBlocks(mainHand, lastItemInMainHand, offHand);
-					lastItemInMainHand = mainHand.copy();
-				}
-				if (!ItemStack.isSameItemSameComponents(offHand, lastItemInOffHand)) {
-					BarrierRenderUtils.refreshOperatorBlocks(offHand, lastItemInOffHand, mainHand);
-					lastItemInOffHand = offHand.copy();
-				}
-			}
-		}
-	}
-
 	@EventBusSubscriber(modid = Barricade.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 	public static class ModEvents {
 		@SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -155,11 +106,6 @@ public class BarricadeNeoForgeClient {
 					return BarricadeBEWLR.INSTANCE;
 				}
 			}, BarricadeItems.ADVANCED_BARRIER);
-		}
-
-		@SubscribeEvent
-		public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
-			event.registerSpecial(AdvancedBarrierParticleOptions.Type.INSTANCE, new AdvancedBarrierParticle.Provider());
 		}
 	}
 

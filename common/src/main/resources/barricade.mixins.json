@@ -7,17 +7,11 @@
 	"mixins": [
 		"AbstractArrowMixin",
 		"BlockBehaviourBlockStateBaseMixin",
-		"BlockBehaviourMixin",
 		"BlockMixin"
 	],
 	"client": [
-		"client.BarrierBlockMixin",
-		"client.ClientChunkCacheAccessor",
-		"client.ClientChunkCacheStorageAccessor",
-		"client.ClientLevelMixin",
-		"client.LevelRendererInvoker",
+		"client.LevelMixin",
 		"client.MinecraftMixin",
-		"client.ModelManagerMixin",
 		"client.StructureBlockRendererMixin",
 		"client.TextureAtlasMixin"
 	],

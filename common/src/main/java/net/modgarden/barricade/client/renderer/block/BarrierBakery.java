@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.StaticBarrierBlock;
 import net.modgarden.barricade.data.AdvancedBarrier;
+import net.modgarden.barricade.data.BlockedDirections;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
@@ -53,6 +54,14 @@ public final class BarrierBakery {
 		for (ResourceLocation id : barriers.keySet()) {
 			modelMap.put(id, createModel(id, modelDiscovery, baker));
 		}
+	}
+
+	public static void bakeModels(ResourceLocation id, ResourceLocation texture, Map<ResourceLocation, BlockStateModel> modelMap) {
+		Map<ResourceLocation, UnbakedModel> unbakedModelMap = Map.of(id, createBlockModel(texture));
+		ModelDiscovery modelDiscovery = new ModelDiscovery(unbakedModelMap, UNKNOWN_UNBAKED_MODEL);
+		unbakedModelMap.forEach(modelDiscovery::addSpecialModel);
+		Baker baker = new Baker(modelDiscovery);
+		modelMap.put(id, createModel(id, modelDiscovery, baker));
 	}
 
 	private static @NotNull BlockElement createBlockElement(String texture, List<Direction> faces) {
@@ -120,6 +129,26 @@ public final class BarrierBakery {
 				createUnbakedGeometry(
 						barrier.getBlockedDirections().directions().stream().toList(),
 						barrier.getIcon() != null
+				),
+				UnbakedModel.GuiLight.SIDE,
+				false,
+				ItemTransforms.NO_TRANSFORMS,
+				slots.build(),
+				null
+		);
+	}
+
+	@SuppressWarnings("deprecation") // LOCATION_BLOCKS has no alternative
+	private static @NotNull BlockModel createBlockModel(ResourceLocation texture) {
+		TextureSlots.Data.Builder slots = new TextureSlots.Data.Builder()
+				.addTexture(
+						"barrier",
+						new Material(TextureAtlas.LOCATION_BLOCKS, texture)
+				);
+		return new BlockModel(
+				createUnbakedGeometry(
+						BlockedDirections.all().directions().stream().toList(),
+						false
 				),
 				UnbakedModel.GuiLight.SIDE,
 				false,

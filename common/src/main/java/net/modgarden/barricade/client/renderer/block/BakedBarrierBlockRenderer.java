@@ -31,6 +31,7 @@ public final class BakedBarrierBlockRenderer implements RegionBaker {
 	public static void reloadModels() {
 		MODELS.clear();
 		BarrierBakery.bakeModels(StaticBarrierBlock.BARRIERS, MODELS);
+		BarrierBakery.bakeModels(ResourceLocation.withDefaultNamespace("barrier"), Barricade.asResource("block/barrier"), MODELS);
 	}
 
 	@Override
