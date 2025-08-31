@@ -50,6 +50,10 @@ public class AdvancedBarrierBlockRenderer extends BakedBlockEntityRenderer<Advan
 		BlockStateModel model = MODELS.get(barrierId);
 		if (model == null) return false;
 		Minecraft mc = Minecraft.getInstance();
+
+		poseStack.pushPose();
+		poseStack.translate(new Vec3(blockEntity.getBlockPos()));
+
 		mc.getBlockRenderer().renderBatched(
 				blockEntity.getBlockState(),
 				blockEntity.getBlockPos(),
@@ -59,6 +63,8 @@ public class AdvancedBarrierBlockRenderer extends BakedBlockEntityRenderer<Advan
 				true,
 				model.collectParts(blockEntity.getLevel().getRandom())
 		);
+
+		poseStack.popPose();
 
 		return true;
 	}

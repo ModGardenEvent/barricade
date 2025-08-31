@@ -17,6 +17,7 @@ import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.util.WeakList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
@@ -45,8 +46,8 @@ public class BakedRegion {
 	/**
 	 * Render all regions.
 	 */
-	public static void renderRegions() {
-		REGIONS.values().forEach(BakedRegion::render);
+	public static void renderRegions(RenderContext context) {
+		REGIONS.values().forEach(region -> region.render(context));
 		REGION_REMOVE_TASKS.forEach(Runnable::run);
 	}
 
@@ -100,10 +101,10 @@ public class BakedRegion {
 	/**
 	 * Render the built buffers.
 	 */
-	public void render() {
+	public void render(RenderContext context) {
 		if (DIRTY_REGIONS.contains(this.pos)) return;
 		try {
-			this.regionBakers.forEach(RegionBaker::render);
+			this.regionBakers.forEach(baker -> baker.render(context));
 		} catch(Exception e) {
 			Barricade.LOG.error("Exception during BakedRegion rendering", e);
 		}
@@ -127,6 +128,8 @@ public class BakedRegion {
 	}
 
 	public record UploadContext(LevelAccessor level, PoseStack poseStack) {}
+
+	public record RenderContext(float tickDelta, Matrix4f positionMatrix) {}
 
 	public static class CachedMultiBufferSource implements MultiBufferSource, AutoCloseable {
 		private final Map<RenderType, BufferBuilder> buffers = new HashMap<>();
