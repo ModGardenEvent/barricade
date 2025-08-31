@@ -66,6 +66,20 @@ loom {
 			ideConfigGenerated(true)
 			vmArgs("-Dmixin.debug.verbose=true", "-Dmixin.debug.export=true")
 		}
+		named("client") {
+			client()
+			configName = "Fabric Client (Renderdoc)"
+			setSource(sourceSets["test"])
+			ideConfigGenerated(true)
+			vmArgs("-Dmixin.debug.verbose=true", "-Dmixin.debug.export=true")
+			programArgs("--renderDebugLabels")
+			val os = System.getProperty("os.name")
+			when (os) {
+				"Linux", "FreeBSD" -> {
+					environmentVariable("LD_PRELOAD", "/usr/lib/librenderdoc.so")
+				}
+			}
+		}
 		named("server") {
 			server()
 			configName = "Fabric Server"
