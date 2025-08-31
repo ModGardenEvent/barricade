@@ -137,7 +137,7 @@ public final class BarrierBakery {
 	private static @NotNull BlockModelPart createModelPart(ResourceLocation id, ModelDiscovery modelDiscovery, Baker baker) {
 		QuadCollection quadCollection = modelDiscovery.resolve().get(id)
 				.bakeTopGeometry(
-						TextureSlots.EMPTY,
+						modelDiscovery.resolve().get(id).getTopTextureSlots(),
 						baker,
 						BlockModelRotation.X0_Y0
 				);

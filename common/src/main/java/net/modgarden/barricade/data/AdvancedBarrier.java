@@ -49,7 +49,13 @@ public record AdvancedBarrier(Optional<Component> name,
 	public AdvancedBarrier(Optional<Component> name, BlockedDirections directions, Optional<ResourceLocation> icon, Optional<Holder<GameCondition<?>>> condition) {
 		this.name = name;
 		this.directions = directions;
-		Optional<ResourceLocation> finalIcon = icon.map(resourceLocation -> resourceLocation.withPath(s -> "barricade/icon/" + s));
+		Optional<ResourceLocation> finalIcon = icon.map(resourceLocation -> {
+			if (!resourceLocation.getPath().startsWith("barricade/icon")) {
+				return resourceLocation.withPath(s -> "barricade/icon/" + s);
+			} else {
+				return resourceLocation;
+			}
+		});
 		// Sanity check for icon
 		if (condition.isPresent() && icon.isEmpty()) {
 			// Warn user
