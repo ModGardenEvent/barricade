@@ -20,6 +20,7 @@ public class AdvancedBarrierBlockRenderer extends BakedBlockEntityRenderer<Advan
 
 	public AdvancedBarrierBlockRenderer(BlockEntityRendererProvider.Context context) {
 		super(context);
+		BakedRegion.registerRegionBaker(Baker::new);
 	}
 
 	@Override
@@ -76,5 +77,11 @@ public class AdvancedBarrierBlockRenderer extends BakedBlockEntityRenderer<Advan
 
 	public static void reloadModels() {
 		MODELS.clear();
+	}
+
+	public class Baker extends BakedBlockEntityRenderer<AdvancedBarrierBlockEntity>.Baker implements BarrierRegionBaker {
+		public Baker(BakedRegion.BakedRegionPos pos) {
+			super(pos);
+		}
 	}
 }

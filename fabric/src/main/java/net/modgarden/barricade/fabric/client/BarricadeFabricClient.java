@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.resources.ResourceLocation;
@@ -94,6 +95,6 @@ public class BarricadeFabricClient implements ClientModInitializer {
 			poseStack.popPose();
 		});
 
-		WorldRenderEvents.AFTER_ENTITIES.register(context -> BakedRegion.renderRegions(new BakedRegion.RenderContext()));
+		WorldRenderEvents.AFTER_ENTITIES.register(context -> BakedRegion.renderRegions(new BakedRegion.RenderContext(Minecraft.getInstance().player)));
 	}
 }

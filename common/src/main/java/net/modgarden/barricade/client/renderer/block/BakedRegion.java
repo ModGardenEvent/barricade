@@ -11,6 +11,7 @@ import it.unimi.dsi.fastutil.objects.Object2ReferenceMap;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import net.modgarden.barricade.Barricade;
@@ -128,7 +129,7 @@ public class BakedRegion {
 
 	public record UploadContext(LevelAccessor level, PoseStack poseStack) {}
 
-	public record RenderContext() {}
+	public record RenderContext(Player player) {}
 
 	public static class CachedMultiBufferSource implements MultiBufferSource, AutoCloseable {
 		private final Map<RenderType, BufferBuilder> buffers = new HashMap<>();

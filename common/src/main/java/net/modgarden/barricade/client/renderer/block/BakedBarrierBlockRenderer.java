@@ -18,7 +18,7 @@ import net.modgarden.barricade.registry.BarricadeBlocks;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class BakedBarrierBlockRenderer implements RegionBaker {
+public final class BakedBarrierBlockRenderer implements BarrierRegionBaker {
 	public static final Map<ResourceLocation, BlockStateModel> MODELS = new HashMap<>();
 	public static final RenderType RENDER_TYPE = RenderType.cutout();
 	private final BakedRegion.CachedMultiBufferSource cachedBufferSource = new BakedRegion.CachedMultiBufferSource();

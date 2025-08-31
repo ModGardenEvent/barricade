@@ -18,7 +18,6 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 
 	public BakedBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
 		this.context = context;
-		BakedRegion.registerRegionBaker(Baker::new);
 	}
 
 	@Override
@@ -78,14 +77,10 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 	 */
 	public abstract boolean shouldBake(T blockEntity);
 
-	protected BlockEntityRendererProvider.Context getContext() {
-		return this.context;
-	}
-
 	public class Baker implements RegionBaker {
 		private final BakedRegion.CachedMultiBufferSource cachedBufferSource = new BakedRegion.CachedMultiBufferSource();
 
-		public Baker(BakedRegion.BakedRegionPos pos) {
+		public Baker(BakedRegion.BakedRegionPos ignoredPos) {
 		}
 
 		@Override
