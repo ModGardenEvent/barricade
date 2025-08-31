@@ -32,6 +32,7 @@ public class BakedRegion {
 	static final Object2ReferenceMap<BakedRegionPos, BakedRegion> REGIONS = new Object2ReferenceArrayMap<>();
 	static final Set<BakedRegionPos> DIRTY_REGIONS = new HashSet<>();
 	private static final WeakList<RegionBaker> REGION_BAKERS = new WeakList<>();
+	private static final List<Runnable> REGION_REMOVE_TASKS = new ArrayList<>();
 
 	private final BakedRegionPos pos;
 	private final WeakList<RegionBaker> regionBakers;
@@ -46,6 +47,7 @@ public class BakedRegion {
 	 */
 	public static void renderRegions() {
 		REGIONS.values().forEach(BakedRegion::render);
+		REGION_REMOVE_TASKS.forEach(Runnable::run);
 	}
 
 	/**
@@ -57,6 +59,13 @@ public class BakedRegion {
 			region.upload(context);
 		}
 		DIRTY_REGIONS.clear();
+	}
+
+	/**
+	 * Queue a region removal.
+	 */
+	static void removeRegion(BakedRegionPos pos) {
+		REGION_REMOVE_TASKS.add(() -> REGIONS.remove(pos));
 	}
 
 	/**
