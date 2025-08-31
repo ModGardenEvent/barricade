@@ -56,6 +56,7 @@ public class BakedRegion {
 	public static void buildDirty(UploadContext context) {
 		for (BakedRegionPos pos : DIRTY_REGIONS) {
 			BakedRegion region = REGIONS.get(pos);
+			if (region == null) continue;
 			region.upload(context);
 		}
 		DIRTY_REGIONS.clear();
@@ -71,7 +72,7 @@ public class BakedRegion {
 	/**
 	 * Register a region if it does not already exist.
 	 */
-	static void putRegion(BakedRegionPos pos) {
+	public static void putRegion(BakedRegionPos pos) {
 		REGIONS.putIfAbsent(pos, new BakedRegion(pos, REGION_BAKERS));
 		markRegionDirty(pos);
 	}
