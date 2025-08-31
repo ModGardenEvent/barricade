@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.CommandEncoder;
 import com.mojang.blaze3d.systems.GpuDevice;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 
@@ -42,9 +43,18 @@ public interface RegionBaker {
 				}
 				GpuBuffer indexBuffer = this.getBufferSource().getIndexBuffer(RENDER_TYPE);
 				if (indexBuffer == null) return;
+				renderPass.setPipeline(RENDER_TYPE.getRenderPipeline());
+				RENDER_TYPE.setupRenderState();
+				for (int j = 0; j < 12; j++) {
+					GpuTexture gpuTexture = RenderSystem.getShaderTexture(j);
+					if (gpuTexture != null) {
+						renderPass.bindSampler("Sampler" + j, gpuTexture);
+					}
+				}
 				renderPass.setVertexBuffer(0, this.getBufferSource().getVertexBuffer(RENDER_TYPE));
-				renderPass.setIndexBuffer(indexBuffer, VertexFormat.IndexType.INT);
+				renderPass.setIndexBuffer(indexBuffer, VertexFormat.IndexType.SHORT);
 				renderPass.drawIndexed(0, indexBuffer.size());
+				RENDER_TYPE.clearRenderState();
 			});
 			removeTasks.forEach(Runnable::run);
 		}

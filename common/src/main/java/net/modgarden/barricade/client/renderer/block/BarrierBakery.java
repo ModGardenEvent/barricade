@@ -48,6 +48,7 @@ public final class BarrierBakery {
 						id -> createBlockModel(barriers.get(id))
 				));
 		ModelDiscovery modelDiscovery = new ModelDiscovery(unbakedModelMap, UNKNOWN_UNBAKED_MODEL);
+		unbakedModelMap.forEach(modelDiscovery::addSpecialModel);
 		Baker baker = new Baker(modelDiscovery);
 		for (ResourceLocation id : barriers.keySet()) {
 			modelMap.put(id, createModel(id, modelDiscovery, baker));

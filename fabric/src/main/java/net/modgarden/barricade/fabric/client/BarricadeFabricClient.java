@@ -1,5 +1,6 @@
 package net.modgarden.barricade.fabric.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Either;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
@@ -137,7 +138,7 @@ public class BarricadeFabricClient implements ClientModInitializer {
 
 		ClientPlayerBlockBreakEvents.AFTER.register((level, player, pos, state) -> BakedRegion.markRegionDirty(BakedRegion.BakedRegionPos.fromBlockPos(pos)));
 
-		WorldRenderEvents.START.register(context -> BakedRegion.buildDirty(new BakedRegion.UploadContext(context.world(), context.matrixStack())));
+		WorldRenderEvents.START.register(context -> BakedRegion.buildDirty(new BakedRegion.UploadContext(context.world(), new PoseStack())));
 
 		WorldRenderEvents.AFTER_ENTITIES.register(context -> BakedRegion.renderRegions());
 	}

@@ -1,7 +1,6 @@
 package net.modgarden.barricade.registry;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
@@ -108,13 +107,14 @@ public class BarricadeBlocks {
 		CONTEXT.register();
 	}
 
-	private static void register(String path, StaticBarrierBlock block) {
-		Registry.register(BuiltInRegistries.BLOCK, Barricade.asResource(path), (Block) block);
-		StaticBarrierBlock.BARRIERS.put(Barricade.asResource(path), block);
-	}
-
 	@SuppressWarnings("unchecked") // ResourceKey<T> is always ResourceKey<Block>
 	private static <T extends Block> Function<ResourceKey<T>, T> withProperties(Function<BlockBehaviour.Properties, T> callback) {
-		return key -> callback.apply(BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape().setId((ResourceKey<Block>) key));
+		return key -> {
+			T block = callback.apply(BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape().setId((ResourceKey<Block>) key));
+			if (block instanceof StaticBarrierBlock barrierBlock) {
+				StaticBarrierBlock.BARRIERS.put(key.location(), barrierBlock);
+			}
+			return block;
+		};
 	}
 }

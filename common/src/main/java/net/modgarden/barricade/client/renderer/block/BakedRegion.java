@@ -1,6 +1,10 @@
 package net.modgarden.barricade.client.renderer.block;
 
+import com.mojang.blaze3d.buffers.BufferType;
+import com.mojang.blaze3d.buffers.BufferUsage;
 import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.systems.GpuDevice;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceMap;
@@ -102,6 +106,9 @@ public class BakedRegion {
 	public void upload(UploadContext context) {
 		try {
 			this.regionBakers.forEach(baker -> {
+				if (baker.getBufferSource().isUploaded()) {
+					baker.getBufferSource().flush();
+				}
 				baker.bake(context, this.pos);
 				baker.getBufferSource().upload();
 			});
@@ -118,6 +125,7 @@ public class BakedRegion {
 		private final Map<RenderType, MeshData> meshes = new HashMap<>();
 		private final Map<RenderType, GpuBuffer> vertexBuffers = new HashMap<>();
 		private final Map<RenderType, GpuBuffer> indexBuffers = new HashMap<>();
+		private boolean isUploaded;
 
 		@Override
 		public @NotNull VertexConsumer getBuffer(@NotNull RenderType renderType) {
@@ -134,20 +142,44 @@ public class BakedRegion {
 			);
 		}
 
+		public boolean isUploaded() {
+			return this.isUploaded;
+		}
+
 		public void upload() {
+			if (this.isUploaded) return;
+			this.isUploaded = true;
+
 			this.buffers.forEach((renderType, bufferBuilder) -> {
-				MeshData meshData = this.meshes.put(renderType, bufferBuilder.build());
-				assert meshData != null;
+				MeshData meshData = bufferBuilder.build();
+				Barricade.LOG.info("Building MeshData for buffer type {}", renderType.getName());
+				if (meshData == null) {
+					Barricade.LOG.warn("MeshData for buffer type {} has no vertices", renderType.getName());
+					return;
+				}
+				meshData.sortQuads(this.byteBuffers.get(renderType), VertexSorting.ORTHOGRAPHIC_Z);
+				this.meshes.put(renderType, meshData);
+				GpuDevice gpu = RenderSystem.getDevice();
 				this.vertexBuffers.put(
 						renderType,
-						renderType.format().uploadImmediateVertexBuffer(meshData.vertexBuffer())
+						gpu.createBuffer(
+								() -> Barricade.MOD_NAME + " BakedRegion Vertex Buffer",
+								BufferType.VERTICES,
+								BufferUsage.DYNAMIC_WRITE,
+								meshData.vertexBuffer()
+						)
 				);
 				this.indexBuffers.put(
 						renderType,
-						renderType.format().uploadImmediateIndexBuffer(Objects.requireNonNull(
-								meshData.indexBuffer(),
-								"Baked Region index buffer failed to build"
-						))
+						gpu.createBuffer(
+								() -> Barricade.MOD_NAME + " BakedRegion Index Buffer",
+								BufferType.VERTICES,
+								BufferUsage.DYNAMIC_WRITE,
+								Objects.requireNonNull(
+										meshData.indexBuffer(),
+										"Baked Region index buffer failed to build"
+								)
+						)
 				);
 			});
 		}
@@ -161,7 +193,8 @@ public class BakedRegion {
 		}
 
 		public void flush() {
-			this.byteBuffers.forEach((key, buffer) -> buffer.clear());
+			this.isUploaded = false;
+			this.byteBuffers.forEach((key, buffer) -> buffer.discard());
 			this.buffers.clear();
 			this.meshes.forEach((key, meshData) -> meshData.close());
 			this.meshes.clear();
