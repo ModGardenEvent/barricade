@@ -235,5 +235,13 @@ public class BakedRegion {
 					(this.z() * SIZE_XYZ) + middle
 			);
 		}
+
+		public BlockPos lowerCorner() {
+			return new BlockPos(
+					this.x() * SIZE_XYZ,
+					this.y() * SIZE_XYZ,
+					this.z() * SIZE_XYZ
+			);
+		}
 	}
 }

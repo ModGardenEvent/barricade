@@ -1,5 +1,6 @@
 package net.modgarden.barricade.client.renderer.block;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -48,20 +49,27 @@ public final class BakedBarrierBlockRenderer implements RegionBaker {
 		PalettedContainer<BlockState> states = chunk.getSection(chunk.getSectionIndexFromSectionY(pos.y())).getStates();
 		Minecraft mc = Minecraft.getInstance();
 		VertexConsumer vertexConsumer = cachedBufferSource.getBuffer(RENDER_TYPE);
+		BlockPos regionPos = pos.lowerCorner();
+		BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
 				for (int z = 0; z < 16; z++) {
 					BlockState state = states.get(x, y, z);
 					if (!Barricade.isOperatorModel(state) || state.is(BarricadeBlocks.ADVANCED_BARRIER.get())) continue;
+					blockPos.set(x + regionPos.getX(), y + regionPos.getY(), z + regionPos.getZ());
+					PoseStack poseStack = context.poseStack();
+					poseStack.pushPose();
+					poseStack.translate(blockPos.getX(), blockPos.getY(), blockPos.getZ());
 					mc.getBlockRenderer().renderBatched(
 							state,
-							new BlockPos(x, y, z),
+							blockPos,
 							context.level(),
-							context.poseStack(),
+							poseStack,
 							vertexConsumer,
 							true,
 							MODELS.get(BuiltInRegistries.BLOCK.getKey(state.getBlock())).collectParts(context.level().getRandom())
 					);
+					poseStack.popPose();
 				}
 			}
 		}
