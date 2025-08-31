@@ -13,11 +13,9 @@ import org.jetbrains.annotations.NotNull;
  * Inspired by Glowcase's <a href="https://github.com/ModFest/glowcase/blob/b3681b46158733e632af22ea6c53afc342d9cf2e/src/main/java/dev/hephaestus/glowcase/client/render/block/entity/BakedBlockEntityRenderer.java">BakedBlockEntityRenderer</a>.
  */
 public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements BlockEntityRenderer<T> {
-	private final BlockEntityRendererProvider.Context context;
 	private final WeakList<T> blockEntities = new WeakList<>();
 
-	public BakedBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
-		this.context = context;
+	public BakedBlockEntityRenderer(BlockEntityRendererProvider.Context ignoredContext) {
 	}
 
 	@Override
