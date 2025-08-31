@@ -28,6 +28,7 @@ public class TextureAtlasMixin {
 	)
 	private void warnMissingIcon(ResourceLocation name, CallbackInfoReturnable<TextureAtlasSprite> cir) {
 		TextureAtlasSprite sprite = cir.getReturnValue();
+		// FIXME LATER: why the hell was this ever here? who in their right mind would do it this way? holy shit.
 		// In case we encounter a double prefix
 		if (sprite != null && sprite.equals(this.missingSprite) && name.getPath().startsWith("barricade/icon/barricade/icon/")) {
 			ResourceLocation newName = name.withPath(name.getPath().replaceFirst("barricade/icon/", ""));
