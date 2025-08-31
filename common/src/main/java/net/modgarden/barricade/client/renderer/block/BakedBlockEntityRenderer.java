@@ -76,9 +76,10 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 	public abstract boolean shouldBake(T blockEntity);
 
 	public class Baker implements RegionBaker {
-		private final BakedRegion.CachedMultiBufferSource cachedBufferSource = new BakedRegion.CachedMultiBufferSource();
+		private final BakedRegion.CachedMultiBufferSource cachedBufferSource;
 
-		public Baker(BakedRegion.BakedRegionPos ignoredPos) {
+		public Baker(BakedRegion.BakedRegionPos ignoredPos, ResourceLocation location) {
+			this.cachedBufferSource = new BakedRegion.CachedMultiBufferSource(location);
 		}
 
 		@Override

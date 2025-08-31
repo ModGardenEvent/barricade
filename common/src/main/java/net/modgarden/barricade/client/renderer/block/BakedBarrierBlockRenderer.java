@@ -21,11 +21,12 @@ import java.util.Map;
 public final class BakedBarrierBlockRenderer implements BarrierRegionBaker {
 	public static final Map<ResourceLocation, BlockStateModel> MODELS = new HashMap<>();
 	public static final RenderType RENDER_TYPE = RenderType.cutout();
-	private final BakedRegion.CachedMultiBufferSource cachedBufferSource = new BakedRegion.CachedMultiBufferSource();
+	private final BakedRegion.CachedMultiBufferSource cachedBufferSource;
 	private final BakedRegion.BakedRegionPos pos;
 
 	public BakedBarrierBlockRenderer(BakedRegion.BakedRegionPos pos) {
 		this.pos = pos;
+		this.cachedBufferSource = new BakedRegion.CachedMultiBufferSource(Barricade.asResource("static_barrier"));
 	}
 
 	public static void reloadModels() {

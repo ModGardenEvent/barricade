@@ -11,6 +11,7 @@ import it.unimi.dsi.fastutil.objects.Object2ReferenceMap;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
@@ -137,6 +138,12 @@ public class BakedRegion {
 		private final Map<RenderType, MeshData> meshes = new HashMap<>();
 		private final Map<RenderType, GpuBuffer> vertexBuffers = new HashMap<>();
 		private final Map<RenderType, GpuBuffer> indexBuffers = new HashMap<>();
+		private final ResourceLocation bakerLocation;
+
+		public CachedMultiBufferSource(ResourceLocation bakerLocation) {
+			this.bakerLocation = bakerLocation.withPrefix("baker/");
+		}
+
 		private boolean isUploaded;
 
 		@Override
@@ -173,7 +180,7 @@ public class BakedRegion {
 				this.vertexBuffers.put(
 						renderType,
 						gpu.createBuffer(
-								() -> Barricade.MOD_NAME + " BakedRegion Vertex Buffer",
+								() -> this.bakerLocation.toString() + " Vertex Buffer",
 								BufferType.VERTICES,
 								BufferUsage.DYNAMIC_WRITE,
 								meshData.vertexBuffer()
@@ -182,7 +189,7 @@ public class BakedRegion {
 				this.indexBuffers.put(
 						renderType,
 						gpu.createBuffer(
-								() -> Barricade.MOD_NAME + " BakedRegion Index Buffer",
+								() -> this.bakerLocation.toString() + " Index Buffer",
 								BufferType.VERTICES,
 								BufferUsage.DYNAMIC_WRITE,
 								Objects.requireNonNull(
@@ -220,6 +227,7 @@ public class BakedRegion {
 			this.byteBuffers.forEach((key, buffer) -> buffer.close());
 			this.byteBuffers.clear();
 		}
+
 	}
 
 	public record BakedRegionPos(int x, int y, int z) {

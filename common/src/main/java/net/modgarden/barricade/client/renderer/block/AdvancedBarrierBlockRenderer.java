@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
+import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
 import net.modgarden.barricade.data.AdvancedBarrier;
 import net.modgarden.barricade.registry.BarricadeRegistries;
@@ -81,7 +82,7 @@ public class AdvancedBarrierBlockRenderer extends BakedBlockEntityRenderer<Advan
 
 	public class Baker extends BakedBlockEntityRenderer<AdvancedBarrierBlockEntity>.Baker implements BarrierRegionBaker {
 		public Baker(BakedRegion.BakedRegionPos pos) {
-			super(pos);
+			super(pos, Barricade.asResource("advanced_barrier"));
 		}
 	}
 }
