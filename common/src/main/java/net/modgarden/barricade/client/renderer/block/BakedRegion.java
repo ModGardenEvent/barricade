@@ -163,9 +163,7 @@ public class BakedRegion {
 
 			this.buffers.forEach((renderType, bufferBuilder) -> {
 				MeshData meshData = bufferBuilder.build();
-				Barricade.LOG.info("Building MeshData for buffer type {}", renderType.getName());
 				if (meshData == null) {
-					Barricade.LOG.warn("MeshData for buffer type {} has no vertices", renderType.getName());
 					return;
 				}
 				meshData.sortQuads(this.byteBuffers.get(renderType), VertexSorting.ORTHOGRAPHIC_Z);
