@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -58,13 +57,13 @@ public class PredicateBarrierBlock extends StaticBarrierBlock {
 
 	public PredicateBarrierBlock(Properties properties, ResourceLocation icon, ResourceKey<GameCondition<?>> conditionTemplate) {
 		super(properties);
-		this.icon = icon;
+		this.icon = icon.withPrefix("barricade/icon/");
 		this.function = registryAccess -> registryAccess.lookupOrThrow(SilicateRegistries.CONDITION_TEMPLATE).getOrThrow(conditionTemplate);
 	}
 
 	private PredicateBarrierBlock(Properties properties, ResourceLocation icon, Holder<GameCondition<?>> condition) {
 		super(properties);
-		this.icon = icon;
+		this.icon = icon.withPrefix("barricade/icon/");
 		this.function = null;
 		this.condition = condition;
 	}
@@ -185,6 +184,6 @@ public class PredicateBarrierBlock extends StaticBarrierBlock {
 
 	@Override
 	public ResourceLocation getIcon() {
-		return BuiltInRegistries.BLOCK.getKey(this).withPrefix("block/");
+		return this.icon();
 	}
 }

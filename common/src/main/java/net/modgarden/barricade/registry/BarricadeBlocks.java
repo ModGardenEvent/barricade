@@ -65,7 +65,7 @@ public class BarricadeBlocks {
 			"creative_only_barrier",
 			withProperties(properties -> new PredicateBarrierBlock(
 					properties,
-					Barricade.asResource("barricade/icon/iron_sword"),
+					Barricade.asResource("iron_sword"),
 					ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("creative_only"))
 			))
 	);
@@ -74,7 +74,7 @@ public class BarricadeBlocks {
 			"player_barrier",
 			withProperties(properties -> new PredicateBarrierBlock(
 					properties,
-					Barricade.asResource("barricade/icon/steve"),
+					Barricade.asResource("steve"),
 					ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("player"))
 			))
 	);
@@ -82,7 +82,7 @@ public class BarricadeBlocks {
 			"mob_barrier",
 			withProperties(properties -> new PredicateBarrierBlock(
 					properties,
-					Barricade.asResource("barricade/icon/pig"),
+					Barricade.asResource("pig"),
 					ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("mob"))
 			))
 	);
@@ -90,7 +90,7 @@ public class BarricadeBlocks {
 			"passive_barrier",
 			withProperties(properties -> new PredicateBarrierBlock(
 					properties,
-					Barricade.asResource("barricade/icon/parrot"),
+					Barricade.asResource("parrot"),
 					ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("passive"))
 			))
 	);
@@ -98,7 +98,7 @@ public class BarricadeBlocks {
 			"hostile_barrier",
 			withProperties(properties -> new PredicateBarrierBlock(
 					properties,
-					Barricade.asResource("barricade/icon/creeper"),
+					Barricade.asResource("creeper"),
 					ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("hostile"))
 			))
 	);
