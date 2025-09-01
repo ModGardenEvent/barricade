@@ -12,10 +12,13 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.modgarden.barricade.block.StaticBarrierBlock;
 import net.modgarden.barricade.registry.BarricadeBlocks;
+import net.modgarden.barricade.registry.BarricadeItems;
 import net.modgarden.barricade.registry.BarricadeTags;
 import org.jetbrains.annotations.Nullable;
 
@@ -205,9 +208,13 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 		@Override
 		protected void addTags(HolderLookup.Provider wrapperLookup) {
 			getOrCreateTagBuilder(BarricadeTags.ItemTags.BARRIERS)
-					.add(Items.BARRIER);
-			copy(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS, BarricadeTags.ItemTags.BARRIERS);
-			copy(BarricadeTags.BlockTags.ENTITY_BARRIERS, BarricadeTags.ItemTags.BARRIERS);
+					.add(Items.BARRIER)
+					.add(BarricadeItems.ADVANCED_BARRIER.get())
+					.add(
+							StaticBarrierBlock.BARRIERS.values().stream()
+									.map(Block::asItem)
+									.toArray(Item[]::new)
+					);
 		}
 	}
 }
