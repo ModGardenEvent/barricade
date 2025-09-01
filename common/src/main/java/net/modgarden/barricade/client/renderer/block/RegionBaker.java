@@ -9,6 +9,7 @@ import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
+import net.modgarden.barricade.client.renderer.block.BakedRegion.CachedMultiBufferSource;
 
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
@@ -19,7 +20,7 @@ import static net.modgarden.barricade.client.renderer.block.BakedBarrierBlockRen
  * The class responsible for baking and rendering a {@link BakedRegion}.
  */
 public interface RegionBaker {
-	BakedRegion.CachedMultiBufferSource getBufferSource();
+	CachedMultiBufferSource getBufferSource();
 
 	default void render(BakedRegion.RenderContext ignoredContext) {
 		Minecraft mc = Minecraft.getInstance();
@@ -33,7 +34,9 @@ public interface RegionBaker {
 				OptionalDouble.empty()
 		)) {
 			BakedRegion.REGIONS.forEach((pos, region) -> {
-				if (BakedRegion.DIRTY_REGIONS.contains(pos)) return;
+				synchronized (BakedRegion.DIRTY_REGIONS) {
+					if (BakedRegion.DIRTY_REGIONS.contains(pos)) return;
+				}
 				if (mc.getCameraEntity() == null) return;
 				if (!mc.getCameraEntity().position().closerThan(pos.center(), mc.levelRenderer.getLastViewDistance() * 16)) {
 					BakedRegion.removeRegion(pos);
@@ -63,7 +66,11 @@ public interface RegionBaker {
 		}
 	}
 
-	void bake(BakedRegion.UploadContext context);
+	/**
+	 * Bake this region into its {@link CachedMultiBufferSource}.
+	 * @param context useful context for baking.
+	 */
+	void bake(BakedRegion.BakeContext context);
 
 	/**
 	 * It's like two in the morning and I couldn't think of anything better to call a "baker factory."

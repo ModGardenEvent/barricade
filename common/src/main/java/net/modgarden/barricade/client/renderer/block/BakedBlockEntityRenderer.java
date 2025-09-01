@@ -4,22 +4,25 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.modgarden.barricade.util.WeakList;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Inspired by Glowcase's <a href="https://github.com/ModFest/glowcase/blob/b3681b46158733e632af22ea6c53afc342d9cf2e/src/main/java/dev/hephaestus/glowcase/client/render/block/entity/BakedBlockEntityRenderer.java">BakedBlockEntityRenderer</a>.
  */
 public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements BlockEntityRenderer<T> {
-	private final WeakList<T> blockEntities = new WeakList<>();
+	private final List<T> unbakedBlockEntities = new ArrayList<>();
 
 	public BakedBlockEntityRenderer(BlockEntityRendererProvider.Context ignoredContext) {
 	}
 
 	@Override
-	public final void render(
+	public synchronized final void render(
 			@NotNull T blockEntity,
 			float deltaTick,
 			@NotNull PoseStack poseStack,
@@ -38,9 +41,10 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 				cameraPos
 		);
 
-		if (!blockEntities.contains(blockEntity)) {
-			blockEntities.add(blockEntity);
-			BakedRegion.putRegion(BakedRegion.BakedRegionPos.fromBlockPos(blockEntity.getBlockPos()));
+		synchronized (BakedRegion.DIRTY_REGIONS) {
+			if (BakedRegion.DIRTY_REGIONS.contains(BakedRegion.BakedRegionPos.fromBlockPos(blockEntity.getBlockPos())) && !unbakedBlockEntities.contains(blockEntity)) {
+				unbakedBlockEntities.add(blockEntity);
+			}
 		}
 	}
 
@@ -76,9 +80,11 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 	public abstract boolean shouldBake(T blockEntity);
 
 	public class Baker implements RegionBaker {
+		private final BakedRegion.BakedRegionPos pos;
 		private final BakedRegion.CachedMultiBufferSource cachedBufferSource;
 
-		public Baker(BakedRegion.BakedRegionPos ignoredPos, ResourceLocation location) {
+		public Baker(BakedRegion.BakedRegionPos pos, ResourceLocation location) {
+			this.pos = pos;
 			this.cachedBufferSource = new BakedRegion.CachedMultiBufferSource(location);
 		}
 
@@ -88,16 +94,24 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 		}
 
 		@Override
-		public void bake(BakedRegion.UploadContext context) {
-			BakedBlockEntityRenderer.this.blockEntities.forEach(blockEntity -> {
-				if (BakedBlockEntityRenderer.this.shouldBake(blockEntity)) {
-					BakedBlockEntityRenderer.this.renderBaked(
-							blockEntity,
-							context.poseStack(),
-							this.cachedBufferSource
-					);
-				}
-			});
+		public void bake(BakedRegion.BakeContext context) {
+			synchronized (BakedBlockEntityRenderer.this) {
+				PoseStack poseStack = new PoseStack();
+				List<Runnable> removeTasks = new ArrayList<>();
+				BakedBlockEntityRenderer.this.unbakedBlockEntities.forEach(blockEntity -> {
+					if (!this.pos.contains(blockEntity.getBlockPos())) return;
+					if (BakedBlockEntityRenderer.this.shouldBake(blockEntity)) {
+						BakedBlockEntityRenderer.this.renderBaked(
+								blockEntity,
+								poseStack,
+								this.cachedBufferSource
+						);
+						removeTasks.add(() -> BakedBlockEntityRenderer.this.unbakedBlockEntities.remove(blockEntity));
+					}
+				});
+
+				removeTasks.forEach(Runnable::run);
+			}
 		}
 	}
 }

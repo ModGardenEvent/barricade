@@ -1,6 +1,5 @@
 package net.modgarden.barricade.fabric.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -88,13 +87,15 @@ public class BarricadeFabricClient implements ClientModInitializer {
 			}
 		});
 
-		WorldRenderEvents.START.register(context -> {
-			PoseStack poseStack = new PoseStack();
-			poseStack.pushPose();
-			BakedRegion.buildDirty(new BakedRegion.UploadContext(context.world(), poseStack));
-			poseStack.popPose();
-		});
+		WorldRenderEvents.START.register(context ->
+				BakedRegion.bakeDirty(new BakedRegion.BakeContext(context.world()))
+		);
 
 		WorldRenderEvents.AFTER_ENTITIES.register(context -> BakedRegion.renderRegions(new BakedRegion.RenderContext(Minecraft.getInstance().player)));
+
+		WorldRenderEvents.END.register(context -> {
+			BakedRegion.uploadDirty();
+			BakedRegion.onRenderEnd();
+		});
 	}
 }

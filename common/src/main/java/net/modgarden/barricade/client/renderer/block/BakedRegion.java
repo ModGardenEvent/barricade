@@ -21,6 +21,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 /**
@@ -33,6 +37,11 @@ public class BakedRegion {
 	public static final int SIZE_XYZ = 16;
 	static final Object2ReferenceMap<BakedRegionPos, BakedRegion> REGIONS = new Object2ReferenceArrayMap<>();
 	static final Set<BakedRegionPos> DIRTY_REGIONS = new HashSet<>();
+	/**
+	 * A set of transient regions that are baked but not yet uploaded.
+	 */
+	private static final Set<BakedRegionPos> BAKED_REGIONS = new HashSet<>();
+	private static final HashMap<BakedRegionPos, Future<Void>> REGION_BAKE_TASKS = new HashMap<>();
 	private static final Set<CulinarySchool> CULINARY_SCHOOLS = new HashSet<>();
 	private static final List<Runnable> REGION_REMOVE_TASKS = new ArrayList<>();
 
@@ -49,19 +58,97 @@ public class BakedRegion {
 	 */
 	public static void renderRegions(RenderContext context) {
 		REGIONS.values().forEach(region -> region.render(context));
-		REGION_REMOVE_TASKS.forEach(Runnable::run);
 	}
 
 	/**
-	 * Build all dirty regions.
+	 * Bake all dirty regions.<br>
+	 * This can be called at any point in time before rendering occurs and can
+	 * finish at any point afterward, even into the next frame.<br>
+	 * <br>
+	 * This method bakes regions <b>asynchronously</b>, but it may block the
+	 * thread when {@link #DIRTY_REGIONS} or {@link #REGION_BAKE_TASKS} are locked.
 	 */
-	public static void buildDirty(UploadContext context) {
-		for (BakedRegionPos pos : DIRTY_REGIONS) {
-			BakedRegion region = REGIONS.get(pos);
-			if (region == null) continue;
-			region.upload(context);
+	public static void bakeDirty(BakeContext context) {
+		synchronized (DIRTY_REGIONS) {
+			for (BakedRegionPos pos : DIRTY_REGIONS) {
+				BakedRegion region0 = REGIONS.get(pos);
+				if (region0 != null) {
+					region0.regionBakers.forEach(baker -> {
+						if (baker.getBufferSource().isUploaded()) {
+							baker.getBufferSource().flush();
+						}
+					});
+				}
+				synchronized (REGION_BAKE_TASKS) {
+					REGION_BAKE_TASKS.put(
+							pos,
+							CompletableFuture.supplyAsync(() -> {
+								BakedRegion region = REGIONS.get(pos);
+								if (region == null) return null;
+								region.bake(context);
+								return pos;
+							}).thenAcceptAsync(pos1 -> {
+								// TODO: maybe move the clean-up logic to onRenderEnd and only when all regions are baked
+								if (pos1 == null) return;
+								synchronized (DIRTY_REGIONS) {
+									DIRTY_REGIONS.remove(pos1);
+								}
+								synchronized (REGION_BAKE_TASKS) {
+									REGION_BAKE_TASKS.remove(pos1);
+								}
+								synchronized (BAKED_REGIONS) {
+									BAKED_REGIONS.add(pos1);
+								}
+							}).orTimeout(1, TimeUnit.SECONDS)
+					);
+				}
+			}
 		}
-		DIRTY_REGIONS.clear();
+	}
+
+	/**
+	 * Upload all dirty regions.<br>
+	 * This is typically called at the end of a frame but may be called
+	 * at any point during rendering.
+	 */
+	public static void uploadDirty() {
+		List<Runnable> removeTasks = new ArrayList<>();
+		synchronized (BAKED_REGIONS) {
+			for (BakedRegionPos pos : BAKED_REGIONS) {
+				BakedRegion region = REGIONS.get(pos);
+				if (region == null) continue;
+				boolean uploaded = region.upload();
+				if (!uploaded) continue;
+				removeTasks.add(() -> BAKED_REGIONS.remove(pos));
+			}
+			removeTasks.forEach(Runnable::run);
+		}
+	}
+
+	/**
+	 * Called when the current frame has ended rendering.
+	 * We clean some things up here.
+	 */
+	public static void onRenderEnd() {
+		REGION_REMOVE_TASKS.forEach(Runnable::run);
+
+		// deal with faulty/failed region bake tasks
+		synchronized (REGION_BAKE_TASKS) {
+			List<Runnable> regionBakeRemoveTasks = new ArrayList<>();
+			REGION_BAKE_TASKS.forEach((pos, task) -> {
+				if (task.isCancelled()) {
+					Throwable t = task.exceptionNow();
+					if (t instanceof TimeoutException) {
+						Barricade.LOG.error("Region baking at {} took too long!", pos);
+					} else {
+						Barricade.LOG.error("Region baking at {}", pos);
+					}
+					Barricade.LOG.error("Region baking failed", t);
+					regionBakeRemoveTasks.add(() -> REGION_BAKE_TASKS.remove(pos));
+				}
+			});
+			regionBakeRemoveTasks.forEach(Runnable::run);
+		}
 	}
 
 	/**
@@ -83,7 +170,9 @@ public class BakedRegion {
 	 * Mark the {@link BakedRegion} to be rebuilt.
 	 */
 	public static void markRegionDirty(BakedRegionPos pos) {
-		DIRTY_REGIONS.add(pos);
+		synchronized (DIRTY_REGIONS) {
+			DIRTY_REGIONS.add(pos);
+		}
 	}
 
 	/**
@@ -103,7 +192,11 @@ public class BakedRegion {
 	 * Render the built buffers.
 	 */
 	public void render(RenderContext context) {
-		if (DIRTY_REGIONS.contains(this.pos)) return;
+		synchronized (DIRTY_REGIONS) {
+			synchronized (BAKED_REGIONS) {
+				if (DIRTY_REGIONS.contains(this.pos) || BAKED_REGIONS.contains(this.pos)) return;
+			}
+		}
 		try {
 			this.regionBakers.forEach(baker -> baker.render(context));
 		} catch(Exception e) {
@@ -112,23 +205,40 @@ public class BakedRegion {
 	}
 
 	/**
-	 * Upload this region to the GPU.
+	 * Bake this region.
+	 * @param context relevant context for baking.
 	 */
-	public void upload(UploadContext context) {
+	public void bake(BakeContext context) {
 		try {
-			this.regionBakers.forEach(baker -> {
-				if (baker.getBufferSource().isUploaded()) {
-					baker.getBufferSource().flush();
-				}
-				baker.bake(context);
-				baker.getBufferSource().upload();
-			});
+			this.regionBakers.forEach(baker -> baker.bake(context));
 		} catch(Exception e) {
-			Barricade.LOG.error("Exception during BakedRegion uploading", e);
+			Barricade.LOG.error("Exception during BakedRegion baking", e);
 		}
 	}
 
-	public record UploadContext(LevelAccessor level, PoseStack poseStack) {}
+	/**
+	 * Upload this region to the GPU.
+	 */
+	public boolean upload() {
+		try {
+			var ref = new Object() {
+				boolean uploaded;
+			};
+			this.regionBakers.forEach(baker -> {
+				if (!baker.getBufferSource().isUploaded()) {
+					baker.getBufferSource().upload();
+				}
+				ref.uploaded = baker.getBufferSource().isUploaded();
+			});
+			return ref.uploaded;
+		} catch(Exception e) {
+			Barricade.LOG.error("Exception during BakedRegion uploading", e);
+		}
+
+		return false;
+	}
+
+	public record BakeContext(LevelAccessor level) {}
 
 	public record RenderContext(Player player) {}
 
@@ -233,6 +343,11 @@ public class BakedRegion {
 	public record BakedRegionPos(int x, int y, int z) {
 		public static BakedRegionPos fromBlockPos(BlockPos pos) {
 			return new BakedRegionPos(pos.getX() / SIZE_XYZ, pos.getY() / SIZE_XYZ, pos.getZ() / SIZE_XYZ);
+		}
+
+		public boolean contains(BlockPos pos) {
+			BakedRegionPos regionPos = fromBlockPos(pos);
+			return regionPos.equals(this);
 		}
 
 		public Vec3 center() {

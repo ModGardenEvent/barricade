@@ -41,7 +41,7 @@ public final class BakedBarrierBlockRenderer implements BarrierRegionBaker {
 	}
 
 	@Override
-	public void bake(BakedRegion.UploadContext context) {
+	public void bake(BakedRegion.BakeContext context) {
 		ChunkAccess chunk = context.level().getChunk(this.pos.x(), this.pos.z());
 		PalettedContainer<BlockState> states = chunk.getSection(chunk.getSectionIndexFromSectionY(this.pos.y())).getStates();
 		Minecraft mc = Minecraft.getInstance();
@@ -54,7 +54,7 @@ public final class BakedBarrierBlockRenderer implements BarrierRegionBaker {
 					BlockState state = states.get(x, y, z);
 					if (!Barricade.isOperatorModel(state) || state.is(BarricadeBlocks.ADVANCED_BARRIER.get())) continue;
 					blockPos.set(x + regionPos.getX(), y + regionPos.getY(), z + regionPos.getZ());
-					PoseStack poseStack = context.poseStack();
+					PoseStack poseStack = new PoseStack();
 					poseStack.pushPose();
 					poseStack.translate(blockPos.getX(), blockPos.getY(), blockPos.getZ());
 					mc.getBlockRenderer().renderBatched(
