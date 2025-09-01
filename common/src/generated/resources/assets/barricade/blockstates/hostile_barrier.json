@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "barricade:block/hostile_barrier"
+    }
+  }
+}

@@ -1,15 +1,20 @@
 package net.modgarden.barricade.datagen;
 
+import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.modgarden.barricade.block.StaticBarrierBlock;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeTags;
 import org.jetbrains.annotations.Nullable;
@@ -20,9 +25,32 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator generator) {
 		FabricDataGenerator.Pack pack = generator.createPack();
+		pack.addProvider(ModelProvider::new);
 		BlockTagProvider blockTagProvider = pack.addProvider(BlockTagProvider::new);
 		pack.addProvider(EntityTypeTagProvider::new);
 		pack.addProvider((output, registries) -> new ItemTagProvider(output, registries, blockTagProvider));
+	}
+
+	private static class ModelProvider extends FabricModelProvider {
+		public ModelProvider(FabricDataOutput output) {
+			super(output);
+		}
+
+		@Override
+		public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator) {
+			for (var barrier : StaticBarrierBlock.BARRIERS.values()) {
+				blockStateModelGenerator.createAirLikeBlock(barrier, Items.BARRIER);
+			}
+
+			blockStateModelGenerator.createAirLikeBlock(BarricadeBlocks.ADVANCED_BARRIER.get(), Items.BARRIER);
+		}
+
+		@Override
+		public void generateItemModels(ItemModelGenerators itemModelGenerator) {
+			for (var barrier : StaticBarrierBlock.BARRIERS.values()) {
+				itemModelGenerator.generateFlatItem(barrier.asItem(), ModelTemplates.FLAT_ITEM);
+			}
+		}
 	}
 
 	private static class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
