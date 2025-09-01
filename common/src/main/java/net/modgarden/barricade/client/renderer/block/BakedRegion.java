@@ -190,7 +190,7 @@ public class BakedRegion {
 						renderType,
 						gpu.createBuffer(
 								() -> this.bakerLocation.toString() + " Index Buffer",
-								BufferType.VERTICES,
+								BufferType.INDICES,
 								BufferUsage.DYNAMIC_WRITE,
 								Objects.requireNonNull(
 										meshData.indexBuffer(),
