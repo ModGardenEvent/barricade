@@ -9,9 +9,7 @@ import net.modgarden.barricade.registry.BarricadeTags;
  */
 public interface BarrierRegionBaker extends RegionBaker {
 	@Override
-	default void render(BakedRegion.RenderContext context) {
-		if (context.player().getAbilities().instabuild && context.player().getMainHandItem().is(BarricadeTags.ItemTags.BARRIERS)) {
-			RegionBaker.super.render(context);
-		}
+	default boolean shouldRender(BakedRegion.RenderContext context) {
+		return context.player().getAbilities().instabuild && context.player().getMainHandItem().is(BarricadeTags.ItemTags.BARRIERS);
 	}
 }

@@ -7,6 +7,7 @@ import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import it.unimi.dsi.fastutil.objects.ReferenceSet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
 import net.modgarden.barricade.client.renderer.block.BakedRegion.CachedMultiBufferSource;
@@ -22,7 +23,10 @@ import static net.modgarden.barricade.client.renderer.block.BakedBarrierBlockRen
 public interface RegionBaker {
 	CachedMultiBufferSource getBufferSource();
 
-	default void render(BakedRegion.RenderContext ignoredContext) {
+	/**
+	 * Render all {@link RegionBaker} in the given {@link ReferenceSet}.
+	 */
+	static void render(ReferenceSet<RegionBaker> bakers, BakedRegion.RenderContext context) {
 		Minecraft mc = Minecraft.getInstance();
 		GpuDevice device = RenderSystem.getDevice();
 		CommandEncoder commandEncoder = device.createCommandEncoder();
@@ -33,17 +37,13 @@ public interface RegionBaker {
 				mc.getMainRenderTarget().getDepthTexture(),
 				OptionalDouble.empty()
 		)) {
-			BakedRegion.REGIONS.forEach((pos, region) -> {
-				synchronized (BakedRegion.DIRTY_REGIONS) {
-					if (BakedRegion.DIRTY_REGIONS.contains(pos)) return;
-				}
-				if (mc.getCameraEntity() == null) return;
-				if (!mc.getCameraEntity().position().closerThan(pos.center(), mc.levelRenderer.getLastViewDistance() * 16)) {
-					BakedRegion.removeRegion(pos);
-					return;
-				}
-				GpuBuffer indexBuffer = this.getBufferSource().getIndexBuffer(RENDER_TYPE);
+			if (mc.getCameraEntity() == null) return;
+			bakers.forEach(baker -> {
+				if (!baker.shouldRender(context)) return;
+				GpuBuffer indexBuffer = baker.getBufferSource().getIndexBuffer(RENDER_TYPE);
 				if (indexBuffer == null) return;
+				GpuBuffer vertexBuffer = baker.getBufferSource().getVertexBuffer(RENDER_TYPE);
+				if (vertexBuffer == null) return;
 				renderPass.setPipeline(RENDER_TYPE.getRenderPipeline());
 				RENDER_TYPE.setupRenderState();
 				for (int j = 0; j < 12; j++) {
@@ -58,12 +58,20 @@ public interface RegionBaker {
 						(float) -cameraPos.y(),
 						(float) -cameraPos.z()
 				);
-				renderPass.setVertexBuffer(0, this.getBufferSource().getVertexBuffer(RENDER_TYPE));
+				renderPass.setVertexBuffer(0, vertexBuffer);
 				renderPass.setIndexBuffer(indexBuffer, VertexFormat.IndexType.SHORT);
 				renderPass.drawIndexed(0, indexBuffer.size());
 				RENDER_TYPE.clearRenderState();
 			});
 		}
+	}
+
+	/**
+	 * @param context the context relevant to rendering this {@link RegionBaker}.
+	 * @return whether this {@link RegionBaker} should render given the context.
+	 */
+	default boolean shouldRender(BakedRegion.RenderContext context) {
+		return true;
 	}
 
 	/**

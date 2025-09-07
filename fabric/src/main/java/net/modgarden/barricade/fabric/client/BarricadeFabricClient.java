@@ -3,6 +3,7 @@ package net.modgarden.barricade.fabric.client;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -96,6 +97,21 @@ public class BarricadeFabricClient implements ClientModInitializer {
 		WorldRenderEvents.END.register(context -> {
 			BakedRegion.uploadDirty();
 			BakedRegion.onRenderEnd();
+		});
+
+		ClientChunkEvents.CHUNK_LOAD.register((level, chunk)-> {
+			//noinspection ConstantValue
+			assert BakedRegion.SIZE_XYZ == 16; // just in case someone changes it
+			for (int i = level.getMinSectionY(); i <= level.getMaxSectionY(); i++) {
+				BakedRegion.putRegion(new BakedRegion.BakedRegionPos(chunk.getPos().x, i, chunk.getPos().z));
+			}
+		});
+		ClientChunkEvents.CHUNK_UNLOAD.register((level, chunk)-> {
+			//noinspection ConstantValue
+			assert BakedRegion.SIZE_XYZ == 16; // just in case someone changes it
+			for (int i = level.getMinSectionY(); i <= level.getMaxSectionY(); i++) {
+				BakedRegion.removeRegion(new BakedRegion.BakedRegionPos(chunk.getPos().x, i, chunk.getPos().z));
+			}
 		});
 	}
 }

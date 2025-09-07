@@ -6,8 +6,7 @@ import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.systems.GpuDevice;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import it.unimi.dsi.fastutil.objects.Object2ReferenceArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2ReferenceMap;
+import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
@@ -22,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
@@ -35,21 +33,19 @@ public class BakedRegion {
 	 * The size of a {@link BakedRegion}. This is always a power of 2.
 	 */
 	public static final int SIZE_XYZ = 16;
-	static final Object2ReferenceMap<BakedRegionPos, BakedRegion> REGIONS = new Object2ReferenceArrayMap<>();
+	static final Object2ReferenceMap<BakedRegionPos, BakedRegion> REGIONS = new Object2ReferenceOpenHashMap<>();
+	static final ReferenceSet<RegionBaker> BAKERS_TO_RENDER = new ReferenceOpenHashSet<>();
 	static final Set<BakedRegionPos> DIRTY_REGIONS = new HashSet<>();
 	/**
 	 * A set of transient regions that are baked but not yet uploaded.
 	 */
 	private static final Set<BakedRegionPos> BAKED_REGIONS = new HashSet<>();
-	private static final HashMap<BakedRegionPos, Future<Void>> REGION_BAKE_TASKS = new HashMap<>();
 	private static final Set<CulinarySchool> CULINARY_SCHOOLS = new HashSet<>();
 	private static final List<Runnable> REGION_REMOVE_TASKS = new ArrayList<>();
 
-	private final BakedRegionPos pos;
 	private final List<RegionBaker> regionBakers;
 
-	public BakedRegion(BakedRegionPos pos, List<RegionBaker> regionBakers) {
-		this.pos = pos;
+	public BakedRegion(List<RegionBaker> regionBakers) {
 		this.regionBakers = regionBakers;
 	}
 
@@ -57,7 +53,11 @@ public class BakedRegion {
 	 * Render all regions.
 	 */
 	public static void renderRegions(RenderContext context) {
-		REGIONS.values().forEach(region -> region.render(context));
+		try {
+			RegionBaker.render(BAKERS_TO_RENDER, context);
+		} catch(Exception e) {
+			Barricade.LOG.error("Exception during BakedRegion rendering", e);
+		}
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class BakedRegion {
 	 * finish at any point afterward, even into the next frame.<br>
 	 * <br>
 	 * This method bakes regions <b>asynchronously</b>, but it may block the
-	 * thread when {@link #DIRTY_REGIONS} or {@link #REGION_BAKE_TASKS} are locked.
+	 * thread when {@link #DIRTY_REGIONS} is locked.
 	 */
 	public static void bakeDirty(BakeContext context) {
 		synchronized (DIRTY_REGIONS) {
@@ -79,29 +79,32 @@ public class BakedRegion {
 						}
 					});
 				}
-				synchronized (REGION_BAKE_TASKS) {
-					REGION_BAKE_TASKS.put(
-							pos,
-							CompletableFuture.supplyAsync(() -> {
-								BakedRegion region = REGIONS.get(pos);
-								if (region == null) return null;
-								region.bake(context);
-								return pos;
-							}).thenAcceptAsync(pos1 -> {
-								// TODO: maybe move the clean-up logic to onRenderEnd and only when all regions are baked
-								if (pos1 == null) return;
-								synchronized (DIRTY_REGIONS) {
-									DIRTY_REGIONS.remove(pos1);
-								}
-								synchronized (REGION_BAKE_TASKS) {
-									REGION_BAKE_TASKS.remove(pos1);
-								}
-								synchronized (BAKED_REGIONS) {
-									BAKED_REGIONS.add(pos1);
-								}
-							}).orTimeout(1, TimeUnit.SECONDS)
-					);
-				}
+				CompletableFuture.supplyAsync(() -> {
+					BakedRegion region = REGIONS.get(pos);
+					if (region == null) return null;
+					region.bake(context);
+					synchronized (BAKERS_TO_RENDER) {
+						BAKERS_TO_RENDER.addAll(region.regionBakers);
+					}
+					return pos;
+				}).thenAcceptAsync(pos1 -> {
+					if (pos1 == null) return;
+					synchronized (DIRTY_REGIONS) {
+						DIRTY_REGIONS.remove(pos1);
+					}
+					synchronized (BAKED_REGIONS) {
+						BAKED_REGIONS.add(pos1);
+					}
+				}).exceptionally(t -> {
+					// deal with faulty/failed region bake tasks
+					if (t instanceof TimeoutException) {
+						Barricade.LOG.error("Region baking at {} took too long!", pos);
+					} else {
+						Barricade.LOG.error("Region baking at {}", pos);
+					}
+					Barricade.LOG.error("Region baking failed", t);
+					return null;
+				}).orTimeout(1, TimeUnit.SECONDS);
 			}
 		}
 	}
@@ -131,38 +134,28 @@ public class BakedRegion {
 	 */
 	public static void onRenderEnd() {
 		REGION_REMOVE_TASKS.forEach(Runnable::run);
-
-		// deal with faulty/failed region bake tasks
-		synchronized (REGION_BAKE_TASKS) {
-			List<Runnable> regionBakeRemoveTasks = new ArrayList<>();
-			REGION_BAKE_TASKS.forEach((pos, task) -> {
-				if (task.isCancelled()) {
-					Throwable t = task.exceptionNow();
-					if (t instanceof TimeoutException) {
-						Barricade.LOG.error("Region baking at {} took too long!", pos);
-					} else {
-						Barricade.LOG.error("Region baking at {}", pos);
-					}
-					Barricade.LOG.error("Region baking failed", t);
-					regionBakeRemoveTasks.add(() -> REGION_BAKE_TASKS.remove(pos));
-				}
-			});
-			regionBakeRemoveTasks.forEach(Runnable::run);
-		}
+		REGION_REMOVE_TASKS.clear();
 	}
 
 	/**
 	 * Queue a region removal.
 	 */
-	static void removeRegion(BakedRegionPos pos) {
-		REGION_REMOVE_TASKS.add(() -> REGIONS.remove(pos));
+	public static void removeRegion(BakedRegionPos pos) {
+		REGION_REMOVE_TASKS.add(() -> {
+			BakedRegion region = REGIONS.get(pos);
+			if (region == null) return;
+			synchronized (BAKERS_TO_RENDER) {
+				region.regionBakers.forEach(BAKERS_TO_RENDER::remove);
+			}
+			REGIONS.remove(pos);
+		});
 	}
 
 	/**
 	 * Register a region if it does not already exist.
 	 */
 	public static void putRegion(BakedRegionPos pos) {
-		REGIONS.putIfAbsent(pos, new BakedRegion(pos, graduateBakers(pos)));
+		REGIONS.putIfAbsent(pos, new BakedRegion(graduateBakers(pos)));
 		markRegionDirty(pos);
 	}
 
@@ -186,22 +179,6 @@ public class BakedRegion {
 		return CULINARY_SCHOOLS.stream()
 				.map(baker -> baker.graduate(pos))
 				.collect(Collectors.toList());
-	}
-
-	/**
-	 * Render the built buffers.
-	 */
-	public void render(RenderContext context) {
-		synchronized (DIRTY_REGIONS) {
-			synchronized (BAKED_REGIONS) {
-				if (DIRTY_REGIONS.contains(this.pos) || BAKED_REGIONS.contains(this.pos)) return;
-			}
-		}
-		try {
-			this.regionBakers.forEach(baker -> baker.render(context));
-		} catch(Exception e) {
-			Barricade.LOG.error("Exception during BakedRegion rendering", e);
-		}
 	}
 
 	/**
