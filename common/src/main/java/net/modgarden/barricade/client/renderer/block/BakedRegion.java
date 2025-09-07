@@ -33,6 +33,10 @@ public class BakedRegion {
 	 * The size of a {@link BakedRegion}. This is always a power of 2.
 	 */
 	public static final int SIZE_XYZ = 16;
+	/**
+	 * How much you have to shift right to get to {@link #SIZE_XYZ}.
+	 */
+	public static final int SHIFT_XYZ = 4;
 	static final Object2ReferenceMap<BakedRegionPos, BakedRegion> REGIONS = new Object2ReferenceOpenHashMap<>();
 	static final ReferenceSet<RegionBaker> BAKERS_TO_RENDER = new ReferenceOpenHashSet<>();
 	static final Set<BakedRegionPos> DIRTY_REGIONS = new HashSet<>();
@@ -319,7 +323,7 @@ public class BakedRegion {
 
 	public record BakedRegionPos(int x, int y, int z) {
 		public static BakedRegionPos fromBlockPos(BlockPos pos) {
-			return new BakedRegionPos(pos.getX() / SIZE_XYZ, pos.getY() / SIZE_XYZ, pos.getZ() / SIZE_XYZ);
+			return new BakedRegionPos(pos.getX() >> SHIFT_XYZ, pos.getY() >> SHIFT_XYZ, pos.getZ() >> SHIFT_XYZ);
 		}
 
 		public boolean contains(BlockPos pos) {
@@ -330,17 +334,17 @@ public class BakedRegion {
 		public Vec3 center() {
 			float middle = SIZE_XYZ / 2.0f;
 			return new Vec3(
-					(this.x() * SIZE_XYZ) + middle,
-					(this.y() * SIZE_XYZ) + middle,
-					(this.z() * SIZE_XYZ) + middle
+					(this.x() << SHIFT_XYZ) + middle,
+					(this.y() << SHIFT_XYZ) + middle,
+					(this.z() << SHIFT_XYZ) + middle
 			);
 		}
 
 		public BlockPos lowerCorner() {
 			return new BlockPos(
-					this.x() * SIZE_XYZ,
-					this.y() * SIZE_XYZ,
-					this.z() * SIZE_XYZ
+					this.x() << SHIFT_XYZ,
+					this.y() << SHIFT_XYZ,
+					this.z() << SHIFT_XYZ
 			);
 		}
 	}
