@@ -7,8 +7,9 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.*;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
@@ -16,6 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.StaticBarrierBlock;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeItems;
@@ -53,6 +55,26 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 			for (var barrier : StaticBarrierBlock.BARRIERS.values()) {
 				itemModelGenerator.generateFlatItem(barrier.asItem(), ModelTemplates.FLAT_ITEM);
 			}
+
+			generateNoBarrierItem(itemModelGenerator, BarricadeItems.ADVANCED_BARRIER.get());
+		}
+
+		private static void generateNoBarrierItem(ItemModelGenerators generator, Item item) {
+			generator.itemModelOutput.accept(
+					item,
+					ItemModelUtils.plainModel(createNoBarrierModel(
+							generator,
+							item
+					))
+			);
+		}
+
+		private static ResourceLocation createNoBarrierModel(ItemModelGenerators generator, Item item) {
+			return ModelTemplates.FLAT_ITEM.create(
+					ModelLocationUtils.getModelLocation(item),
+					TextureMapping.layer0(Barricade.asResource("item/barricade/no_barrier")),
+					generator.modelOutput
+			);
 		}
 	}
 
