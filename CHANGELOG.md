@@ -1,2 +1,7 @@
+## Features
+- Port to 1.21.5
+- New Baked Region rendering system
+
 ## Bugfixes
-- Rectify buggy implementation of Advanced Barriers.
+- Minor stability improvements
+- Removed Tiny Pineapple
