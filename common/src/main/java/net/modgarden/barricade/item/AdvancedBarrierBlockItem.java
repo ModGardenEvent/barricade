@@ -1,6 +1,5 @@
 package net.modgarden.barricade.item;
 
-import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -12,13 +11,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.data.AdvancedBarrier;
 import net.modgarden.barricade.data.BlockedDirections;
-import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeComponents;
 import net.modgarden.silicate.api.exception.InvalidContextParameterException;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class AdvancedBarrierBlockItem extends EntityCheckBarrierBlockItem {
 	public AdvancedBarrierBlockItem(Block block, Properties properties) {
@@ -37,7 +32,7 @@ public class AdvancedBarrierBlockItem extends EntityCheckBarrierBlockItem {
 			assert advancedBarrierHolder != null; // We already checked if it's present.
 			AdvancedBarrier advancedBarrier = advancedBarrierHolder.value();
 
-			BlockedDirections directions = directions(advancedBarrier.directions(), BarricadeBlocks.ADVANCED_BARRIER.get().directions(state));
+			BlockedDirections directions = advancedBarrier.directions();
 
 			collision = context.getLevel().getEntities(null, Shapes.block().move(context.getClickedPos().getX(), context.getClickedPos().getY(), context.getClickedPos().getZ()).bounds()).stream().allMatch(entity -> {
 				CollisionContext ctx = CollisionContext.of(entity);
@@ -53,22 +48,6 @@ public class AdvancedBarrierBlockItem extends EntityCheckBarrierBlockItem {
 		}
 
 		return (!mustSurvive() || state.canSurvive(context.getLevel(), context.getClickedPos())) && collision;
-	}
-
-	private static BlockedDirections directions(BlockedDirections directions, BlockedDirections stateDirections) {
-		Set<Direction> returnValue = new HashSet<>();
-		processDirection(returnValue, Direction.UP, directions, stateDirections);
-		processDirection(returnValue, Direction.DOWN, directions, stateDirections);
-		processDirection(returnValue, Direction.NORTH, directions, stateDirections);
-		processDirection(returnValue, Direction.SOUTH, directions, stateDirections);
-		processDirection(returnValue, Direction.WEST, directions, stateDirections);
-		processDirection(returnValue, Direction.EAST, directions, stateDirections);
-		return BlockedDirections.of(returnValue.toArray(Direction[]::new));
-	}
-
-	private static void processDirection(Set<Direction> set, Direction direction, BlockedDirections directions, BlockedDirections stateDirections) {
-		if (stateDirections.directions().contains(direction) || directions.blocks(direction))
-			set.add(direction);
 	}
 
 	@Override

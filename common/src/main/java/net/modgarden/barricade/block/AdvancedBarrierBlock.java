@@ -32,7 +32,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -45,7 +44,6 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
 	public static final BooleanProperty EAST = BlockStateProperties.EAST;
 	public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
 	public static final BooleanProperty WEST = BlockStateProperties.WEST;
-	private static final Map<Direction, BooleanProperty> PROPERTY_BY_DIRECTION = PipeBlock.PROPERTY_BY_DIRECTION;
 
 	public AdvancedBarrierBlock(Properties properties) {
 		super(properties);
@@ -103,10 +101,6 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
 	@Override
 	public @NotNull MapCodec<BarrierBlock> codec() {
 		return CODEC;
-	}
-
-	public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState, Direction dir) {
-		return neighborState.is(state.getBlock()) && (!(level.getBlockEntity(pos) instanceof AdvancedBarrierBlockEntity blockEntity) || level.getBlockEntity(pos.offset(dir.getOpposite().getUnitVec3i())) instanceof AdvancedBarrierBlockEntity neighborEntity && neighborEntity.getData().equals(blockEntity.getData()) || directions(state) == null || !directions(state).blocks(dir));
 	}
 
 	@Override
@@ -178,28 +172,6 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
 	@Override
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
 		return new AdvancedBarrierBlockEntity(pos, state);
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	protected @NotNull BlockState rotate(BlockState state, Rotation rot) {
-		return state.setValue(PROPERTY_BY_DIRECTION.get(rot.rotate(Direction.NORTH)), state.getValue(NORTH))
-				.setValue(PROPERTY_BY_DIRECTION.get(rot.rotate(Direction.SOUTH)), state.getValue(SOUTH))
-				.setValue(PROPERTY_BY_DIRECTION.get(rot.rotate(Direction.EAST)), state.getValue(EAST))
-				.setValue(PROPERTY_BY_DIRECTION.get(rot.rotate(Direction.WEST)), state.getValue(WEST))
-				.setValue(PROPERTY_BY_DIRECTION.get(rot.rotate(Direction.UP)), state.getValue(UP))
-				.setValue(PROPERTY_BY_DIRECTION.get(rot.rotate(Direction.DOWN)), state.getValue(DOWN));
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	protected @NotNull BlockState mirror(BlockState state, Mirror mirror) {
-		return state.setValue(PROPERTY_BY_DIRECTION.get(mirror.mirror(Direction.NORTH)), state.getValue(NORTH))
-				.setValue(PROPERTY_BY_DIRECTION.get(mirror.mirror(Direction.SOUTH)), state.getValue(SOUTH))
-				.setValue(PROPERTY_BY_DIRECTION.get(mirror.mirror(Direction.EAST)), state.getValue(EAST))
-				.setValue(PROPERTY_BY_DIRECTION.get(mirror.mirror(Direction.WEST)), state.getValue(WEST))
-				.setValue(PROPERTY_BY_DIRECTION.get(mirror.mirror(Direction.UP)), state.getValue(UP))
-				.setValue(PROPERTY_BY_DIRECTION.get(mirror.mirror(Direction.DOWN)), state.getValue(DOWN));
 	}
 
 	@Override

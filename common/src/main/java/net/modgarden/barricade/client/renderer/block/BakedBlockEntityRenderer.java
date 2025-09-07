@@ -45,12 +45,6 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 				packedOverlay,
 				cameraPos
 		);
-
-//		synchronized (BakedRegion.DIRTY_REGIONS) {
-//			if (BakedRegion.DIRTY_REGIONS.contains(BakedRegion.BakedRegionPos.fromBlockPos(blockEntity.getBlockPos())) && !unbakedBlockEntities.contains(blockEntity)) {
-//				unbakedBlockEntities.add(blockEntity);
-//			}
-//		}
 	}
 
 	/**
