@@ -156,11 +156,24 @@ public class BakedRegion {
 	}
 
 	/**
-	 * Register a region if it does not already exist.
+	 * Register a region if it does not already exist and mark it dirty.
 	 */
 	public static void putRegion(BakedRegionPos pos) {
 		REGIONS.putIfAbsent(pos, new BakedRegion(graduateBakers(pos)));
 		markRegionDirty(pos);
+	}
+
+	/**
+	 * Register a region and its neighbors if they do not already exist and mark them dirty.
+	 */
+	public static void putRegionAndNeighbors(BakedRegionPos pos) {
+		for (int x = pos.x() - 1; x <= pos.x() + 1; x++) {
+			for (int y = pos.y() - 1; y <= pos.y() + 1; y++) {
+				for (int z = pos.z() - 1; z <= pos.z() + 1; z++) {
+					putRegion(new BakedRegion.BakedRegionPos(x, y, z));
+				}
+			}
+		}
 	}
 
 	/**

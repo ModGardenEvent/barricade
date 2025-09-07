@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.Minecraft;
@@ -27,7 +26,6 @@ import net.modgarden.barricade.fabric.client.platform.BarricadeClientPlatformHel
 import net.modgarden.barricade.network.clientbound.SetServerContextClientboundPacket;
 import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeBlocks;
-import net.modgarden.barricade.registry.BarricadeTags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -81,12 +79,6 @@ public class BarricadeFabricClient implements ClientModInitializer {
 				BarricadeBlocks.HOSTILE_BARRIER.get(),
 				BarricadeBlocks.CREATIVE_ONLY_BARRIER.get()
 		);
-
-		ClientPlayerBlockBreakEvents.AFTER.register((level, player, pos, state) -> {
-			if (state.is(BarricadeTags.BlockTags.BARRIERS)) {
-				BakedRegion.putRegion(BakedRegion.BakedRegionPos.fromBlockPos(pos));
-			}
-		});
 
 		WorldRenderEvents.START.register(context ->
 				BakedRegion.bakeDirty(new BakedRegion.BakeContext(context.world()))

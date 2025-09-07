@@ -33,7 +33,7 @@ public abstract class LevelMixin {
 				(Barricade.isOperatorModel(state) || Barricade.isOperatorModel(this.getBlockState(pos)))
 				&& this.isClientSide()
 		) {
-			BakedRegion.putRegion(BakedRegion.BakedRegionPos.fromBlockPos(pos));
+			BakedRegion.putRegionAndNeighbors(BakedRegion.BakedRegionPos.fromBlockPos(pos));
 		}
 	}
 }
