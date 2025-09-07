@@ -1,3 +1,4 @@
+import me.modmuss50.mpp.ReleaseType
 import net.modgarden.barricade.gradle.Properties
 import net.modgarden.barricade.gradle.Versions
 import org.gradle.jvm.tasks.Jar
@@ -111,7 +112,7 @@ publishMods {
 	modLoaders.add("fabric")
 	changelog = rootProject.file("CHANGELOG.md").readText()
 	version = "${Versions.MOD}+${Versions.MINECRAFT}-fabric"
-	type = STABLE
+	type = ReleaseType.valueOf(Versions.MOD_STABILITY.uppercase())
 
 	modrinth {
 		projectId = Properties.MODRINTH_PROJECT_ID
