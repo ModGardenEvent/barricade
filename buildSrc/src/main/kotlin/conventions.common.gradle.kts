@@ -45,8 +45,8 @@ repositories {
 	}
 	exclusiveContent {
 		forRepositories(
-			maven(Properties.PUBLISH_REPO) {
-				name = "Greenhouse"
+			maven("https://maven.modgarden.net/releases") {
+				name = "Mod Garden"
 			}
 		)
 		filter {
