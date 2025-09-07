@@ -42,6 +42,8 @@ public final class BakedBarrierBlockRenderer implements BarrierRegionBaker {
 
 	@Override
 	public void bake(BakedRegion.BakeContext context) {
+		//noinspection ConstantValue
+		assert BakedRegion.SIZE_XYZ == 16; // just in case someone changes it
 		ChunkAccess chunk = context.level().getChunk(this.pos.x(), this.pos.z());
 		PalettedContainer<BlockState> states = chunk.getSection(chunk.getSectionIndexFromSectionY(this.pos.y())).getStates();
 		Minecraft mc = Minecraft.getInstance();

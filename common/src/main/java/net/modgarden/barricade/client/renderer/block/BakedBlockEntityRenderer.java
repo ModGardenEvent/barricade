@@ -95,6 +95,8 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 		@Override
 		public void bake(BakedRegion.BakeContext context) {
 			synchronized (BakedBlockEntityRenderer.this) {
+				//noinspection ConstantValue
+				assert BakedRegion.SIZE_XYZ == 16; // just in case someone changes it
 				ChunkAccess chunk = context.level().getChunk(this.pos.x(), this.pos.z());
 				chunk.getBlockEntitiesPos().forEach(pos -> {
 					Optional<T> blockEntity = chunk.getBlockEntity(pos, BakedBlockEntityRenderer.this.type);
