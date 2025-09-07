@@ -65,8 +65,12 @@ public class DirectionalBarrierBlock extends StaticBarrierBlock {
 	}
 
 	@Override
-	protected boolean skipRendering(BlockState state, BlockState adjacentState, @NotNull Direction direction) {
-		return adjacentState.is(state.getBlock()) && !directions.blocks(direction);
+	protected boolean skipRendering(
+			@NotNull BlockState state,
+			@NotNull BlockState adjacentState,
+			@NotNull Direction direction
+	) {
+		return super.skipRendering(state, adjacentState, direction) && !directions.blocks(direction);
 	}
 
 	@Override

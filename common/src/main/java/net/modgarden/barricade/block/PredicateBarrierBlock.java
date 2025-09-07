@@ -3,7 +3,6 @@ package net.modgarden.barricade.block;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
@@ -88,11 +87,6 @@ public class PredicateBarrierBlock extends StaticBarrierBlock {
 				properties -> properties,
 				block -> (PredicateBarrierBlock) block
 		);
-	}
-
-	@Override
-	protected boolean skipRendering(BlockState state, BlockState adjacentState, @NotNull Direction direction) {
-		return adjacentState.is(state.getBlock());
 	}
 
 	/**
