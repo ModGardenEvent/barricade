@@ -5,7 +5,7 @@ object Properties {
 	const val MOD_NAME = "Barricade"
 	const val MOD_ID = "barricade"
 	const val MOD_AUTHOR = "Mod Garden"
-	val MOD_CONTRIBUTORS = listOf("MerchantPug")
+	val MOD_CONTRIBUTORS = listOf("MerchantCalico", "Sylv <contact@sylv.gay>")
 	const val DESCRIPTION = "A mod that implements more specific barriers."
 	const val LICENSE = "MPL-2.0"
 
