@@ -11,6 +11,7 @@
 		"BlockMixin"
 	],
 	"client": [
+		"client.ClientLevelMixin",
 		"client.LevelMixin",
 		"client.MinecraftMixin",
 		"client.StructureBlockRendererMixin",
