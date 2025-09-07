@@ -6,19 +6,24 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Inspired by Glowcase's <a href="https://github.com/ModFest/glowcase/blob/b3681b46158733e632af22ea6c53afc342d9cf2e/src/main/java/dev/hephaestus/glowcase/client/render/block/entity/BakedBlockEntityRenderer.java">BakedBlockEntityRenderer</a>.
  */
 public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements BlockEntityRenderer<T> {
 	private final List<T> unbakedBlockEntities = new ArrayList<>();
+	private final BlockEntityType<T> type;
 
-	public BakedBlockEntityRenderer(BlockEntityRendererProvider.Context ignoredContext) {
+	public BakedBlockEntityRenderer(BlockEntityRendererProvider.Context ignoredContext, BlockEntityType<T> type) {
+		this.type = type;
 	}
 
 	@Override
@@ -41,11 +46,11 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 				cameraPos
 		);
 
-		synchronized (BakedRegion.DIRTY_REGIONS) {
-			if (BakedRegion.DIRTY_REGIONS.contains(BakedRegion.BakedRegionPos.fromBlockPos(blockEntity.getBlockPos())) && !unbakedBlockEntities.contains(blockEntity)) {
-				unbakedBlockEntities.add(blockEntity);
-			}
-		}
+//		synchronized (BakedRegion.DIRTY_REGIONS) {
+//			if (BakedRegion.DIRTY_REGIONS.contains(BakedRegion.BakedRegionPos.fromBlockPos(blockEntity.getBlockPos())) && !unbakedBlockEntities.contains(blockEntity)) {
+//				unbakedBlockEntities.add(blockEntity);
+//			}
+//		}
 	}
 
 	/**
@@ -96,10 +101,16 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 		@Override
 		public void bake(BakedRegion.BakeContext context) {
 			synchronized (BakedBlockEntityRenderer.this) {
+				ChunkAccess chunk = context.level().getChunk(this.pos.x(), this.pos.z());
+				chunk.getBlockEntitiesPos().forEach(pos -> {
+					Optional<T> blockEntity = chunk.getBlockEntity(pos, BakedBlockEntityRenderer.this.type);
+					blockEntity.ifPresent(BakedBlockEntityRenderer.this.unbakedBlockEntities::add);
+				});
 				PoseStack poseStack = new PoseStack();
 				List<Runnable> removeTasks = new ArrayList<>();
 				BakedBlockEntityRenderer.this.unbakedBlockEntities.forEach(blockEntity -> {
 					if (!this.pos.contains(blockEntity.getBlockPos())) return;
+					if (blockEntity.isRemoved()) removeTasks.add(() -> BakedBlockEntityRenderer.this.unbakedBlockEntities.remove(blockEntity));
 					if (BakedBlockEntityRenderer.this.shouldBake(blockEntity)) {
 						BakedBlockEntityRenderer.this.renderBaked(
 								blockEntity,

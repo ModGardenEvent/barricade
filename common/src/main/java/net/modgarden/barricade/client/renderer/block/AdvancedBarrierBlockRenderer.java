@@ -11,6 +11,7 @@ import net.minecraft.world.phys.Vec3;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
 import net.modgarden.barricade.data.AdvancedBarrier;
+import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeRegistries;
 
 import java.util.HashMap;
@@ -20,7 +21,7 @@ public class AdvancedBarrierBlockRenderer extends BakedBlockEntityRenderer<Advan
 	private static final Map<ResourceLocation, BlockStateModel> MODELS = new HashMap<>();
 
 	public AdvancedBarrierBlockRenderer(BlockEntityRendererProvider.Context context) {
-		super(context);
+		super(context, BarricadeBlockEntityTypes.ADVANCED_BARRIER);
 		BakedRegion.registerRegionBaker(Baker::new);
 	}
 
