@@ -13,4 +13,6 @@ object Properties {
 	const val MODRINTH_PROJECT_ID = "kRSR7ZEj"
 	const val GITHUB_REPO = "ModGardenEvent/barricade"
 	const val GITHUB_COMMITISH = "1.21.5"
+
+	const val PUBLISH_REPO = "https://maven.greenhouse.lgbt/releases"
 }

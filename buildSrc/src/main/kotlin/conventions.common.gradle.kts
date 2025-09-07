@@ -45,7 +45,7 @@ repositories {
 	}
 	exclusiveContent {
 		forRepositories(
-			maven("https://repo.greenhouse.house/releases") {
+			maven(Properties.PUBLISH_REPO) {
 				name = "Greenhouse"
 			}
 		)
@@ -146,7 +146,7 @@ publishing {
 	repositories {
 		maven {
 			name = "Greenhouse"
-			url = uri("https://repo.greenhouse.house/releases")
+			url = uri(Properties.PUBLISH_REPO)
 			credentials {
 				username = System.getenv("MAVEN_USERNAME")
 				password = System.getenv("MAVEN_PASSWORD")
