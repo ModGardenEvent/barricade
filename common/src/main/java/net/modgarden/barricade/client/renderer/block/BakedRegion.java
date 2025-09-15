@@ -85,7 +85,12 @@ public class BakedRegion {
 				}
 				CompletableFuture.supplyAsync(() -> {
 					BakedRegion region = REGIONS.get(pos);
-					if (region == null) return null;
+					if (region == null) {
+						synchronized (DIRTY_REGIONS) {
+							DIRTY_REGIONS.remove(pos);
+						}
+						return null;
+					}
 					region.bake(context);
 					synchronized (BAKERS_TO_RENDER) {
 						BAKERS_TO_RENDER.addAll(region.regionBakers);
