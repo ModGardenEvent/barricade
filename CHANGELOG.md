@@ -1,9 +1,8 @@
 ## Features
 
 ## Bugfixes
-- Advanced Barrier rendering will no longer persist when the source block is broken
-- Region baking causes a ConcurrentModificationException
-- Dirty regions were not being removed when regions are removed, causing a memory leak
+- Render buffers now close when removing a region instead of persisting.
+- Barricade render regions are now cleared upon disconnecting or changing dimension.
 
 ## Removed
 - Removed Tiny Pineapple
