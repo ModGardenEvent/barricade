@@ -159,6 +159,12 @@ public class BakedRegion {
 		});
 	}
 
+	public static void clearRegions() {
+		REGIONS.forEach((pos, region) -> removeRegion(pos));
+		REGION_REMOVE_TASKS.forEach(Runnable::run);
+		REGION_REMOVE_TASKS.clear();
+	}
+
 	/**
 	 * Register a region if it does not already exist and mark it dirty.
 	 */

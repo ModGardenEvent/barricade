@@ -4,8 +4,10 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -105,5 +107,7 @@ public class BarricadeFabricClient implements ClientModInitializer {
 				BakedRegion.removeRegion(new BakedRegion.BakedRegionPos(chunk.getPos().x, i, chunk.getPos().z));
 			}
 		});
+		ClientPlayConnectionEvents.DISCONNECT.register((listener, minecraft) -> BakedRegion.clearRegions());
+		ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((minecraft, level) -> BakedRegion.clearRegions());
 	}
 }
