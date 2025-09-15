@@ -105,8 +105,10 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 				PoseStack poseStack = new PoseStack();
 				List<Runnable> removeTasks = new ArrayList<>();
 				BakedBlockEntityRenderer.this.unbakedBlockEntities.forEach(blockEntity -> {
-					if (!this.pos.contains(blockEntity.getBlockPos())) return;
-					if (blockEntity.isRemoved()) removeTasks.add(() -> BakedBlockEntityRenderer.this.unbakedBlockEntities.remove(blockEntity));
+					if (!this.pos.contains(blockEntity.getBlockPos()) || blockEntity.isRemoved()) {
+						removeTasks.add(() -> BakedBlockEntityRenderer.this.unbakedBlockEntities.remove(blockEntity));
+						return;
+					}
 					if (BakedBlockEntityRenderer.this.shouldBake(blockEntity)) {
 						BakedBlockEntityRenderer.this.renderBaked(
 								blockEntity,
