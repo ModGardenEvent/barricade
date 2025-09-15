@@ -209,7 +209,9 @@ public class BakedRegion {
 	 */
 	public void bake(BakeContext context) {
 		try {
-			this.regionBakers.forEach(baker -> baker.bake(context));
+			synchronized (this.regionBakers) {
+				this.regionBakers.forEach(baker -> baker.bake(context));
+			}
 		} catch(Exception e) {
 			Barricade.LOG.error("Exception during BakedRegion baking", e);
 		}
