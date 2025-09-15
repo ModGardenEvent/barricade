@@ -149,7 +149,10 @@ public class BakedRegion {
 			BakedRegion region = REGIONS.get(pos);
 			if (region == null) return;
 			synchronized (BAKERS_TO_RENDER) {
-				region.regionBakers.forEach(BAKERS_TO_RENDER::remove);
+				region.regionBakers.forEach(regionBaker -> {
+					regionBaker.getBufferSource().close();
+					BAKERS_TO_RENDER.remove(regionBaker);
+				});
 			}
 			DIRTY_REGIONS.remove(pos);
 			REGIONS.remove(pos);
