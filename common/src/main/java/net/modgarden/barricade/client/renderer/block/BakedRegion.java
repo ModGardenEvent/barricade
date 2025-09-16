@@ -228,7 +228,7 @@ public class BakedRegion {
 
 	public record BakeContext(LevelAccessor level) {}
 
-	public record RenderContext(Player player) {}
+	public record RenderContext(Player player, float deltaTick) {}
 
 	public static class CachedMultiBufferSource implements MultiBufferSource, AutoCloseable {
 		private final @Nullable CachedMultiBufferSource future;

@@ -10,7 +10,7 @@ public class BarricadeClient {
 	public static BarricadeClientPlatformHelper helper;
 
 	public static final GreenhouseConfigHolder<BarricadeClientConfig> CONFIG = GreenhouseConfigHolder.client("barricade", BarricadeClientConfig.CODEC, BarricadeClientConfig.DEFAULT, JsonCLang.INSTANCE)
-			.schemaVersion(2)
+			.schemaVersion(3)
 			.dataFixer(BarricadeClientConfig.Fixer.INSTANCE)
 			.build();
 

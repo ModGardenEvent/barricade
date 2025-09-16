@@ -62,7 +62,7 @@ public class VisibilityCommand {
 			BarricadeClient.getHelper().sendFailureClient(context, Component.translatable("command.barricade.visibility.enable.all.error.already_enabled"));
 			return 0;
 		}
-		var newConfig = new BarricadeClientConfig(true, Set.of());
+		var newConfig = new BarricadeClientConfig(true, Set.of(), BarricadeClient.CONFIG.getOrThrow().barrierFadeTime());
 		BarricadeClient.CONFIG.saveConfig(newConfig);
 		BarricadeClient.CONFIG.reloadConfig(Barricade.LOG::error);
 
@@ -75,7 +75,7 @@ public class VisibilityCommand {
 			BarricadeClient.getHelper().sendFailureClient(context, Component.translatable("command.barricade.visibility.disable.all.error.already_disabled"));
 			return 0;
 		}
-		var newConfig = new BarricadeClientConfig(false, Set.of());
+		var newConfig = new BarricadeClientConfig(false, Set.of(), BarricadeClient.CONFIG.getOrThrow().barrierFadeTime());
 		BarricadeClient.CONFIG.saveConfig(newConfig);
 		BarricadeClient.CONFIG.reloadConfig(Barricade.LOG::error);
 
@@ -96,7 +96,7 @@ public class VisibilityCommand {
 
 		Set<Either<ResourceLocation, ResourceKey<Block>>> newSpecifics = new HashSet<>(oldConfig.visibleBlocks());
 		newSpecifics.add(blocksTagResult.tag());
-		var newConfig = new BarricadeClientConfig(false, newSpecifics);
+		var newConfig = new BarricadeClientConfig(false, newSpecifics, oldConfig.barrierFadeTime());
 		BarricadeClient.CONFIG.saveConfig(newConfig);
 		BarricadeClient.CONFIG.reloadConfig(Barricade.LOG::error);
 
@@ -122,7 +122,7 @@ public class VisibilityCommand {
 
 		Set<Either<ResourceLocation, ResourceKey<Block>>> newSpecifics = new HashSet<>(oldConfig.visibleBlocks());
 		newSpecifics.remove(blocksTagResult.tag());
-		var newConfig = new BarricadeClientConfig(false, newSpecifics);
+		var newConfig = new BarricadeClientConfig(false, newSpecifics, oldConfig.barrierFadeTime());
 		BarricadeClient.CONFIG.saveConfig(newConfig);
 		BarricadeClient.CONFIG.reloadConfig(Barricade.LOG::error);
 

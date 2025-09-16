@@ -86,7 +86,7 @@ public class BarricadeFabricClient implements ClientModInitializer {
 				BakedRegion.bakeDirty(new BakedRegion.BakeContext(context.world()))
 		);
 
-		WorldRenderEvents.AFTER_ENTITIES.register(context -> BakedRegion.renderRegions(new BakedRegion.RenderContext(Minecraft.getInstance().player)));
+		WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> BakedRegion.renderRegions(new BakedRegion.RenderContext(Minecraft.getInstance().player, context.tickCounter().getGameTimeDeltaTicks())));
 
 		WorldRenderEvents.END.register(context -> {
 			BakedRegion.uploadDirty();

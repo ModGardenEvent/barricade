@@ -19,8 +19,9 @@ import java.util.List;
 import java.util.Set;
 
 public record BarricadeClientConfig(boolean everythingVisible,
-                                    Set<Either<ResourceLocation, ResourceKey<Block>>> visibleBlocks) {
-	public static final BarricadeClientConfig DEFAULT = new BarricadeClientConfig(false, Set.of());
+                                    Set<Either<ResourceLocation, ResourceKey<Block>>> visibleBlocks,
+                                    float barrierFadeTime) {
+	public static final BarricadeClientConfig DEFAULT = new BarricadeClientConfig(false, Set.of(), 2.0f);
 	public static final Codec<BarricadeClientConfig> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			DefaultFieldUtil.codecWithComments(
 					Codec.BOOL,
@@ -40,8 +41,19 @@ public record BarricadeClientConfig(boolean everythingVisible,
 					"Which operator blocks are visible to you, not accounting the item you are holding.",
 					"Accepts a list of mixed block ids or operator blocks tags found within assets/<namespace>/barricade/operator_blocks/<path>.json",
 					"The player must be in creative to see barriers."
-			).forGetter(BarricadeClientConfig::visibleBlocks)
+			).forGetter(BarricadeClientConfig::visibleBlocks),
+			DefaultFieldUtil.codecWithComments(
+					Codec.FLOAT,
+					"barrier_fade_time",
+					DEFAULT.barrierFadeTime(),
+					"How long (in seconds) barriers should take to fade when a barrier is equipped or unequipped.",
+					"Set this to 0 to disable fading."
+			).forGetter(BarricadeClientConfig::barrierFadeTime)
 	).apply(inst, BarricadeClientConfig::new));
+
+	public float barrierFadeTimeTicks() {
+		return barrierFadeTime * 20.0f;
+	}
 
 	public static class Fixer {
 		public static final DataFixer INSTANCE = createFixer();

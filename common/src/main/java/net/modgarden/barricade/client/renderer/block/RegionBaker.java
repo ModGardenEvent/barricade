@@ -58,6 +58,7 @@ public interface RegionBaker {
 						(float) -cameraPos.y(),
 						(float) -cameraPos.z()
 				);
+				RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, baker.getOpacity(context));
 				renderPass.setVertexBuffer(0, vertexBuffer);
 				renderPass.setIndexBuffer(indexBuffer, VertexFormat.IndexType.SHORT);
 				renderPass.drawIndexed(0, indexBuffer.size());
@@ -72,6 +73,14 @@ public interface RegionBaker {
 	 */
 	default boolean shouldRender(BakedRegion.RenderContext context) {
 		return true;
+	}
+
+	/**
+	 * @param context the context relevant to rendering this {@link RegionBaker}.
+	 * @return the opacity this {@link RegionBaker} should render with.
+	 */
+	default float getOpacity(BakedRegion.RenderContext context) {
+		return 1.0f;
 	}
 
 	/**

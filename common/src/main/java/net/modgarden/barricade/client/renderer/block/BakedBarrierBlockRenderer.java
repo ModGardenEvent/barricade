@@ -20,7 +20,7 @@ import java.util.Map;
 
 public final class BakedBarrierBlockRenderer implements BarrierRegionBaker {
 	public static final Map<ResourceLocation, BlockStateModel> MODELS = new HashMap<>();
-	public static final RenderType RENDER_TYPE = RenderType.cutout();
+	public static final RenderType RENDER_TYPE = RenderType.translucent();
 	private final BakedRegion.CachedMultiBufferSource cachedBufferSource;
 	private final BakedRegion.BakedRegionPos pos;
 

@@ -26,5 +26,6 @@
 	"command.barricade.visibility.disable.all.error.already_disabled": "All operator blocks are already invisible",
 	"command.barricade.visibility.disable.blocks.error.already_disabled": "Operator blocks %s are already invisible",
 	"command.barricade.visibility.disable.all.success": "Made all operator blocks invisible",
-	"command.barricade.visibility.disable.blocks.success": "Made all instances of %s invisible"
+	"command.barricade.visibility.disable.blocks.success": "Made all instances of %s invisible",
+	"command.barricade.barrier_fade_time.success": "Set the barrier fade time"
 }
