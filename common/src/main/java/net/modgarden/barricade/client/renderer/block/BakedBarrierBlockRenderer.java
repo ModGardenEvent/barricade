@@ -47,7 +47,7 @@ public final class BakedBarrierBlockRenderer implements BarrierRegionBaker {
 		ChunkAccess chunk = context.level().getChunk(this.pos.x(), this.pos.z());
 		PalettedContainer<BlockState> states = chunk.getSection(chunk.getSectionIndexFromSectionY(this.pos.y())).getStates();
 		Minecraft mc = Minecraft.getInstance();
-		VertexConsumer vertexConsumer = cachedBufferSource.getBuffer(RENDER_TYPE);
+		VertexConsumer vertexConsumer = cachedBufferSource.getFuture().getBuffer(RENDER_TYPE);
 		BlockPos regionPos = this.pos.lowerCorner();
 		BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
 		for (int x = 0; x < 16; x++) {

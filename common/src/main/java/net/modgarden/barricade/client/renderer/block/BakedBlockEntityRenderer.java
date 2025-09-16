@@ -113,7 +113,7 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 						BakedBlockEntityRenderer.this.renderBaked(
 								blockEntity,
 								poseStack,
-								this.cachedBufferSource
+								this.cachedBufferSource.getFuture()
 						);
 						removeTasks.add(() -> BakedBlockEntityRenderer.this.unbakedBlockEntities.remove(blockEntity));
 					}

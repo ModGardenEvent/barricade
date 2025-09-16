@@ -16,6 +16,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.renderer.block.RegionBaker.CulinarySchool;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,14 +76,6 @@ public class BakedRegion {
 	public static void bakeDirty(BakeContext context) {
 		synchronized (DIRTY_REGIONS) {
 			for (BakedRegionPos pos : DIRTY_REGIONS) {
-				BakedRegion region0 = REGIONS.get(pos);
-				if (region0 != null) {
-					region0.regionBakers.forEach(baker -> {
-						if (baker.getBufferSource().isUploaded()) {
-							baker.getBufferSource().flush();
-						}
-					});
-				}
 				CompletableFuture.supplyAsync(() -> {
 					BakedRegion region = REGIONS.get(pos);
 					if (region == null) return null;
@@ -124,8 +117,7 @@ public class BakedRegion {
 			for (BakedRegionPos pos : BAKED_REGIONS) {
 				BakedRegion region = REGIONS.get(pos);
 				if (region == null) continue;
-				boolean uploaded = region.upload();
-				if (!uploaded) continue;
+				region.upload();
 				removeTasks.add(() -> BAKED_REGIONS.remove(pos));
 			}
 			removeTasks.forEach(Runnable::run);
@@ -225,23 +217,13 @@ public class BakedRegion {
 	/**
 	 * Upload this region to the GPU.
 	 */
-	public boolean upload() {
+	public void upload() {
 		try {
-			var ref = new Object() {
-				boolean uploaded;
-			};
-			this.regionBakers.forEach(baker -> {
-				if (!baker.getBufferSource().isUploaded()) {
-					baker.getBufferSource().upload();
-				}
-				ref.uploaded = baker.getBufferSource().isUploaded();
-			});
-			return ref.uploaded;
+			this.regionBakers.forEach(baker -> baker.getBufferSource().upload());
 		} catch(Exception e) {
 			Barricade.LOG.error("Exception during BakedRegion uploading", e);
 		}
 
-		return false;
 	}
 
 	public record BakeContext(LevelAccessor level) {}
@@ -249,6 +231,7 @@ public class BakedRegion {
 	public record RenderContext(Player player) {}
 
 	public static class CachedMultiBufferSource implements MultiBufferSource, AutoCloseable {
+		private final @Nullable CachedMultiBufferSource future;
 		private final Map<RenderType, BufferBuilder> buffers = new HashMap<>();
 		private final Map<RenderType, ByteBufferBuilder> byteBuffers = new HashMap<>();
 		private final Map<RenderType, MeshData> meshes = new HashMap<>();
@@ -257,10 +240,52 @@ public class BakedRegion {
 		private final ResourceLocation bakerLocation;
 
 		public CachedMultiBufferSource(ResourceLocation bakerLocation) {
-			this.bakerLocation = bakerLocation.withPrefix("baker/");
+			this(bakerLocation, ofFuture(bakerLocation));
 		}
 
-		private boolean isUploaded;
+		private CachedMultiBufferSource(ResourceLocation bakerLocation, @Nullable CachedMultiBufferSource future) {
+			this.bakerLocation = bakerLocation.withPrefix("baker/");
+			this.future = future;
+		}
+
+		private static CachedMultiBufferSource ofFuture(ResourceLocation bakerLocation) {
+			return new CachedMultiBufferSource(bakerLocation, null);
+		}
+
+		/**
+		 * The future CMBS that is being rendered to.
+		 * @return the new CMBS that is being rendered to.
+		 */
+		public CachedMultiBufferSource getFuture() {
+			this.assertNotFuture(this.future);
+			return this.future;
+		}
+
+		/**
+		 * Move all data from the future CMBS to this CMBS used for rendering.
+		 */
+		private void update() {
+			this.assertNotFuture(this.future);
+			this.closeSelf();
+			this.buffers.putAll(this.future.buffers);
+			this.byteBuffers.putAll(this.future.byteBuffers);
+			this.meshes.putAll(this.future.meshes);
+			this.vertexBuffers.putAll(this.future.vertexBuffers);
+			this.indexBuffers.putAll(this.future.indexBuffers);
+			// clear the future CMBS
+			this.future.buffers.clear();
+			this.future.byteBuffers.clear();
+			this.future.meshes.clear();
+			this.future.vertexBuffers.clear();
+			this.future.indexBuffers.clear();
+		}
+
+		@Contract("null -> fail")
+		private void assertNotFuture(CachedMultiBufferSource old) {
+			if (old == null) {
+				throw new IllegalStateException("Cannot get the old CachedMultiBufferSource of an old CachedMultiBufferSource");
+			}
+		}
 
 		@Override
 		public @NotNull VertexConsumer getBuffer(@NotNull RenderType renderType) {
@@ -277,23 +302,18 @@ public class BakedRegion {
 			);
 		}
 
-		public boolean isUploaded() {
-			return this.isUploaded;
-		}
-
 		public void upload() {
-			if (this.isUploaded) return;
-			this.isUploaded = true;
+			this.assertNotFuture(this.future);
 
-			this.buffers.forEach((renderType, bufferBuilder) -> {
+			this.future.buffers.forEach((renderType, bufferBuilder) -> {
 				MeshData meshData = bufferBuilder.build();
 				if (meshData == null) {
 					return;
 				}
-				meshData.sortQuads(this.byteBuffers.get(renderType), VertexSorting.ORTHOGRAPHIC_Z);
-				this.meshes.put(renderType, meshData);
+				meshData.sortQuads(this.future.byteBuffers.get(renderType), VertexSorting.ORTHOGRAPHIC_Z);
+				this.future.meshes.put(renderType, meshData);
 				GpuDevice gpu = RenderSystem.getDevice();
-				this.vertexBuffers.put(
+				this.future.vertexBuffers.put(
 						renderType,
 						gpu.createBuffer(
 								() -> this.bakerLocation.toString() + " Vertex Buffer",
@@ -302,7 +322,7 @@ public class BakedRegion {
 								meshData.vertexBuffer()
 						)
 				);
-				this.indexBuffers.put(
+				this.future.indexBuffers.put(
 						renderType,
 						gpu.createBuffer(
 								() -> this.bakerLocation.toString() + " Index Buffer",
@@ -315,6 +335,9 @@ public class BakedRegion {
 						)
 				);
 			});
+
+			// Move everything to this CMBS
+			this.update();
 		}
 
 		public GpuBuffer getVertexBuffer(RenderType renderType) {
@@ -326,7 +349,6 @@ public class BakedRegion {
 		}
 
 		public void flush() {
-			this.isUploaded = false;
 			this.byteBuffers.forEach((key, buffer) -> buffer.discard());
 			this.buffers.clear();
 			this.meshes.forEach((key, meshData) -> meshData.close());
@@ -337,11 +359,16 @@ public class BakedRegion {
 			this.indexBuffers.clear();
 		}
 
-		@Override
-		public void close() {
+		private void closeSelf() {
 			this.flush();
 			this.byteBuffers.forEach((key, buffer) -> buffer.close());
 			this.byteBuffers.clear();
+		}
+
+		@Override
+		public void close() {
+			this.closeSelf();
+			if (this.future != null) this.future.close();
 		}
 
 	}
