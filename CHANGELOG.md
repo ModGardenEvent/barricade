@@ -1,8 +1,9 @@
 ## Features
+- Barriers now fade visibility when a barrier item is equipped or unequipped
 
 ## Bugfixes
-- Render buffers now close when removing a region instead of persisting.
-- Barricade render regions are now cleared upon disconnecting or changing dimension.
+- Barriers no longer flicker when interacted with
+- Always render barriers when barrier visibility is enabled
 
 ## Removed
 - Removed Tiny Pineapple
