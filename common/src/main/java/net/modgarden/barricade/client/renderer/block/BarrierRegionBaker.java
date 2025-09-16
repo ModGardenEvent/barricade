@@ -12,6 +12,7 @@ public interface BarrierRegionBaker extends RegionBaker {
 	@Override
 	default boolean shouldRender(BakedRegion.RenderContext context) {
 		boolean shouldRender = context.player().getAbilities().instabuild && context.player().getMainHandItem().is(BarricadeTags.ItemTags.BARRIERS);
+		shouldRender = shouldRender || BarricadeClient.CONFIG.getOrThrow().everythingVisible();
 		boolean fadeBarriers = BarricadeClient.CONFIG.getOrThrow().barrierFadeTime() > 0.0f;
 		if (fadeBarriers && OpacityState.shouldRender && !shouldRender) {
 			OpacityState.isFading = true;
