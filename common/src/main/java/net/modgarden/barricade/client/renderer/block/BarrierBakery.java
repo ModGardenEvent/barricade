@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.StaticBarrierBlock;
 import net.modgarden.barricade.data.AdvancedBarrier;
@@ -27,8 +27,8 @@ public final class BarrierBakery {
 
 	private BarrierBakery() {}
 
-	public static void bakeModels(Registry<AdvancedBarrier> advancedBarrierRegistry, Map<ResourceLocation, BlockStateModel> modelMap) {
-		Map<ResourceLocation, UnbakedModel> unbakedModelMap = advancedBarrierRegistry.keySet().stream()
+	public static void bakeModels(Registry<AdvancedBarrier> advancedBarrierRegistry, Map<Identifier, BlockStateModel> modelMap) {
+		Map<Identifier, UnbakedModel> unbakedModelMap = advancedBarrierRegistry.keySet().stream()
 				.collect(Collectors.toMap(
 						Function.identity(),
 						id -> createBlockModel(advancedBarrierRegistry.get(id).orElseThrow().value())
@@ -37,13 +37,13 @@ public final class BarrierBakery {
 		unbakedModelMap.forEach(modelDiscovery::addSpecialModel);
 		Baker baker = new Baker(modelDiscovery);
 		for (AdvancedBarrier data : advancedBarrierRegistry) {
-			ResourceLocation id = advancedBarrierRegistry.getKey(data);
+			Identifier id = advancedBarrierRegistry.getKey(data);
 			modelMap.put(id, createModel(id, modelDiscovery, baker));
 		}
 	}
 
-	public static void bakeModels(Map<ResourceLocation, StaticBarrierBlock> barriers, Map<ResourceLocation, BlockStateModel> modelMap) {
-		Map<ResourceLocation, UnbakedModel> unbakedModelMap = barriers.keySet().stream()
+	public static void bakeModels(Map<Identifier, StaticBarrierBlock> barriers, Map<Identifier, BlockStateModel> modelMap) {
+		Map<Identifier, UnbakedModel> unbakedModelMap = barriers.keySet().stream()
 				.collect(Collectors.toMap(
 						Function.identity(),
 						id -> createBlockModel(barriers.get(id))
@@ -51,13 +51,13 @@ public final class BarrierBakery {
 		ModelDiscovery modelDiscovery = new ModelDiscovery(unbakedModelMap, UNKNOWN_UNBAKED_MODEL);
 		unbakedModelMap.forEach(modelDiscovery::addSpecialModel);
 		Baker baker = new Baker(modelDiscovery);
-		for (ResourceLocation id : barriers.keySet()) {
+		for (Identifier id : barriers.keySet()) {
 			modelMap.put(id, createModel(id, modelDiscovery, baker));
 		}
 	}
 
-	public static void bakeModels(ResourceLocation id, ResourceLocation texture, Map<ResourceLocation, BlockStateModel> modelMap) {
-		Map<ResourceLocation, UnbakedModel> unbakedModelMap = Map.of(id, createBlockModel(texture));
+	public static void bakeModels(Identifier id, Identifier texture, Map<Identifier, BlockStateModel> modelMap) {
+		Map<Identifier, UnbakedModel> unbakedModelMap = Map.of(id, createBlockModel(texture));
 		ModelDiscovery modelDiscovery = new ModelDiscovery(unbakedModelMap, UNKNOWN_UNBAKED_MODEL);
 		unbakedModelMap.forEach(modelDiscovery::addSpecialModel);
 		Baker baker = new Baker(modelDiscovery);
@@ -139,7 +139,7 @@ public final class BarrierBakery {
 	}
 
 	@SuppressWarnings("deprecation") // LOCATION_BLOCKS has no alternative
-	private static @NotNull BlockModel createBlockModel(ResourceLocation texture) {
+	private static @NotNull BlockModel createBlockModel(Identifier texture) {
 		TextureSlots.Data.Builder slots = new TextureSlots.Data.Builder()
 				.addTexture(
 						"barrier",
@@ -158,12 +158,12 @@ public final class BarrierBakery {
 		);
 	}
 
-	private static BlockStateModel createModel(ResourceLocation id, ModelDiscovery modelDiscovery, Baker baker) {
+	private static BlockStateModel createModel(Identifier id, ModelDiscovery modelDiscovery, Baker baker) {
 		BlockModelPart modelPart = createModelPart(id, modelDiscovery, baker);
 		return new SingleVariant(modelPart);
 	}
 
-	private static @NotNull BlockModelPart createModelPart(ResourceLocation id, ModelDiscovery modelDiscovery, Baker baker) {
+	private static @NotNull BlockModelPart createModelPart(Identifier id, ModelDiscovery modelDiscovery, Baker baker) {
 		QuadCollection quadCollection = modelDiscovery.resolve().get(id)
 				.bakeTopGeometry(
 						modelDiscovery.resolve().get(id).getTopTextureSlots(),
@@ -174,13 +174,13 @@ public final class BarrierBakery {
 		BlockModelPart modelPart = new SimpleModelWrapper(
 				quadCollection,
 				false,
-				new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.withDefaultNamespace("block/barrier")).sprite()
+				new Material(TextureAtlas.LOCATION_BLOCKS, Identifier.withDefaultNamespace("block/barrier")).sprite()
 		);
 		return modelPart;
 	}
 
 	public static class Baker implements ModelBaker {
-		private final Map<ResourceLocation, ResolvedModel> models;
+		private final Map<Identifier, ResolvedModel> models;
 		private final Map<ModelBaker.SharedOperationKey<Object>, Object> operationCache = new ConcurrentHashMap<>();
 		private final Function<SharedOperationKey<Object>, Object> cacheComputeFunction = key -> key.compute(this);
 
@@ -189,7 +189,7 @@ public final class BarrierBakery {
 		}
 
 		@Override
-		public @NotNull ResolvedModel getModel(@NotNull ResourceLocation modelLocation) {
+		public @NotNull ResolvedModel getModel(@NotNull Identifier modelLocation) {
 			return this.models.get(modelLocation);
 		}
 

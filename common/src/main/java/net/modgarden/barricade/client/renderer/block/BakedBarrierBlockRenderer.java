@@ -3,11 +3,12 @@ package net.modgarden.barricade.client.renderer.block;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.PalettedContainer;
@@ -19,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class BakedBarrierBlockRenderer implements BarrierRegionBaker {
-	public static final Map<ResourceLocation, BlockStateModel> MODELS = new HashMap<>();
-	public static final RenderType RENDER_TYPE = RenderType.translucent();
+	public static final Map<Identifier, BlockStateModel> MODELS = new HashMap<>();
+	public static final RenderType RENDER_TYPE = RenderTypes.translucentMovingBlock();
 	private final BakedRegion.CachedMultiBufferSource cachedBufferSource;
 	private final BakedRegion.BakedRegionPos pos;
 
@@ -32,7 +33,7 @@ public final class BakedBarrierBlockRenderer implements BarrierRegionBaker {
 	public static void reloadModels() {
 		MODELS.clear();
 		BarrierBakery.bakeModels(StaticBarrierBlock.BARRIERS, MODELS);
-		BarrierBakery.bakeModels(ResourceLocation.withDefaultNamespace("barrier"), Barricade.asResource("block/barrier"), MODELS);
+		BarrierBakery.bakeModels(Identifier.withDefaultNamespace("barrier"), Barricade.asResource("block/barrier"), MODELS);
 	}
 
 	@Override

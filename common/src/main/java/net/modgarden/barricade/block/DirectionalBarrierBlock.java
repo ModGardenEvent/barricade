@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.BarrierBlock;
@@ -108,7 +108,7 @@ public class DirectionalBarrierBlock extends StaticBarrierBlock {
 	}
 
 	@Override
-	public ResourceLocation getIcon() {
+	public Identifier getIcon() {
 		return null;
 	}
 }

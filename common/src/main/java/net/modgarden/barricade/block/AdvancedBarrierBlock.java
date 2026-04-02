@@ -27,7 +27,6 @@ import net.modgarden.barricade.data.AdvancedBarrier;
 import net.modgarden.barricade.data.BlockedDirections;
 import net.modgarden.barricade.registry.BarricadeComponents;
 import net.modgarden.barricade.registry.BarricadeRegistries;
-import net.modgarden.silicate.api.exception.InvalidContextParameterException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -119,7 +118,7 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
 				if (!meetsCondition || !blocksDirection) {
 					return Shapes.empty();
 				}
-			} catch (InvalidContextParameterException e) {
+			} catch (Exception e) {
 				Barricade.LOG.error("Failed to test shape", e);
 			}
 		}
@@ -140,7 +139,7 @@ public class AdvancedBarrierBlock extends BarrierBlock implements EntityBlock {
 				if (!isOperator && !blockEntity.getData().test(level, entityContext.getEntity(), state, pos)) {
 					return Shapes.empty();
 				}
-			} catch (InvalidContextParameterException e) {
+			} catch (Exception e) {
 				Barricade.LOG.error("Failed to test shape", e);
 			}
 		}

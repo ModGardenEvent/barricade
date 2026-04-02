@@ -16,7 +16,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
@@ -35,7 +35,7 @@ public record OperatorBlockPseudoTag(HolderSet<Block> blocks, boolean replace) {
 			RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("values").forGetter(OperatorBlockPseudoTag::blocks),
 			Codec.BOOL.optionalFieldOf("replace", false).forGetter(OperatorBlockPseudoTag::replace)
 	).apply(inst, OperatorBlockPseudoTag::new));
-	public static final Codec<OperatorBlockPseudoTag> CODEC = ResourceLocation.CODEC.xmap(
+	public static final Codec<OperatorBlockPseudoTag> CODEC = Identifier.CODEC.xmap(
 			Registry::get,
 			operatorItemPseudoTag -> Registry.REGISTRY.entrySet()
 					.stream()
@@ -68,9 +68,9 @@ public record OperatorBlockPseudoTag(HolderSet<Block> blocks, boolean replace) {
 	}
 
 	public static class Registry {
-		private static final Map<ResourceLocation, OperatorBlockPseudoTag> REGISTRY = new HashMap<>();
+		private static final Map<Identifier, OperatorBlockPseudoTag> REGISTRY = new HashMap<>();
 
-		public static void register(ResourceLocation id, OperatorBlockPseudoTag tag) {
+		public static void register(Identifier id, OperatorBlockPseudoTag tag) {
 			REGISTRY.compute(id, (key, existing) -> {
 				if (existing != null)
 					return existing.combine(tag);
@@ -78,20 +78,20 @@ public record OperatorBlockPseudoTag(HolderSet<Block> blocks, boolean replace) {
 			});
 		}
 
-		public static Set<ResourceLocation> getKeys() {
+		public static Set<Identifier> getKeys() {
 			return ImmutableSet.copyOf(REGISTRY.keySet());
 		}
 
-		public static boolean containsKey(ResourceLocation id) {
+		public static boolean containsKey(Identifier id) {
 			return REGISTRY.containsKey(id);
 		}
 
-		public static OperatorBlockPseudoTag get(ResourceLocation id) {
+		public static OperatorBlockPseudoTag get(Identifier id) {
 			return REGISTRY.getOrDefault(id, EMPTY);
 		}
 	}
 
-	public static class Loader extends SimplePreparableReloadListener<List<Pair<ResourceLocation, OperatorBlockPseudoTag>>> {
+	public static class Loader extends SimplePreparableReloadListener<List<Pair<Identifier, OperatorBlockPseudoTag>>> {
 		public static final Loader INSTANCE = new OperatorBlockPseudoTag.Loader();
 		private final HolderLookup.Provider provider = new HolderLookup.Provider() {
 			@Override
@@ -113,14 +113,14 @@ public record OperatorBlockPseudoTag(HolderSet<Block> blocks, boolean replace) {
 		}
 
 		@Override
-		protected @NotNull List<Pair<ResourceLocation, OperatorBlockPseudoTag>> prepare(@NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profilerFiller) {
-			List<Pair<ResourceLocation, OperatorBlockPseudoTag>> list = new ArrayList<>();
+		protected @NotNull List<Pair<Identifier, OperatorBlockPseudoTag>> prepare(@NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profilerFiller) {
+			List<Pair<Identifier, OperatorBlockPseudoTag>> list = new ArrayList<>();
 
 			FileToIdConverter fileToIdConverter = FileToIdConverter.json("barricade/operator_blocks");
 
-			Set<Map.Entry<ResourceLocation, List<Resource>>> entries = fileToIdConverter.listMatchingResourceStacks(resourceManager).entrySet();
-			for (Map.Entry<ResourceLocation, List<Resource>> entry : entries) {
-				ResourceLocation resolved = fileToIdConverter.fileToId(entry.getKey());
+			Set<Map.Entry<Identifier, List<Resource>>> entries = fileToIdConverter.listMatchingResourceStacks(resourceManager).entrySet();
+			for (Map.Entry<Identifier, List<Resource>> entry : entries) {
+				Identifier resolved = fileToIdConverter.fileToId(entry.getKey());
 				for (Resource resource : entry.getValue())
 					list.add(Pair.of(resolved, load(resolved, resource)));
 			}
@@ -128,7 +128,7 @@ public record OperatorBlockPseudoTag(HolderSet<Block> blocks, boolean replace) {
 			return list;
 		}
 
-		private OperatorBlockPseudoTag load(ResourceLocation key, Resource value) {
+		private OperatorBlockPseudoTag load(Identifier key, Resource value) {
 			try (Reader reader = value.openAsReader()) {
 				JsonElement element = JsonParser.parseReader(reader);
 				JsonObject object = element.getAsJsonObject();
@@ -140,7 +140,7 @@ public record OperatorBlockPseudoTag(HolderSet<Block> blocks, boolean replace) {
 		}
 
 		@Override
-		protected void apply(List<Pair<ResourceLocation, OperatorBlockPseudoTag>> pairs, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profilerFiller) {
+		protected void apply(List<Pair<Identifier, OperatorBlockPseudoTag>> pairs, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profilerFiller) {
 			pairs.stream().filter(Objects::nonNull).sorted(Comparator.comparingInt(value -> value.getSecond().replace ? 1 : 0)).forEachOrdered(pair -> Registry.register(pair.getFirst(), pair.getSecond()));
 		}
 	}

@@ -7,7 +7,7 @@ import com.mojang.datafixers.util.Either;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -51,7 +51,7 @@ public class BarricadeNeoForgeClient {
 	public static class GameEvents {
 		private static boolean previousInstabuildState = false;
 		private static boolean previousAllVisibleState = false;
-		private static Set<Either<ResourceLocation, ResourceKey<Block>>> previousVisibleBlocks = Set.of();
+		private static Set<Either<Identifier, ResourceKey<Block>>> previousVisibleBlocks = Set.of();
 		private static ItemStack lastItemInMainHand = ItemStack.EMPTY;
 		private static ItemStack lastItemInOffHand = ItemStack.EMPTY;
 

@@ -8,7 +8,7 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.modgarden.barricade.data.BlockedDirections;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,22 +17,22 @@ import java.util.Optional;
 
 public record AdvancedBarrierParticleOptions(
 		BlockedDirections blockedDirections,
-		ResourceLocation icon,
+		Identifier icon,
 		Optional<BlockPos> origin) implements ParticleOptions {
 	private static final MapCodec<AdvancedBarrierParticleOptions> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 			BlockedDirections.CODEC.fieldOf("default_directions").forGetter(AdvancedBarrierParticleOptions::blockedDirections),
-			ResourceLocation.CODEC.fieldOf("icon").forGetter(AdvancedBarrierParticleOptions::icon),
+			Identifier.CODEC.fieldOf("icon").forGetter(AdvancedBarrierParticleOptions::icon),
 			BlockPos.CODEC.optionalFieldOf("origin").forGetter(AdvancedBarrierParticleOptions::origin)
 	).apply(inst, AdvancedBarrierParticleOptions::new));
 	private static final StreamCodec<RegistryFriendlyByteBuf, AdvancedBarrierParticleOptions> STREAM_CODEC = StreamCodec.composite(
 			BlockedDirections.STREAM_CODEC, AdvancedBarrierParticleOptions::blockedDirections,
-			ResourceLocation.STREAM_CODEC, AdvancedBarrierParticleOptions::icon,
+			Identifier.STREAM_CODEC, AdvancedBarrierParticleOptions::icon,
 			ByteBufCodecs.optional(BlockPos.STREAM_CODEC), AdvancedBarrierParticleOptions::origin,
 			AdvancedBarrierParticleOptions::new
 	);
 
 	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-	public AdvancedBarrierParticleOptions(BlockedDirections blockedDirections, @Nullable ResourceLocation icon, Optional<BlockPos> origin) {
+	public AdvancedBarrierParticleOptions(BlockedDirections blockedDirections, @Nullable Identifier icon, Optional<BlockPos> origin) {
 		this.blockedDirections = blockedDirections;
 		this.icon = icon;
 		this.origin = origin;

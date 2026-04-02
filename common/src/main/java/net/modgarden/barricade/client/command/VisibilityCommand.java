@@ -8,10 +8,10 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.BarricadeClient;
@@ -46,8 +46,8 @@ public class VisibilityCommand {
 	}
 
 	private static <T> void blocksArg(LiteralCommandNode<T> parent, LiteralCommandNode<T> visibility) {
-		ArgumentCommandNode<T, ResourceLocation> blocks = RequiredArgumentBuilder
-				.<T, ResourceLocation>argument("blocks", ResourceLocationArgument.id())
+		ArgumentCommandNode<T, Identifier> blocks = RequiredArgumentBuilder
+				.<T, Identifier>argument("blocks", IdentifierArgument.id())
 				.suggests((ctx, builder) ->
 						SharedSuggestionProvider.suggestResource(OperatorBlockPseudoTag.Registry.getKeys(), builder)
 				).executes(VisibilityCommand::enableSpecific)
@@ -94,7 +94,7 @@ public class VisibilityCommand {
 			return 0;
 		}
 
-		Set<Either<ResourceLocation, ResourceKey<Block>>> newSpecifics = new HashSet<>(oldConfig.visibleBlocks());
+		Set<Either<Identifier, ResourceKey<Block>>> newSpecifics = new HashSet<>(oldConfig.visibleBlocks());
 		newSpecifics.add(blocksTagResult.tag());
 		var newConfig = new BarricadeClientConfig(false, newSpecifics, oldConfig.barrierFadeTime());
 		BarricadeClient.CONFIG.saveConfig(newConfig);
@@ -120,7 +120,7 @@ public class VisibilityCommand {
 			return 0;
 		}
 
-		Set<Either<ResourceLocation, ResourceKey<Block>>> newSpecifics = new HashSet<>(oldConfig.visibleBlocks());
+		Set<Either<Identifier, ResourceKey<Block>>> newSpecifics = new HashSet<>(oldConfig.visibleBlocks());
 		newSpecifics.remove(blocksTagResult.tag());
 		var newConfig = new BarricadeClientConfig(false, newSpecifics, oldConfig.barrierFadeTime());
 		BarricadeClient.CONFIG.saveConfig(newConfig);
@@ -131,16 +131,16 @@ public class VisibilityCommand {
 	}
 
 	private static @Nullable BlocksTagResult getBlocksTagResult(CommandContext<?> context) {
-		ResourceLocation id = context.getArgument("blocks", ResourceLocation.class);
+		Identifier id = context.getArgument("blocks", Identifier.class);
 
 		if (!OperatorBlockPseudoTag.Registry.containsKey(id)) {
 			BarricadeClient.getHelper().sendFailureClient(context, Component.translatable("command.barricade.visibility.blocks.error.not_found", id.toString()));
 			return null;
 		}
-		Either<ResourceLocation, ResourceKey<Block>> tag = Either.left(id);
+		Either<Identifier, ResourceKey<Block>> tag = Either.left(id);
 		return new BlocksTagResult(id, tag);
 	}
 
-	private record BlocksTagResult(ResourceLocation id, Either<ResourceLocation, ResourceKey<Block>> tag) {
+	private record BlocksTagResult(Identifier id, Either<Identifier, ResourceKey<Block>> tag) {
 	}
 }

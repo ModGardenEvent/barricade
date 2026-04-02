@@ -8,7 +8,7 @@ package net.modgarden.barricade.registry;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +37,7 @@ public class RegistryContext<TValue> {
 	public <T extends TValue> Value<T> defer(String path, Function<ResourceKey<T>, T> createCallback) {
 		var value = new Value<>(
 				(Registry<T>) registry,
-				ResourceLocation.fromNamespaceAndPath(
+				Identifier.fromNamespaceAndPath(
 						namespace,
 						path
 				),
@@ -56,12 +56,12 @@ public class RegistryContext<TValue> {
 
 	public static class Value<TValue> implements Supplier<TValue> {
 		public final Registry<TValue> registry;
-		public final ResourceLocation location;
+		public final Identifier location;
 		public final Function<ResourceKey<TValue>, TValue> createCallback;
 
 		private @Nullable TValue value = null;
 
-		public Value(Registry<TValue> registry, ResourceLocation location, Function<ResourceKey<TValue>, TValue> createCallback) {
+		public Value(Registry<TValue> registry, Identifier location, Function<ResourceKey<TValue>, TValue> createCallback) {
 			this.registry = registry;
 			this.location = location;
 			this.createCallback = createCallback;

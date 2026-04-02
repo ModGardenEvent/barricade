@@ -15,6 +15,8 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.data.AdvancedBarrier;
 import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
@@ -24,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public class AdvancedBarrierBlockEntity extends BlockEntity implements Nameable {
 	private Holder<AdvancedBarrier> data;
@@ -55,33 +58,28 @@ public class AdvancedBarrierBlockEntity extends BlockEntity implements Nameable 
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
-		if (tag.contains("data")) {
-			// Gracefully handle invalid data
-			try {
-				data = AdvancedBarrier.CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), tag.get("data")).getOrThrow();
-			} catch (IllegalStateException e) {
-				Barricade.LOG.error("Failed to load advanced data", e);
-			}
-		}
+	protected void loadAdditional(ValueInput tag) {
+		tag.read("data", AdvancedBarrier.CODEC).ifPresentOrElse((advancedBarrierHolder)->{
+			data = advancedBarrierHolder;
+		}, ()-> Barricade.LOG.error("Failed to load advanced data"));
 
-		if (tag.contains("a") && this.hasLevel()) {
-			assert this.getLevel() != null;
-			// Gracefully handle invalid data
-			try {
-				data = this.getLevel().registryAccess().lookupOrThrow(BarricadeRegistries.ADVANCED_BARRIER).get(tag.getInt("a").orElseThrow()).orElseThrow();
-			} catch (NoSuchElementException e) {
-				Barricade.LOG.error("Unknown Advanced Barrier of ID {}", tag.getInt("a"));
-			} catch (IllegalStateException e) {
-				Barricade.LOG.error("Error occurred while fetching registry", e);
-			}
+		if (this.hasLevel()) {
+			tag.read("a", AdvancedBarrier.CODEC).ifPresentOrElse((advancedBarrierHolder)->{
+				try {
+					data = this.getLevel().registryAccess().lookupOrThrow(BarricadeRegistries.ADVANCED_BARRIER).get(tag.getInt("a").orElseThrow()).orElseThrow();
+				} catch (NoSuchElementException e) {
+					Barricade.LOG.error("Unknown Advanced Barrier of ID {}", tag.getInt("a"));
+				} catch (IllegalStateException e) {
+					Barricade.LOG.error("Error occurred while fetching registry", e);
+				}
+			}, ()-> Barricade.LOG.error("Error occurred reading advanced data"));
 		}
 	}
 
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+	protected void saveAdditional(ValueOutput tag) {
 		if (data != null && data.unwrapKey().isPresent()) {
-			tag.put("data", AdvancedBarrier.CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), data).getOrThrow());
+			tag.store("data", AdvancedBarrier.CODEC, data);
 		}
 	}
 

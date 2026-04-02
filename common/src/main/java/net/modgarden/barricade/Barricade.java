@@ -1,6 +1,6 @@
 package net.modgarden.barricade;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.modgarden.barricade.platform.BarricadePlatformHelper;
@@ -23,8 +23,8 @@ public class Barricade {
 		return state.is(BarricadeTags.BlockTags.BARRIERS);
 	}
 
-	public static ResourceLocation asResource(String path) {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+	public static Identifier asResource(String path) {
+		return Identifier.fromNamespaceAndPath(MOD_ID, path);
 	}
 
 	public static BarricadePlatformHelper getHelper() {

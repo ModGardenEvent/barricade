@@ -26,6 +26,7 @@ sourceSets {
 		runtimeClasspath += main.get().output
 	}
 }
+val mappingsAttribute = Attribute.of("net.minecraft.mappings", String::class.java)
 
 dependencies {
 	minecraft("com.mojang:minecraft:${Versions.MINECRAFT}")
@@ -38,12 +39,18 @@ dependencies {
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${Versions.FABRIC_API}")
 	modLocalRuntime("com.terraformersmc:modmenu:${Versions.MOD_MENU}")
 	modLocalRuntime("maven.modrinth:sodium:${Versions.SODIUM}-fabric")
-	modApi("net.modgarden.silicate:silicate-fabric:${Versions.SILICATE}")
-	include("net.modgarden.silicate:silicate-fabric:${Versions.SILICATE}")
-	modApi("house.greenhouse:greenhouseconfig:${Versions.GREENHOUSE_CONFIG}-fabric")
-	include("house.greenhouse:greenhouseconfig:${Versions.GREENHOUSE_CONFIG}-fabric")
-	api("house.greenhouse:greenhouseconfig_jsonc:${Versions.GREENHOUSE_CONFIG_JSONC}")
-	include("house.greenhouse:greenhouseconfig_jsonc:${Versions.GREENHOUSE_CONFIG_JSONC}")
+	modApi("lgbt.greenhouse.silicate:silicate-fabric:${Versions.SILICATE}")
+	include("lgbt.greenhouse.silicate:silicate-fabric:${Versions.SILICATE}")
+	compileOnly("lgbt.greenhouse.config:greenhouse-config-api:${Versions.GREENHOUSE_CONFIG}") {
+		attributes {
+			attribute(mappingsAttribute, "intermediary")
+		}
+	}
+	include("lgbt.greenhouse.config:greenhouse-config-api:${Versions.GREENHOUSE_CONFIG}-fabric")  {
+		attributes {
+			attribute(mappingsAttribute, "intermediary")
+		}
+	}
 }
 
 loom {

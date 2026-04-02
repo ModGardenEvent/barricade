@@ -7,10 +7,10 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import house.greenhouse.greenhouseconfig.api.util.DefaultFieldUtil;
+import lgbt.greenhouse.config.api.util.DefaultFieldUtil;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.modgarden.barricade.client.util.dfu.fix.V1ToV2FieldsFix;
 import net.modgarden.barricade.client.util.dfu.schema.ConfigSchema;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 public record BarricadeClientConfig(boolean everythingVisible,
-                                    Set<Either<ResourceLocation, ResourceKey<Block>>> visibleBlocks,
+                                    Set<Either<Identifier, ResourceKey<Block>>> visibleBlocks,
                                     float barrierFadeTime) {
 	public static final BarricadeClientConfig DEFAULT = new BarricadeClientConfig(false, Set.of(), 2.0f);
 	public static final Codec<BarricadeClientConfig> CODEC = RecordCodecBuilder.create(inst -> inst.group(
@@ -33,7 +33,7 @@ public record BarricadeClientConfig(boolean everythingVisible,
 			DefaultFieldUtil.codecWithComments(
 					Codec.either(Codec.STRING.comapFlatMap(s -> {
 						if (s.startsWith("#"))
-							return DataResult.success(ResourceLocation.tryParse(s.substring(1)));
+							return DataResult.success(Identifier.tryParse(s.substring(1)));
 						return DataResult.error(() -> "Not an operator block tag");
 					}, rl -> "#" + rl.toString()), ResourceKey.codec(Registries.BLOCK)).listOf().xmap(Set::copyOf, List::copyOf),
 					"visible_blocks",

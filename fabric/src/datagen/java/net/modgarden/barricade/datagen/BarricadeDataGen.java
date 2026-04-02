@@ -9,7 +9,7 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.*;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
@@ -69,7 +69,7 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 			);
 		}
 
-		private static ResourceLocation createNoBarrierModel(ItemModelGenerators generator, Item item) {
+		private static Identifier createNoBarrierModel(ItemModelGenerators generator, Item item) {
 			return ModelTemplates.FLAT_ITEM.create(
 					ModelLocationUtils.getModelLocation(item),
 					TextureMapping.layer0(Barricade.asResource("item/barricade/no_barrier")),

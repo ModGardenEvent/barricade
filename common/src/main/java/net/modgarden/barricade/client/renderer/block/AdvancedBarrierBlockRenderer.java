@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.block.entity.AdvancedBarrierBlockEntity;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AdvancedBarrierBlockRenderer extends BakedBlockEntityRenderer<AdvancedBarrierBlockEntity> {
-	private static final Map<ResourceLocation, BlockStateModel> MODELS = new HashMap<>();
+	private static final Map<Identifier, BlockStateModel> MODELS = new HashMap<>();
 
 	public AdvancedBarrierBlockRenderer(BlockEntityRendererProvider.Context context) {
 		super(context, BarricadeBlockEntityTypes.ADVANCED_BARRIER);
@@ -49,7 +49,7 @@ public class AdvancedBarrierBlockRenderer extends BakedBlockEntityRenderer<Advan
 			BarrierBakery.bakeModels(advancedBarrierRegistry, MODELS);
 		} else if (MODELS.isEmpty()) return false;
 		AdvancedBarrier data = blockEntity.getData();
-		ResourceLocation barrierId = advancedBarrierRegistry.getKey(data);
+		Identifier barrierId = advancedBarrierRegistry.getKey(data);
 		BlockStateModel model = MODELS.get(barrierId);
 		if (model == null) return false;
 		Minecraft mc = Minecraft.getInstance();

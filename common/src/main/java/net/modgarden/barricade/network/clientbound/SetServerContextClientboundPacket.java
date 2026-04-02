@@ -1,16 +1,16 @@
 package net.modgarden.barricade.network.clientbound;
 
-import house.greenhouse.greenhouseconfig.impl.GreenhouseConfig;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.modgarden.barricade.Barricade;
 import org.jetbrains.annotations.NotNull;
 
 public record SetServerContextClientboundPacket() implements CustomPacketPayload {
-	public static final ResourceLocation ID = GreenhouseConfig.asResource("set_server_context");
+	public static final Identifier ID = Identifier.fromNamespaceAndPath("greenhouse_config","set_server_context");
 	public static final Type<SetServerContextClientboundPacket> TYPE = new Type<>(ID);
 	public static final StreamCodec<FriendlyByteBuf, SetServerContextClientboundPacket> STREAM_CODEC = StreamCodec.of(SetServerContextClientboundPacket::write, SetServerContextClientboundPacket::read);
 

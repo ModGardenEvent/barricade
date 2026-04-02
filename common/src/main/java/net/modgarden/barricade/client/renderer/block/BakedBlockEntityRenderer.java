@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -82,7 +82,7 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 		private final BakedRegion.BakedRegionPos pos;
 		private final BakedRegion.CachedMultiBufferSource cachedBufferSource;
 
-		public Baker(BakedRegion.BakedRegionPos pos, ResourceLocation location) {
+		public Baker(BakedRegion.BakedRegionPos pos, Identifier location) {
 			this.pos = pos;
 			this.cachedBufferSource = new BakedRegion.CachedMultiBufferSource(location);
 		}

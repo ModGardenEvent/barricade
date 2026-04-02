@@ -12,7 +12,6 @@ import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.data.AdvancedBarrier;
 import net.modgarden.barricade.data.BlockedDirections;
 import net.modgarden.barricade.registry.BarricadeComponents;
-import net.modgarden.silicate.api.exception.InvalidContextParameterException;
 import org.jetbrains.annotations.NotNull;
 
 public class AdvancedBarrierBlockItem extends EntityCheckBarrierBlockItem {
@@ -39,7 +38,7 @@ public class AdvancedBarrierBlockItem extends EntityCheckBarrierBlockItem {
 				boolean meetsCondition = false;
 				try {
 					meetsCondition = advancedBarrier.test(context.getLevel(), entity, state, context.getClickedPos());
-				} catch (InvalidContextParameterException e) {
+				} catch (Exception e) {
 					Barricade.LOG.error("Failed to test placement ability", e);
 				}
 				boolean directionBlocks = directions.doesNotBlock() || !directions.shouldBlock(context.getClickedPos(), ctx);

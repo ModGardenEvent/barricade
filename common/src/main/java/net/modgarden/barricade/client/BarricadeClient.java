@@ -1,7 +1,6 @@
 package net.modgarden.barricade.client;
 
-import house.greenhouse.greenhouseconfig.api.GreenhouseConfigHolder;
-import house.greenhouse.greenhouseconfig.jsonc.JsonCLang;
+import lgbt.greenhouse.config.api.v3.GreenhouseConfigHolder;
 import net.modgarden.barricade.client.platform.BarricadeClientPlatformHelper;
 import net.modgarden.barricade.client.renderer.block.BakedBarrierBlockRenderer;
 import net.modgarden.barricade.client.renderer.block.BakedRegion;

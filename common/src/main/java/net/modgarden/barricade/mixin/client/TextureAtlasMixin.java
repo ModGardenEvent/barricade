@@ -2,7 +2,7 @@ package net.modgarden.barricade.mixin.client;
 
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.modgarden.barricade.Barricade;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,19 +19,19 @@ public class TextureAtlasMixin {
 	private @Nullable TextureAtlasSprite missingSprite;
 
 	@Shadow
-	private Map<ResourceLocation, TextureAtlasSprite> texturesByName;
+	private Map<Identifier, TextureAtlasSprite> texturesByName;
 
 	@Inject(
 			method = "getSprite",
 			at = @At("TAIL"),
 			cancellable = true
 	)
-	private void warnMissingIcon(ResourceLocation name, CallbackInfoReturnable<TextureAtlasSprite> cir) {
+	private void warnMissingIcon(Identifier name, CallbackInfoReturnable<TextureAtlasSprite> cir) {
 		TextureAtlasSprite sprite = cir.getReturnValue();
 		// FIXME LATER: why the hell was this ever here? who in their right mind would do it this way? holy shit.
 		// In case we encounter a double prefix
 		if (sprite != null && sprite.equals(this.missingSprite) && name.getPath().startsWith("barricade/icon/barricade/icon/")) {
-			ResourceLocation newName = name.withPath(name.getPath().replaceFirst("barricade/icon/", ""));
+			Identifier newName = name.withPath(name.getPath().replaceFirst("barricade/icon/", ""));
 			cir.setReturnValue(this.texturesByName.getOrDefault(newName, this.missingSprite));
 			sprite = cir.getReturnValue();
 		}

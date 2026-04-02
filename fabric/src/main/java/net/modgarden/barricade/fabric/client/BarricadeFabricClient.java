@@ -14,7 +14,7 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.block.Blocks;
@@ -58,7 +58,7 @@ public class BarricadeFabricClient implements ClientModInitializer {
 			}
 
 			@Override
-			public ResourceLocation getFabricId() {
+			public Identifier getFabricId() {
 				return Barricade.asResource("operator_blocks");
 			}
 		});

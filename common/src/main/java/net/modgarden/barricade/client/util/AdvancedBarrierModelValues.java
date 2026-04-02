@@ -1,14 +1,14 @@
 package net.modgarden.barricade.client.util;
 
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.modgarden.barricade.data.BlockedDirections;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
 public record AdvancedBarrierModelValues(BlockedDirections directions,
-                                         @Nullable ResourceLocation icon) {
+                                         @Nullable Identifier icon) {
 	public String getVariant() {
 		String variant = "";
 		if (icon() != null)
@@ -21,7 +21,7 @@ public record AdvancedBarrierModelValues(BlockedDirections directions,
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof AdvancedBarrierModelValues(BlockedDirections directions1, ResourceLocation icon1)))
+		if (!(obj instanceof AdvancedBarrierModelValues(BlockedDirections directions1, Identifier icon1)))
 			return false;
 		return directions1.equals(directions) && (icon1 == null && icon == null || icon1 != null && icon1.equals(icon) || icon != null && icon.equals(icon1));
 	}

@@ -11,7 +11,7 @@ import net.modgarden.barricade.block.AdvancedBarrierBlock;
 import net.modgarden.barricade.block.DirectionalBarrierBlock;
 import net.modgarden.barricade.block.PredicateBarrierBlock;
 import net.modgarden.barricade.block.StaticBarrierBlock;
-import net.modgarden.silicate.api.SilicateRegistries;
+import lgbt.greenhouse.silicate.api.SilicateRegistries;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -66,7 +66,7 @@ public class BarricadeBlocks {
 			withProperties(properties -> new PredicateBarrierBlock(
 					properties,
 					Barricade.asResource("iron_sword"),
-					ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("creative_only"))
+					ResourceKey.create(SilicateRegistries.CONDITION, Barricade.asResource("creative_only"))
 			))
 	);
 
@@ -75,7 +75,7 @@ public class BarricadeBlocks {
 			withProperties(properties -> new PredicateBarrierBlock(
 					properties,
 					Barricade.asResource("steve"),
-					ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("player"))
+					ResourceKey.create(SilicateRegistries.CONDITION, Barricade.asResource("player"))
 			))
 	);
 	public static final Supplier<PredicateBarrierBlock> MOB_BARRIER = CONTEXT.defer(
@@ -83,7 +83,7 @@ public class BarricadeBlocks {
 			withProperties(properties -> new PredicateBarrierBlock(
 					properties,
 					Barricade.asResource("pig"),
-					ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("mob"))
+					ResourceKey.create(SilicateRegistries.CONDITION, Barricade.asResource("mob"))
 			))
 	);
 	public static final Supplier<PredicateBarrierBlock> PASSIVE_BARRIER = CONTEXT.defer(
@@ -91,7 +91,7 @@ public class BarricadeBlocks {
 			withProperties(properties -> new PredicateBarrierBlock(
 					properties,
 					Barricade.asResource("parrot"),
-					ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("passive"))
+					ResourceKey.create(SilicateRegistries.CONDITION, Barricade.asResource("passive"))
 			))
 	);
 	public static final Supplier<PredicateBarrierBlock> HOSTILE_BARRIER = CONTEXT.defer(
@@ -99,7 +99,7 @@ public class BarricadeBlocks {
 			withProperties(properties -> new PredicateBarrierBlock(
 					properties,
 					Barricade.asResource("creeper"),
-					ResourceKey.create(SilicateRegistries.CONDITION_TEMPLATE, Barricade.asResource("hostile"))
+					ResourceKey.create(SilicateRegistries.CONDITION, Barricade.asResource("hostile"))
 			))
 	);
 
@@ -112,7 +112,7 @@ public class BarricadeBlocks {
 		return key -> {
 			T block = callback.apply(BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).dynamicShape().setId((ResourceKey<Block>) key));
 			if (block instanceof StaticBarrierBlock barrierBlock) {
-				StaticBarrierBlock.BARRIERS.put(key.location(), barrierBlock);
+				StaticBarrierBlock.BARRIERS.put(key.identifier(), barrierBlock);
 			}
 			return block;
 		};

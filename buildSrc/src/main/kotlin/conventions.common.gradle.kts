@@ -45,15 +45,25 @@ repositories {
 	}
 	exclusiveContent {
 		forRepositories(
-			maven("https://maven.modgarden.net/releases") {
-				name = "Mod Garden"
+			maven("https://maven.greenhouse.lgbt/snapshots") {
+				name = "Greenhouse Maven"
 			}
 		)
 		filter {
-			includeGroup("house.greenhouse")
-			includeGroup("net.modgarden.silicate")
+			includeGroup("lgbt.greenhouse.config")
 		}
 	}
+	exclusiveContent {
+		forRepositories(
+			maven("https://maven.greenhouse.lgbt/releases") {
+				name = "Greenhouse Maven"
+			}
+		)
+		filter {
+			includeGroupAndSubgroups("lgbt.greenhouse.polyamory")
+		}
+	}
+	mavenLocal()
 }
 
 dependencies {

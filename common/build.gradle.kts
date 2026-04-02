@@ -17,10 +17,6 @@ sourceSets {
 
 neoForge {
 	neoFormVersion = Versions.NEOFORM
-	parchment {
-		minecraftVersion = Versions.PARCHMENT_MINECRAFT
-		mappingsVersion = Versions.PARCHMENT
-	}
 	addModdingDependenciesTo(sourceSets["test"])
 
 	val at = file("src/main/resources/${Properties.MOD_ID}.cfg")
@@ -28,14 +24,19 @@ neoForge {
 		setAccessTransformers(at)
 	validateAccessTransformers = true
 }
+val mappingsAttribute = Attribute.of("net.minecraft.mappings", String::class.java)
+
 
 dependencies {
 	compileOnly("io.github.llamalad7:mixinextras-common:${Versions.MIXIN_EXTRAS}")
 	annotationProcessor("io.github.llamalad7:mixinextras-common:${Versions.MIXIN_EXTRAS}")
 	compileOnly("net.fabricmc:sponge-mixin:${Versions.FABRIC_MIXIN}")
-	compileOnly("net.modgarden.silicate:silicate-common:${Versions.SILICATE}")
-	compileOnly("house.greenhouse:greenhouseconfig:${Versions.GREENHOUSE_CONFIG}-common-mojmap")
-	compileOnly("house.greenhouse:greenhouseconfig_jsonc:${Versions.GREENHOUSE_CONFIG_JSONC}")
+	compileOnly("lgbt.greenhouse.silicate:silicate-xplat:${Versions.SILICATE}")
+	compileOnly("lgbt.greenhouse.config:greenhouse-config-api:${Versions.GREENHOUSE_CONFIG}") {
+		attributes {
+			attribute(mappingsAttribute, "mojmap")
+		}
+	}
 }
 
 configurations {

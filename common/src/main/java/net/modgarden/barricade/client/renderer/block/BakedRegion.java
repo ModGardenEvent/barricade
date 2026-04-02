@@ -8,9 +8,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
@@ -237,18 +237,18 @@ public class BakedRegion {
 		private final Map<RenderType, MeshData> meshes = new HashMap<>();
 		private final Map<RenderType, GpuBuffer> vertexBuffers = new HashMap<>();
 		private final Map<RenderType, GpuBuffer> indexBuffers = new HashMap<>();
-		private final ResourceLocation bakerLocation;
+		private final Identifier bakerLocation;
 
-		public CachedMultiBufferSource(ResourceLocation bakerLocation) {
+		public CachedMultiBufferSource(Identifier bakerLocation) {
 			this(bakerLocation, ofFuture(bakerLocation));
 		}
 
-		private CachedMultiBufferSource(ResourceLocation bakerLocation, @Nullable CachedMultiBufferSource future) {
+		private CachedMultiBufferSource(Identifier bakerLocation, @Nullable CachedMultiBufferSource future) {
 			this.bakerLocation = bakerLocation.withPrefix("baker/");
 			this.future = future;
 		}
 
-		private static CachedMultiBufferSource ofFuture(ResourceLocation bakerLocation) {
+		private static CachedMultiBufferSource ofFuture(Identifier bakerLocation) {
 			return new CachedMultiBufferSource(bakerLocation, null);
 		}
 
@@ -285,6 +285,11 @@ public class BakedRegion {
 			if (old == null) {
 				throw new IllegalStateException("Cannot get the old CachedMultiBufferSource of an old CachedMultiBufferSource");
 			}
+		}
+
+		@Override
+		public VertexConsumer getBuffer(net.minecraft.client.renderer.rendertype.RenderType renderType) {
+			return null;
 		}
 
 		@Override
