@@ -12,7 +12,6 @@ import net.minecraft.world.item.*;
 import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.data.AdvancedBarrier;
 import net.modgarden.barricade.network.clientbound.SetServerContextClientboundPacket;
-import net.modgarden.barricade.registry.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;

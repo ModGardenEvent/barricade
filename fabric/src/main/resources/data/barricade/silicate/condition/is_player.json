@@ -1,0 +1,5 @@
+{
+	"predicate": "entity_is_type",
+	"entity": "${this_entity}",
+	"entity_type": "minecraft:player"
+}

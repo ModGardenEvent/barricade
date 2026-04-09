@@ -1,11 +1,10 @@
-accessWidener v2 named
+accessWidener v2 official
 accessible class net/minecraft/client/multiplayer/ClientChunkCache$Storage
 accessible class net/minecraft/client/resources/model/ModelBakery$ModelBakerImpl
 #accessible method net/minecraft/client/resources/model/ModelBakery$ModelBakerImpl <init> (Lnet/minecraft/client/resources/model/ModelBakery;Lnet/minecraft/client/resources/model/ModelBakery$TextureGetter;Lnet/minecraft/client/resources/model/ModelIdentifier;)V
 accessible class net/minecraft/client/resources/model/ModelManager$ReloadState
 accessible class net/minecraft/server/packs/resources/FallbackResourceManager$PackEntry
-accessible class net/minecraft/advancements/critereon/PlayerPredicate$AdvancementPredicate
-accessible class net/minecraft/advancements/critereon/PlayerPredicate$StatMatcher
 accessible method net/minecraft/world/level/block/entity/BlockEntityType <init> (Lnet/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier;Ljava/util/Set;)V
 accessible class net/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier
 accessible class net/minecraft/client/Minecraft$GameLoadCookie
+extendable class net/minecraft/client/resources/model/sprite/TextureSlots$SlotContents

@@ -1,0 +1,11 @@
+{
+	"predicate": "any",
+	"conditions": [
+		"barricade:is_hostile",
+		{
+			"predicate": "entity_has_passenger",
+			"entity": "${this_entity}",
+			"condition": "barricade:is_hostile"
+		}
+	]
+}

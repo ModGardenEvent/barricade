@@ -1,0 +1,8 @@
+{
+	"predicate": "player_is_game_type",
+	"player": "${this_entity}",
+	"game_type": [
+		"survival",
+		"adventure"
+	]
+}

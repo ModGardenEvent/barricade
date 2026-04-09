@@ -1,11 +1,11 @@
 import me.modmuss50.mpp.ReleaseType
+import net.fabricmc.loom.task.RenderDocRunTask
 import net.modgarden.barricade.gradle.Properties
 import net.modgarden.barricade.gradle.Versions
-import org.gradle.jvm.tasks.Jar
 
 plugins {
 	id("conventions.loader")
-	id("fabric-loom")
+	id("net.fabricmc.fabric-loom")
 	id("me.modmuss50.mod-publish-plugin")
 }
 
@@ -25,32 +25,45 @@ sourceSets {
 		compileClasspath += main.get().output
 		runtimeClasspath += main.get().output
 	}
+
+	register("generated")
+
+	getByName("main") {
+		compileClasspath += getByName("generated").compileClasspath
+		runtimeClasspath += getByName("generated").runtimeClasspath
+	}
+
+	getByName("test") {
+		compileClasspath += getByName("generated").compileClasspath
+		runtimeClasspath += getByName("generated").runtimeClasspath
+	}
 }
-val mappingsAttribute = Attribute.of("net.minecraft.mappings", String::class.java)
 
 dependencies {
 	minecraft("com.mojang:minecraft:${Versions.MINECRAFT}")
-	mappings(loom.layered {
-		officialMojangMappings()
-		parchment("org.parchmentmc.data:parchment-${Versions.PARCHMENT_MINECRAFT}:${Versions.PARCHMENT}@zip")
-	})
 
-	modImplementation("net.fabricmc:fabric-loader:${Versions.FABRIC_LOADER}")
-	modImplementation("net.fabricmc.fabric-api:fabric-api:${Versions.FABRIC_API}")
-	modLocalRuntime("com.terraformersmc:modmenu:${Versions.MOD_MENU}")
-	modLocalRuntime("maven.modrinth:sodium:${Versions.SODIUM}-fabric")
-	modApi("lgbt.greenhouse.silicate:silicate-fabric:${Versions.SILICATE}")
+	implementation("net.fabricmc:fabric-loader:${Versions.FABRIC_LOADER}")
+	implementation("net.fabricmc.fabric-api:fabric-api:${Versions.FABRIC_API}")
+
+	runtimeOnly("com.terraformersmc:modmenu:${Versions.MOD_MENU}")
+	runtimeOnly("maven.modrinth:sodium:${Versions.SODIUM}-fabric")
+
+	api("lgbt.greenhouse.silicate:silicate-fabric:${Versions.SILICATE}")
+	implementation("lgbt.greenhouse.silicate:silicate-fabric:${Versions.SILICATE}")
 	include("lgbt.greenhouse.silicate:silicate-fabric:${Versions.SILICATE}")
-	compileOnly("lgbt.greenhouse.config:greenhouse-config-api:${Versions.GREENHOUSE_CONFIG}") {
-		attributes {
-			attribute(mappingsAttribute, "intermediary")
-		}
-	}
-	include("lgbt.greenhouse.config:greenhouse-config-api:${Versions.GREENHOUSE_CONFIG}-fabric")  {
-		attributes {
-			attribute(mappingsAttribute, "intermediary")
-		}
-	}
+
+	compileOnly("lgbt.greenhouse.config:greenhouse-config-api:${Versions.GREENHOUSE_CONFIG}")
+
+	runtimeOnly("lgbt.greenhouse.config:greenhouse-config-fabric:${Versions.GREENHOUSE_CONFIG}")
+	include("lgbt.greenhouse.config:greenhouse-config-fabric:${Versions.GREENHOUSE_CONFIG}")
+	runtimeOnly("lgbt.greenhouse.config:greenhouse-config-fabric:${Versions.GREENHOUSE_CONFIG}")
+	include("lgbt.greenhouse.config:greenhouse-config-fabric:${Versions.GREENHOUSE_CONFIG}")
+
+	runtimeOnly("lgbt.greenhouse.polyamory:polyamory:${Versions.POLYAMORY}")
+	include("lgbt.greenhouse.polyamory:polyamory:${Versions.POLYAMORY}")
+
+	runtimeOnly("lgbt.greenhouse.polyamory.lang.jsonc:polyamory-lang-jsonc:${Versions.POLYAMORY_JSONC}")
+	include("lgbt.greenhouse.polyamory.lang.jsonc:polyamory-lang-jsonc:${Versions.POLYAMORY_JSONC}")
 }
 
 loom {
@@ -101,7 +114,7 @@ loom {
 			setSource(sourceSets["datagen"])
 			ideConfigGenerated(true)
 			vmArg("-Dfabric-api.datagen")
-			vmArg("-Dfabric-api.datagen.output-dir=${file("../common/src/generated/resources")}")
+			vmArg("-Dfabric-api.datagen.output-dir=${file("../fabric/src/generated/resources")}")
 			vmArg("-Dfabric-api.datagen.modid=${Properties.MOD_ID}_datagen")
 			runDir("build/datagen")
 		}
@@ -115,7 +128,6 @@ tasks {
 }
 
 publishMods {
-	file.set(tasks.named<Jar>("remapJar").get().archiveFile)
 	modLoaders.add("fabric")
 	changelog = rootProject.file("CHANGELOG.md").readText()
 	version = "${Versions.MOD}+${Versions.MINECRAFT}-fabric"
@@ -131,6 +143,5 @@ publishMods {
 
 	github {
 		accessToken = providers.environmentVariable("GITHUB_TOKEN")
-		parent(project(":common").tasks.named("publishGithub"))
 	}
 }

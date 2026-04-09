@@ -20,10 +20,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"net.modgarden.barricade.fabric.BarricadeFabric"
+			"net.modgarden.barricade.BarricadeFabric"
 		],
 		"client": [
-			"net.modgarden.barricade.fabric.client.BarricadeFabricClient"
+			"net.modgarden.barricade.client.BarricadeFabricClient"
 		]
 	},
 	"mixins": [
@@ -36,8 +36,7 @@
 		"minecraft": "${fabric_minecraft_version_range}",
 		"java": ">=${java_version}",
 		"silicate": "${fabric_silicate_range}",
-		"greenhouseconfig": "${fabric_greenhouse_config_version_range}",
-		"greenhouseconfig_jsonc": "${fabric_greenhouse_config_jsonc_version_range}"
+		"greenhouse_config": "${fabric_greenhouse_config_version_range}"
 	},
 	"breaks": {
 		"visiblebarriers": "*"

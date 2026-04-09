@@ -1,0 +1,13 @@
+{
+  "values": [
+    "minecraft:barrier",
+    {
+      "id": "#barricade:directional_barriers",
+      "required": false
+    },
+    {
+      "id": "#barricade:predicate_barriers",
+      "required": false
+    }
+  ]
+}

@@ -61,6 +61,7 @@ repositories {
 		)
 		filter {
 			includeGroupAndSubgroups("lgbt.greenhouse.polyamory")
+			includeGroup("lgbt.greenhouse.silicate")
 		}
 	}
 	mavenLocal()
@@ -129,7 +130,6 @@ tasks {
 		"neoforge_loader_version_range" to Versions.NEOFORGE_LOADER_RANGE,
 		"silicate_version_range" to Versions.SILICATE_RANGE,
 		"greenhouse_config_version_range" to Versions.GREENHOUSE_CONFIG_RANGE,
-		"greenhouse_config_jsonc_version_range" to Versions.GREENHOUSE_CONFIG_JSONC_RANGE,
 		"java_version" to Versions.JAVA,
 		"homepage" to Properties.HOMEPAGE,
 		"sources" to Properties.GITHUB_REPO

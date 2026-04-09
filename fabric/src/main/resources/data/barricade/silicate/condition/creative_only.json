@@ -1,0 +1,16 @@
+{
+	"predicate": "any",
+	"conditions": [
+		"barricade:is_survival_like",
+		{
+			"predicate": "entity_has_passenger",
+			"entity": "${this_entity}",
+			"condition": "barricade:is_mob"
+		},
+		{
+			"predicate": "entity_has_passenger",
+			"entity": "${this_entity}",
+			"condition": "barricade:is_survival_like"
+		}
+	]
+}
