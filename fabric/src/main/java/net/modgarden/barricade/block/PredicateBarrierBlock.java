@@ -48,13 +48,13 @@ public class PredicateBarrierBlock extends StaticBarrierBlock {
 	private Holder<GamePredicate<?>> condition;
 
 	public PredicateBarrierBlock(Properties properties, Identifier icon, ResourceKey<GamePredicate<?>> conditionTemplate) {
-		super(properties);
+		super(properties, properties.blockIdOrThrow().identifier());
 		this.icon = icon.withPrefix("barricade/icon/");
 		this.function = registryAccess -> registryAccess.lookupOrThrow(SilicateRegistries.CONDITION).getOrThrow(conditionTemplate);
 	}
 
 	private PredicateBarrierBlock(Properties properties, Identifier icon, Holder<GamePredicate<?>> condition) {
-		super(properties);
+		super(properties, properties.blockIdOrThrow().identifier());
 		this.icon = icon.withPrefix("barricade/icon/");
 		this.function = null;
 		this.condition = condition;

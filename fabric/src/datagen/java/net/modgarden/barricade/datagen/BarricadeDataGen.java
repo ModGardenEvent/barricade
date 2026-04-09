@@ -3,8 +3,9 @@ package net.modgarden.barricade.datagen;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
+
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.*;
@@ -16,6 +17,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.tags.TagBuilder;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -38,41 +41,38 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 		FabricDataGenerator.Pack pack = generator.createPack();
 		pack.addProvider(ModelProvider::new);
 		BlockTagProvider blockTagProvider = pack.addProvider(BlockTagProvider::new);
-		pack.addProvider(EntityTypeTagProvider::new);
+		pack.addProvider(EntityTypeTagsProvider::new);
 		pack.addProvider((output, registries) -> new ItemTagProvider(output, registries, blockTagProvider));
 	}
 
 	private static class ModelProvider extends FabricModelProvider {
-		public ModelProvider(FabricDataOutput output) {
+		public ModelProvider(FabricPackOutput output) {
 			super(output);
 		}
 
 		@Override
-		public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator) {
+		public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerators) {
 			for (var barrier : StaticBarrierBlock.BARRIERS.values()) {
-				blockStateModelGenerator.createAirLikeBlock(barrier, Items.BARRIER);
+				blockStateModelGenerators.createAirLikeBlock(barrier, Items.BARRIER);
 			}
 
-			blockStateModelGenerator.createAirLikeBlock(BarricadeBlocks.ADVANCED_BARRIER.get(), Items.BARRIER);
+			blockStateModelGenerators.createAirLikeBlock(BarricadeBlocks.ADVANCED_BARRIER.get(), Items.BARRIER);
 		}
 
 		@Override
-		public void generateItemModels(ItemModelGenerators itemModelGenerator) {
+		public void generateItemModels(ItemModelGenerators itemModelGenerators) {
 			for (var barrier : StaticBarrierBlock.BARRIERS.values()) {
-				itemModelGenerator.generateFlatItem(barrier.asItem(), ModelTemplates.FLAT_ITEM);
+				itemModelGenerators.generateFlatItem(barrier.asItem(), ModelTemplates.FLAT_ITEM);
 			}
 
-			generateNoBarrierItem(itemModelGenerator, BarricadeItems.ADVANCED_BARRIER.get());
+			generateNoBarrierItem(itemModelGenerators, BarricadeItems.ADVANCED_BARRIER.get());
 		}
 
-		private static void generateNoBarrierItem(ItemModelGenerators generator, Item item) {
-			generator.itemModelOutput.accept(
-					item,
-					ItemModelUtils.plainModel(createNoBarrierModel(
-							generator,
-							item
-					))
-			);
+		private static void generateNoBarrierItem(
+				ItemModelGenerators generators,
+				Item item
+		) {
+			generators.itemModelOutput.accept(item, ItemModelUtils.plainModel(createNoBarrierModel(generators, item)));
 		}
 
 		private static Identifier createNoBarrierModel(
@@ -83,8 +83,11 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
-		public BlockTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+	private static class BlockTagProvider extends FabricTagsProvider.BlockTagsProvider {
+		public BlockTagProvider(
+				FabricPackOutput output,
+				CompletableFuture<HolderLookup.Provider> registriesFuture
+		) {
 			super(output, registriesFuture);
 		}
 
@@ -101,9 +104,12 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class EntityTypeTagProvider extends FabricTagProvider.EntityTypeTagProvider {
+	private static class EntityTypeTagsProvider extends FabricTagsProvider.EntityTypeTagsProvider {
 
-		public EntityTypeTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+		public EntityTypeTagsProvider(
+				FabricPackOutput output,
+				CompletableFuture<HolderLookup.Provider> registriesFuture
+		) {
 			super(output, registriesFuture);
 		}
 
@@ -117,9 +123,13 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
-		public ItemTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> completableFuture, @Nullable FabricTagProvider.BlockTagProvider blockTagProvider) {
-			super(output, completableFuture, blockTagProvider);
+	private static class ItemTagProvider extends FabricTagsProvider.ItemTagsProvider {
+		public ItemTagProvider(
+				FabricPackOutput output,
+				CompletableFuture<HolderLookup.Provider> completableFuture,
+				@Nullable FabricTagsProvider.BlockTagsProvider blockTagsProvider
+		) {
+			super(output, completableFuture, blockTagsProvider);
 		}
 
 		@Override
