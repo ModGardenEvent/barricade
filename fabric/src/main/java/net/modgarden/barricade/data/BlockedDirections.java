@@ -1,5 +1,6 @@
 package net.modgarden.barricade.data;
 
+import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import io.netty.buffer.ByteBuf;
@@ -16,6 +17,7 @@ import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 public record BlockedDirections(EnumSet<Direction> directions) {
 	public static final Codec<BlockedDirections> CODEC = StringRepresentable.fromEnum(Direction::values).listOf().flatXmap(directions -> {
@@ -75,5 +77,9 @@ public record BlockedDirections(EnumSet<Direction> directions) {
 		if (!(obj instanceof BlockedDirections(EnumSet<Direction> directions1)))
 			return false;
 		return directions1.equals(directions);
+	}
+
+	public Set<Direction> union(BlockedDirections other) {
+		return Sets.union(this.directions, other.directions);
 	}
 }

@@ -1,7 +1,7 @@
 {
   "values": [
     "minecraft:barrier",
-    "barricade:advanced_barrier",
+    "barricade:barricade",
     "barricade:down_barrier",
     "barricade:hostile_barrier",
     "barricade:passive_barrier",

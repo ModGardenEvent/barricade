@@ -1,0 +1,6 @@
+{
+	"name": {
+		"translate": "block.barricade.south_barrier"
+	},
+	"directions": ["south"]
+}

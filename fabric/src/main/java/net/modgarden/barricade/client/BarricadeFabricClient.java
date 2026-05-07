@@ -4,28 +4,29 @@ import static net.modgarden.barricade.BarricadeMod.id;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.PackType;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.modgarden.barricade.BarricadeMod;
 import net.modgarden.barricade.client.command.BarricadeClientCommands;
 import net.modgarden.barricade.client.model.BarricadeBlockStateModel;
-import net.modgarden.barricade.client.renderer.block.AdvancedBarrierBlockRenderer;
-import net.modgarden.barricade.client.renderer.block.BakedRegion;
+import net.modgarden.barricade.client.renderer.BarricadeRendering;
 import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 import net.modgarden.barricade.client.platform.BarricadeClientPlatformHelperFabric;
+import net.modgarden.barricade.data.BarricadeData;
+import net.modgarden.barricade.data.ClearableIdMapper;
+import net.modgarden.barricade.network.clientbound.ClientboundSyncDynamicRegistriesPayload;
 import net.modgarden.barricade.network.clientbound.SetServerContextClientboundPacket;
-import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
+import net.modgarden.barricade.registry.BarricadeRegistries;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,13 +40,34 @@ public class BarricadeFabricClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		BarricadeClient.init(new BarricadeClientPlatformHelperFabric());
-		BlockEntityRenderers.register(BarricadeBlockEntityTypes.ADVANCED_BARRIER, AdvancedBarrierBlockRenderer::new);
 
+		// what???
 		ClientConfigurationNetworking.registerGlobalReceiver(SetServerContextClientboundPacket.TYPE, (packet, _) -> packet.handle());
 		ClientLoginConnectionEvents.DISCONNECT.register((_, _) -> BarricadeMod.serverContext = false);
 
 		ClientCommandRegistrationCallback.EVENT.register(BarricadeClientCommands::registerClientCommands);
 
+		ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncDynamicRegistriesPayload.TYPE, (payload, context) -> {
+			((ClearableIdMapper) BarricadeData.ID_MAPPER).barricade$clear();
+
+			for (Int2ObjectMap.Entry<Holder<BarricadeData>> entry : payload.holderIdMap().int2ObjectEntrySet()) {
+				int id = entry.getIntKey();
+				Holder<BarricadeData> holder = entry.getValue();
+				BarricadeData.ID_MAPPER.addMapping(holder, id);
+			}
+
+			Holder<BarricadeData> defaultHolder = Objects.requireNonNull(context.client().level)
+					.registryAccess()
+					.getOrThrow(ResourceKey.create(
+							BarricadeRegistries.BARRICADE,
+							id("default")
+					));
+			BarricadeData.ID_MAPPER.addMapping(BarricadeData.DEFAULT_HOLDER, BarricadeData.ID_MAPPER.getId(defaultHolder));
+		});
+
+		BarricadeRendering.initialize();
+
+		// what the fuck is this
 		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new IdentifiableResourceReloadListener() {
 			private final OperatorBlockPseudoTag.Loader listener = OperatorBlockPseudoTag.Loader.INSTANCE;
 
@@ -64,34 +86,5 @@ public class BarricadeFabricClient implements ClientModInitializer {
 				return id("operator_blocks");
 			}
 		});
-
-		LevelRenderEvents.END_EXTRACTION.register(context -> BakedRegion.extract(new BakedRegion.ExtractContext(
-				context.level(),
-				Objects.requireNonNull(Minecraft.getInstance().player, "What does non-existence feel like, I wonder?"),
-				context.deltaTracker().getGameTimeDeltaTicks(),
-				context.levelState()
-		)));
-		LevelRenderEvents.START_MAIN.register(_ -> BakedRegion.bakeDirty());
-		LevelRenderEvents.AFTER_OPAQUE_TERRAIN.register(_ -> BakedRegion.renderRegions());
-		LevelRenderEvents.END_MAIN.register(_ -> {
-			BakedRegion.uploadDirty();
-			BakedRegion.onRenderEnd();
-		});
-
-		ClientChunkEvents.CHUNK_LOAD.register((level, chunk)-> {
-			//noinspection ConstantValue
-			assert BakedRegion.SIZE_XYZ == 16; // just in case someone changes it
-			for (int i = level.getMinSectionY(); i <= level.getMaxSectionY(); i++) {
-				BakedRegion.putRegion(new BakedRegion.BakedRegionPos(chunk.getPos().x(), i, chunk.getPos().z()));
-			}
-		});
-		ClientChunkEvents.CHUNK_UNLOAD.register((level, chunk)-> {
-			//noinspection ConstantValue
-			assert BakedRegion.SIZE_XYZ == 16; // just in case someone changes it
-			for (int i = level.getMinSectionY(); i <= level.getMaxSectionY(); i++) {
-				BakedRegion.removeRegion(new BakedRegion.BakedRegionPos(chunk.getPos().x(), i, chunk.getPos().z()));
-			}
-		});
-		ClientPlayConnectionEvents.DISCONNECT.register((_, _) -> BakedRegion.clearRegions());
 	}
 }

@@ -7,7 +7,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.modgarden.barricade.BarricadeMod;
-import net.modgarden.barricade.item.AdvancedBarrierBlockItem;
+import net.modgarden.barricade.item.BarricadeBlockItem;
 import net.modgarden.barricade.item.DirectionalBarrierBlockItem;
 import net.modgarden.barricade.item.EntityCheckBarrierBlockItem;
 
@@ -21,9 +21,9 @@ public class BarricadeItems {
 			BarricadeMod.MOD_ID
 	);
 
-	public static final Supplier<BlockItem> ADVANCED_BARRIER = CONTEXT.defer(
-			"advanced_barrier",
-			withProperties(BarricadeBlocks.ADVANCED_BARRIER, AdvancedBarrierBlockItem::new)
+	public static final Supplier<BlockItem> BARRICADE = CONTEXT.defer(
+			"barricade",
+			withProperties(BarricadeBlocks.BARRICADE, BarricadeBlockItem::new)
 	);
 
 	public static final Supplier<BlockItem> HORIZONTAL_BARRIER = CONTEXT.defer(

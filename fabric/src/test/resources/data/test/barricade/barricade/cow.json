@@ -1,0 +1,11 @@
+{
+	"name": {
+		"translate": "block.barricade.test.cow"
+	},
+	"icon": "barricade:cow",
+	"condition": {
+		"predicate": "entity_is_type",
+		"entity": "${this_entity}",
+		"entity_type": "minecraft:cow"
+	}
+}

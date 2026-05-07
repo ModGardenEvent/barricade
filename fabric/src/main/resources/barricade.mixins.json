@@ -5,20 +5,20 @@
 	"refmap": "${mod_id}.refmap.json",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"Accessor_TagsProvider",
 		"AbstractArrowMixin",
+		"Accessor_TagsProvider",
 		"BarrierBlockMixin",
 		"BlockBehaviourBlockStateBaseMixin",
-		"BlockMixin"
+		"BlockMixin",
+		"Mixin_IdMapper"
 	],
 	"client": [
-		"client.ClientLevelMixin",
-		"client.LevelMixin",
-		"client.MinecraftMixin",
-		"client.BlockEntityWithBoundingBoxRendererMixin",
-		"client.TextureAtlasMixin",
 		"client.Accessor_LevelRenderer",
-		"client.MinecraftMixin"
+		"client.Accessor_RenderSectionRegion",
+		"client.BlockEntityWithBoundingBoxRendererMixin",
+		"client.ClientLevelMixin",
+		"client.TextureAtlasMixin",
+		"client.Accessor_LevelSlice"
 	],
 	"injectors": {
 		"defaultRequire": 1

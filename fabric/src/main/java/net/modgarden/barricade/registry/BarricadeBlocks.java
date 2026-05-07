@@ -1,14 +1,13 @@
 package net.modgarden.barricade.registry;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.modgarden.barricade.BarricadeMod;
-import net.modgarden.barricade.block.AdvancedBarrierBlock;
+import net.modgarden.barricade.block.BarricadeBlock;
 import net.modgarden.barricade.block.DirectionalBarrierBlock;
 import net.modgarden.barricade.block.PredicateBarrierBlock;
 import net.modgarden.barricade.block.StaticBarrierBlock;
@@ -24,35 +23,11 @@ public class BarricadeBlocks {
 			BarricadeMod.MOD_ID
 	);
 
-	public static Supplier<AdvancedBarrierBlock> ADVANCED_BARRIER = CONTEXT.defer(
-			"advanced_barrier",
-			withProperties(AdvancedBarrierBlock::new)
+	public static Supplier<BarricadeBlock> BARRICADE = CONTEXT.defer(
+			"barricade",
+			withProperties(BarricadeBlock::new)
 	);
 
-	public static final Supplier<DirectionalBarrierBlock> DOWN_BARRIER = CONTEXT.defer(
-			"down_barrier",
-			withProperties(properties -> new DirectionalBarrierBlock(properties, Direction.DOWN))
-	);
-	public static final Supplier<DirectionalBarrierBlock> UP_BARRIER = CONTEXT.defer(
-			"up_barrier",
-			withProperties(properties -> new DirectionalBarrierBlock(properties, Direction.UP))
-	);
-	public static final Supplier<DirectionalBarrierBlock> SOUTH_BARRIER = CONTEXT.defer(
-			"south_barrier",
-			withProperties(properties -> new DirectionalBarrierBlock(properties, Direction.SOUTH))
-	);
-	public static final Supplier<DirectionalBarrierBlock> NORTH_BARRIER = CONTEXT.defer(
-			"north_barrier",
-			withProperties(properties -> new DirectionalBarrierBlock(properties, Direction.NORTH))
-	);
-	public static final Supplier<DirectionalBarrierBlock> EAST_BARRIER = CONTEXT.defer(
-			"east_barrier",
-			withProperties(properties -> new DirectionalBarrierBlock(properties, Direction.EAST))
-	);
-	public static final Supplier<DirectionalBarrierBlock> WEST_BARRIER = CONTEXT.defer(
-			"west_barrier",
-			withProperties(properties -> new DirectionalBarrierBlock(properties, Direction.WEST))
-	);
 	public static final Supplier<DirectionalBarrierBlock> HORIZONTAL_BARRIER = CONTEXT.defer(
 			"horizontal_barrier",
 			withProperties(properties -> new DirectionalBarrierBlock(properties, Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST))

@@ -22,7 +22,7 @@ You may specify which items activate rendering by adding/modifying json found in
 This mod adds three barrier block types, Directional, Predicate, and Advanced Barrier blocks.
 
 Directional barriers block movement from specific directions, whereas entity barriers block entities that meet the
-predicate specified by the block.
+condition specified by the block.
 
 All items may be accessed through the /give command or through the Operator Utilities creative menu tab.
 

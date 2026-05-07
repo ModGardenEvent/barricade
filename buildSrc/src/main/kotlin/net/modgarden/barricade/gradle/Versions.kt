@@ -9,10 +9,10 @@ object Versions {
 	const val NEOFORM = "$MINECRAFT-1"
 	const val PARCHMENT = "2025.12.20"
 
-	const val FABRIC_API = "0.145.3+26.1.1"
-	const val FABRIC_LOADER = "0.18.6"
+	const val FABRIC_API = "0.148.0+26.1.2"
+	const val FABRIC_LOADER = "0.19.2"
 	const val MOD_MENU = "18.0.0-alpha.8"
-	const val FABRIC_LOADER_RANGE = ">=0.18"
+	const val FABRIC_LOADER_RANGE = ">=0.19.2"
 	const val FABRIC_MINECRAFT_RANGE = "~26.1"
 	const val FABRIC_SILICATE_RANGE = "1.0.0-alpha.1"
 	const val FABRIC_GREENHOUSE_CONFIG_RANGE = ">=3.0.0-beta.5"
@@ -30,8 +30,11 @@ object Versions {
 	const val GREENHOUSE_CONFIG = "3.0.0-beta.5+26.1.x"
 	const val POLYAMORY = "0.1.1"
 	const val POLYAMORY_JSONC = "0.1.2"
+	const val FRAPPE = "1.0.0-alpha.2"
+	const val MOCHA = "0.1.1"
 
-	const val SODIUM = "mc26.1.1-0.8.9"
+	const val SODIUM = "mc26.1.2-0.8.11"
+	const val SODIUM_MAVEN = "0.8.10+mc26.1.2"
 //	const val FORGIFIED_FABRIC_API = "0.104.0+2.0.18+1.21.1"
 
 	const val JAVA = 25

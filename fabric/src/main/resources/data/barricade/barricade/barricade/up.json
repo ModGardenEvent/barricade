@@ -1,0 +1,6 @@
+{
+	"name": {
+		"translate": "block.barricade.up_barrier"
+	},
+	"directions": ["up"]
+}

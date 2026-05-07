@@ -1,0 +1,10 @@
+{
+	"name": {
+		"translate": "block.barricade.test.riding_only"
+	},
+	"icon": "barricade:standing_steve",
+	"condition": {
+		"predicate": "not",
+		"condition": "test:is_riding"
+	}
+}

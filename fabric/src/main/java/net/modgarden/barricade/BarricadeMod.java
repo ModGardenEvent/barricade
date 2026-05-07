@@ -22,7 +22,7 @@ public class BarricadeMod {
 	public static boolean serverContext;
 
 	public static boolean isOperatorModel(BlockState state) {
-		if (state.getBlock() == BarricadeBlocks.ADVANCED_BARRIER)
+		if (state.getBlock() == BarricadeBlocks.BARRICADE)
 			state = Blocks.BARRIER.defaultBlockState();
 		return state.is(BarricadeTags.BlockTags.BARRIERS);
 	}

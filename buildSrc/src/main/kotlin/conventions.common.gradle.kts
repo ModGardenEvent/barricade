@@ -64,6 +64,16 @@ repositories {
 			includeGroup("lgbt.greenhouse.silicate")
 		}
 	}
+	exclusiveContent {
+		forRepositories(
+			maven("https://maven.sylv.gay/releases") {
+				name = "Sylv Maven"
+			}
+		)
+		filter {
+			includeGroup("gay.sylv.frappe")
+		}
+	}
 	mavenLocal()
 }
 

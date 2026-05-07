@@ -1,7 +1,7 @@
 {
 	"values": [
 		"minecraft:barrier",
-		"barricade:advanced_barrier",
+		"barricade:barricade",
 		"barricade:down_barrier",
 		"barricade:up_barrier",
 		"barricade:north_barrier",
@@ -10,7 +10,6 @@
 		"barricade:west_barrier",
 		"barricade:horizontal_barrier",
 		"barricade:vertical_barrier",
-		"barricade:advanced_barrier",
 		"barricade:player_barrier",
 		"barricade:mob_barrier",
 		"barricade:passive_barrier",

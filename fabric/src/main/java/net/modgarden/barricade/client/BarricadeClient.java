@@ -9,11 +9,8 @@ import lgbt.greenhouse.config.api.v3.GreenhouseConfigHolder;
 import lgbt.greenhouse.config.api.v3.GreenhouseConfigSide;
 import lgbt.greenhouse.config.api.v3.builder.DefaultValueCommentSettings;
 import lgbt.greenhouse.config.api.v3.lang.GreenhouseConfigJsonCLang;
-import lgbt.greenhouse.polyamory.lang.jsonc.api.JsonCFormat;
 import net.modgarden.barricade.BarricadeMod;
 import net.modgarden.barricade.client.platform.BarricadeClientPlatformHelper;
-import net.modgarden.barricade.client.renderer.block.BakedBarrierBlockRenderer;
-import net.modgarden.barricade.client.renderer.block.BakedRegion;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -72,8 +69,6 @@ public class BarricadeClient {
 			return;
 
 		BarricadeClient.helper = helper;
-
-		BakedRegion.registerRegionBaker(BakedBarrierBlockRenderer::new);
 	}
 
 	public static BarricadeClientPlatformHelper getHelper() {

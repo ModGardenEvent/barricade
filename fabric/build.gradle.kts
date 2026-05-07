@@ -1,5 +1,4 @@
 import me.modmuss50.mpp.ReleaseType
-import net.fabricmc.loom.task.RenderDocRunTask
 import net.modgarden.barricade.gradle.Properties
 import net.modgarden.barricade.gradle.Versions
 
@@ -16,6 +15,9 @@ repositories {
 	maven("https://maven.terraformersmc.com/") {
 		name = "TerraformersMC"
 	}
+	maven("https://maven.caffeinemc.net/releases") {
+		name = "CaffeineMC"
+	}
 }
 
 sourceSets {
@@ -31,11 +33,13 @@ sourceSets {
 	getByName("main") {
 		compileClasspath += getByName("generated").compileClasspath
 		runtimeClasspath += getByName("generated").runtimeClasspath
+		resources.srcDirs(getByName("generated").resources.srcDirs)
 	}
 
 	getByName("test") {
 		compileClasspath += getByName("generated").compileClasspath
 		runtimeClasspath += getByName("generated").runtimeClasspath
+		resources.srcDirs(getByName("generated").resources.srcDirs)
 	}
 }
 
@@ -47,6 +51,7 @@ dependencies {
 
 	runtimeOnly("com.terraformersmc:modmenu:${Versions.MOD_MENU}")
 	runtimeOnly("maven.modrinth:sodium:${Versions.SODIUM}-fabric")
+	compileOnly("net.caffeinemc:sodium-fabric:${Versions.SODIUM_MAVEN}")
 
 	api("lgbt.greenhouse.silicate:silicate-fabric:${Versions.SILICATE}")
 	implementation("lgbt.greenhouse.silicate:silicate-fabric:${Versions.SILICATE}")
@@ -64,6 +69,10 @@ dependencies {
 
 	runtimeOnly("lgbt.greenhouse.polyamory.lang.jsonc:polyamory-lang-jsonc:${Versions.POLYAMORY_JSONC}")
 	include("lgbt.greenhouse.polyamory.lang.jsonc:polyamory-lang-jsonc:${Versions.POLYAMORY_JSONC}")
+
+	api("gay.sylv.frappe:frappe-ext-terrain-material:${Versions.FRAPPE}")
+	include("gay.sylv.frappe:frappe:${Versions.FRAPPE}")
+	runtimeOnly("gay.sylv.frappe:mocha:${Versions.MOCHA}")
 }
 
 loom {
@@ -85,14 +94,14 @@ loom {
 			configName = "Fabric Client"
 			setSource(sourceSets["test"])
 			ideConfigGenerated(true)
-			vmArgs("-Dmixin.debug.verbose=true", "-Dmixin.debug.export=true")
+			vmArgs("-Dmixin.debug.export=true")
 		}
 		named("client") {
 			client()
 			configName = "Fabric Client (Renderdoc)"
 			setSource(sourceSets["test"])
 			ideConfigGenerated(true)
-			vmArgs("-Dmixin.debug.verbose=true", "-Dmixin.debug.export=true")
+			vmArgs("-Dmixin.debug.export=true")
 			programArgs("--renderDebugLabels")
 			val os = System.getProperty("os.name")
 			when (os) {
@@ -106,7 +115,7 @@ loom {
 			configName = "Fabric Server"
 			setSource(sourceSets["test"])
 			ideConfigGenerated(true)
-			vmArgs("-Dmixin.debug.verbose=true", "-Dmixin.debug.export=true")
+			vmArgs("-Dmixin.debug.export=true")
 		}
 		register("datagen") {
 			client()
