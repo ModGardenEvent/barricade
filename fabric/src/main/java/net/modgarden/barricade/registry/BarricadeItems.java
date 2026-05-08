@@ -8,8 +8,6 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.modgarden.barricade.BarricadeMod;
 import net.modgarden.barricade.item.BarricadeBlockItem;
-import net.modgarden.barricade.item.DirectionalBarrierBlockItem;
-import net.modgarden.barricade.item.EntityCheckBarrierBlockItem;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;

@@ -1,4 +1,4 @@
-package net.modgarden.barricade;
+package net.modgarden.barricade.registry;
 
 import static net.modgarden.barricade.BarricadeMod.id;
 

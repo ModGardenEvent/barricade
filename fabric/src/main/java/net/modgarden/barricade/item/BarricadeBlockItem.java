@@ -58,11 +58,16 @@ public class BarricadeBlockItem extends EntityCheckBarrierBlockItem {
 
 	@Override
 	public @NotNull Component getName(ItemStack stack) {
-		//noinspection DataFlowIssue
-		if (stack.has(BarricadeComponents.BARRICADE) && stack.get(BarricadeComponents.BARRICADE).value().name().isPresent()) {
-			//noinspection DataFlowIssue
-			return stack.get(BarricadeComponents.BARRICADE).value().name().get();
+		Holder<BarricadeData> holder = stack.get(BarricadeComponents.BARRICADE);
+
+		if (holder == null || !holder.isBound()) {
+			return Component.translatable("block.barricade.barricade");
 		}
+
+		if (stack.has(BarricadeComponents.BARRICADE) && holder.value().name().isPresent()) {
+			return holder.value().name().get();
+		}
+
 		return super.getName(stack);
 	}
 

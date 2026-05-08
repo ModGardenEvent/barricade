@@ -1,13 +1,13 @@
 package net.modgarden.barricade.mixin.client;
 
-import com.mojang.blaze3d.textures.GpuSampler;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.core.BlockPos;
 
 @Mixin(LevelRenderer.class)
 public interface Accessor_LevelRenderer {
-	@Accessor("chunkLayerSampler")
-	GpuSampler barricade$getChunkLayerSampler();
+	@Invoker("setBlockDirty")
+	void barricade$setBlockDirty(BlockPos pos, boolean playerChanged);
 }

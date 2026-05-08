@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -32,16 +34,23 @@ import lgbt.greenhouse.silicate.api.context.parameter.ParameterMap;
 import net.modgarden.barricade.BarricadeMod;
 import net.modgarden.barricade.attachment.BarricadePalette;
 import net.modgarden.barricade.attachment.ModAttachments;
+import net.modgarden.barricade.block.entity.BarricadeBlockEntity;
 import net.modgarden.barricade.data.BarricadeData;
 import net.modgarden.barricade.data.BlockedDirections;
+import net.modgarden.barricade.network.clientbound.ClientboundSyncBarricadeDataPayload;
+import net.modgarden.barricade.registry.BarricadeBlockEntityTypes;
 import net.modgarden.barricade.registry.BarricadeComponents;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
-public class BarricadeBlock extends BarrierBlock {
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+
+public class BarricadeBlock extends BarrierBlock implements EntityBlock {
 	public static final MapCodec<BarrierBlock> CODEC = simpleCodec(BarricadeBlock::new);
 
 	public static final BooleanProperty UP = BlockStateProperties.UP;
@@ -75,14 +84,33 @@ public class BarricadeBlock extends BarrierBlock {
 		return holder.value();
 	}
 
-	private static @NonNull Holder<BarricadeData> getBarricadeDataHolder(
+	public static @NonNull Holder<BarricadeData> getBarricadeDataHolder(
 			@NonNull BlockPos pos,
 			Level level
+	) {
+		return getBarricadeDataHolder(pos, level, false);
+	}
+
+	public static @NonNull Holder<BarricadeData> getBarricadeDataHolder(
+			@NonNull BlockPos pos,
+			Level level,
+			boolean fromBlockEntity
 	) {
 		LevelChunk chunk = level.getChunkAt(pos);
 		Int2ObjectMap<BarricadePalette> map = chunk.getAttachedOrCreate(ModAttachments.BARRICADE_PALETTE, Int2ObjectOpenHashMap::new);
 		BarricadePalette palette = map.computeIfAbsent(chunk.getSectionIndex(pos.getY()), _ -> new BarricadePalette(new PalettedContainer<>(BarricadeData.UNKNOWN_HOLDER, BarricadeData.STRATEGY)));
-		return palette.palettedContainer().get(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15);
+
+		Holder<BarricadeData> holder = palette.palettedContainer().get(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15);
+
+		if (holder.equals(BarricadeData.UNKNOWN_HOLDER) && !fromBlockEntity) {
+			Optional<BarricadeBlockEntity> optionalBlockEntity = chunk.getBlockEntity(pos, BarricadeBlockEntityTypes.BARRICADE);
+
+			if (optionalBlockEntity.isPresent()) {
+				return BarricadeData.ID_MAPPER.byIdOrThrow(optionalBlockEntity.get().id);
+			}
+		}
+
+		return holder;
 	}
 
 	public static void setBarricadeData(
@@ -109,8 +137,12 @@ public class BarricadeBlock extends BarrierBlock {
 		);
 
 		if (!level.isClientSide()) {
-			chunk.setAttached(ModAttachments.BARRICADE_PALETTE, null); // FIXME: ugly hack to force sync
 			chunk.setAttached(ModAttachments.BARRICADE_PALETTE, map);
+
+			// Note that this doesn't matter for large servers when you aren't setting/modifying any barricades
+			for (Player player : level.players()) {
+				ServerPlayNetworking.send((ServerPlayer) player, new ClientboundSyncBarricadeDataPayload(pos, BarricadeData.ID_MAPPER.getId(barricadeDataHolder)));
+			}
 		}
 	}
 
@@ -237,5 +269,13 @@ public class BarricadeBlock extends BarrierBlock {
 	protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> builder) {
 		super.createBlockStateDefinition(builder);
 		builder.add(UP, DOWN, NORTH, EAST, SOUTH, WEST);
+	}
+
+	@Override
+	public @Nullable BlockEntity newBlockEntity(
+			@NonNull BlockPos worldPosition,
+			@NonNull BlockState blockState
+	) {
+		return new BarricadeBlockEntity(worldPosition, blockState);
 	}
 }

@@ -15,7 +15,6 @@ public class BarricadeMod {
 	public static final String MOD_ID = "barricade";
 	public static final String MOD_NAME = "Barricade";
 	public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
-	public static final int MEANING_OF_EVERYTHING = 42;
 	public static final boolean SODIUM = FabricLoader.getInstance().isModLoaded("sodium");
 	private static BarricadePlatformHelper helper;
 

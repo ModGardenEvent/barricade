@@ -11,18 +11,22 @@ import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.PackType;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.modgarden.barricade.BarricadeMod;
+import net.modgarden.barricade.block.BarricadeBlock;
 import net.modgarden.barricade.client.command.BarricadeClientCommands;
 import net.modgarden.barricade.client.render.BarricadeRendering;
 import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 import net.modgarden.barricade.client.platform.BarricadeClientPlatformHelperFabric;
 import net.modgarden.barricade.data.BarricadeData;
 import net.modgarden.barricade.data.ClearableIdMapper;
+import net.modgarden.barricade.mixin.client.Accessor_LevelRenderer;
+import net.modgarden.barricade.network.clientbound.ClientboundSyncBarricadeDataPayload;
 import net.modgarden.barricade.network.clientbound.ClientboundSyncDynamicRegistriesPayload;
 import net.modgarden.barricade.network.clientbound.SetServerContextClientboundPacket;
 import net.modgarden.barricade.registry.BarricadeRegistries;
@@ -42,7 +46,7 @@ public class BarricadeFabricClient implements ClientModInitializer {
 
 		ClientCommandRegistrationCallback.EVENT.register(BarricadeClientCommands::registerClientCommands);
 
-		ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncDynamicRegistriesPayload.TYPE, (payload, _) -> {
+		ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncDynamicRegistriesPayload.TYPE, (payload, context) -> {
 			((ClearableIdMapper) BarricadeData.ID_MAPPER).barricade$clear();
 
 			for (Int2ObjectMap.Entry<Holder<BarricadeData>> entry : payload.holderIdMap().int2ObjectEntrySet()) {
@@ -50,6 +54,26 @@ public class BarricadeFabricClient implements ClientModInitializer {
 				Holder<BarricadeData> holder = entry.getValue();
 				BarricadeData.ID_MAPPER.addMapping(holder, id);
 			}
+
+			Registry<BarricadeData> registry = context.player().level().registryAccess().lookupOrThrow(BarricadeRegistries.BARRICADE);
+			Holder<BarricadeData> defaultHolder = registry.getOrThrow(ResourceKey.create(
+					BarricadeRegistries.BARRICADE,
+					id("unknown")
+			));
+			BarricadeData.ID_MAPPER.addMapping(
+					BarricadeData.UNKNOWN_HOLDER,
+					registry.asHolderIdMap().getIdOrThrow(defaultHolder)
+			);
+		});
+		ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncBarricadeDataPayload.TYPE, (payload, context) -> {
+			Holder<BarricadeData> holder = BarricadeData.ID_MAPPER.byId(payload.id());
+
+			if (holder == null) {
+				holder = BarricadeData.UNKNOWN_HOLDER;
+			}
+
+			BarricadeBlock.setBarricadeData(Objects.requireNonNull(context.client().level), payload.pos(), holder);
+			((Accessor_LevelRenderer) context.client().levelRenderer).barricade$setBlockDirty(payload.pos(), false);
 		});
 
 		BarricadeRendering.initialize();
