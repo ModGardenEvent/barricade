@@ -14,11 +14,12 @@
 	],
 	"client": [
 		"client.Accessor_LevelRenderer",
+		"client.Accessor_LevelSlice",
 		"client.Accessor_RenderSectionRegion",
 		"client.BlockEntityWithBoundingBoxRendererMixin",
 		"client.ClientLevelMixin",
-		"client.TextureAtlasMixin",
-		"client.Accessor_LevelSlice"
+		"client.Mixin_PlayerInfo",
+		"client.TextureAtlasMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

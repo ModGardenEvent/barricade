@@ -8,6 +8,9 @@ import net.modgarden.barricade.client.model.BarricadeBlockStateModel;
 import net.modgarden.barricade.client.model.item.BarricadeItemModel;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.item.SpecialModelWrapper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
@@ -31,6 +34,11 @@ public final class BarricadeRendering {
 						Identifier.withDefaultNamespace("item/generated"), Optional.empty(), new BarricadeItemModel.Unbaked(context1));
 			});
 		});
+	}
+
+	public static void reloadBarriers() {
+		LevelRenderer levelRenderer = Minecraft.getInstance().levelRenderer;
+		levelRenderer.allChanged();
 	}
 
 	private static void resolveBlockStates(BlockStateResolver.Context context) {

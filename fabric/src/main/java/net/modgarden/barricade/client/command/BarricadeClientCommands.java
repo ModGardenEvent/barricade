@@ -7,7 +7,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
-import net.modgarden.barricade.BarricadeMod;
+
 import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.BarricadeClientConfig;
 
@@ -38,7 +38,8 @@ public class BarricadeClientCommands {
 
 				.build();
 
-		rootNode.addChild(barrierFadeTimeNode);
+		// FIXME: Barrier fading
+//		rootNode.addChild(barrierFadeTimeNode);
 
 		dispatcher.getRoot().addChild(rootNode);
 	}

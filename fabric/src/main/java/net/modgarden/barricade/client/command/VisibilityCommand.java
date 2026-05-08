@@ -13,9 +13,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
-import net.modgarden.barricade.BarricadeMod;
+
 import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.BarricadeClientConfig;
+import net.modgarden.barricade.client.render.BarricadeRendering;
 import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,7 +49,7 @@ public class VisibilityCommand {
 	private static <T> void blocksArg(LiteralCommandNode<T> parent, LiteralCommandNode<T> visibility) {
 		ArgumentCommandNode<T, Identifier> blocks = RequiredArgumentBuilder
 				.<T, Identifier>argument("blocks", IdentifierArgument.id())
-				.suggests((ctx, builder) ->
+				.suggests((_, builder) ->
 						SharedSuggestionProvider.suggestResource(OperatorBlockPseudoTag.Registry.getKeys(), builder)
 				).executes(VisibilityCommand::enableSpecific)
 				.build();
@@ -67,6 +68,7 @@ public class VisibilityCommand {
 		BarricadeClient.CONFIG.save(newConfig, null);
 
 		BarricadeClient.getHelper().sendSuccessClient(context, Component.translatable("command.barricade.visibility.enable.all.success"));
+		BarricadeRendering.reloadBarriers();
 		return 1;
 	}
 
@@ -79,6 +81,7 @@ public class VisibilityCommand {
 		BarricadeClient.CONFIG.save(newConfig, null);
 
 		BarricadeClient.getHelper().sendSuccessClient(context, Component.translatable("command.barricade.visibility.disable.all.success"));
+		BarricadeRendering.reloadBarriers();
 		return 1;
 	}
 

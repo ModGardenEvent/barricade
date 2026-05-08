@@ -3,6 +3,7 @@ package net.modgarden.barricade.client.model;
 import static net.modgarden.barricade.BarricadeMod.id;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -12,6 +13,7 @@ import net.modgarden.barricade.BarricadeMod;
 import net.modgarden.barricade.attachment.BarricadePalette;
 import net.modgarden.barricade.attachment.ModAttachments;
 import net.modgarden.barricade.block.BarricadeBlock;
+import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.data.BarricadeData;
 import net.modgarden.barricade.mixin.client.Accessor_LevelSlice;
 import net.modgarden.barricade.mixin.client.Accessor_RenderSectionRegion;
@@ -31,6 +33,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.PalettedContainer;
@@ -55,6 +58,18 @@ public class BarricadeBlockStateModel implements BlockStateModel {
 			RandomSource random,
 			Predicate<@Nullable Direction> cullTest
 	) {
+		boolean invisible = !BarricadeClient.CONFIG.get().everythingVisible();
+
+		if (Minecraft.getInstance().player != null) {
+			GameType gameType = Objects.requireNonNullElse(Minecraft.getInstance().player.gameMode(), GameType.SURVIVAL);
+
+			if (gameType.isSurvival() && invisible) {
+				return;
+			}
+		} else if (invisible) {
+			return;
+		}
+
 		if (!(state.getBlock() instanceof BarricadeBlock block)) {
 			for (Direction direction : Direction.values()) {
 				if (cullTest.test(direction)) continue;
