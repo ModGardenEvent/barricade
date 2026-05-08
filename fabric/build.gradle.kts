@@ -71,7 +71,7 @@ dependencies {
 	include("lgbt.greenhouse.polyamory.lang.jsonc:polyamory-lang-jsonc:${Versions.POLYAMORY_JSONC}")
 
 	api("gay.sylv.frappe:frappe-ext-terrain-material:${Versions.FRAPPE}")
-	include("gay.sylv.frappe:frappe:${Versions.FRAPPE}")
+//	include("gay.sylv.frappe:frappe:${Versions.FRAPPE}")
 	runtimeOnly("gay.sylv.frappe:mocha:${Versions.MOCHA}")
 }
 
