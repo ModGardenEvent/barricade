@@ -1,9 +1,0 @@
-{
-  "values": [
-    {
-      "id": "#barricade:entity_barriers",
-      "required": false
-    },
-    "barricade:creative_only_barrier"
-  ]
-}

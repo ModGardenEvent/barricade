@@ -1,0 +1,8 @@
+{
+	"name": {
+		"translate": "block.barricade.horizontal_barrier"
+	},
+	"item_icon": "barricade:direction/horizontal",
+	"item_background": "barricade:no_barrier",
+	"directions": ["east", "west", "north", "south"]
+}

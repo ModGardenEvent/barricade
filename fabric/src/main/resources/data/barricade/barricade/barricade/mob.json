@@ -1,0 +1,7 @@
+{
+	"name": {
+		"translate": "block.barricade.mob_barrier"
+	},
+	"icon": "barricade:pig",
+	"condition": "barricade:has_mob"
+}

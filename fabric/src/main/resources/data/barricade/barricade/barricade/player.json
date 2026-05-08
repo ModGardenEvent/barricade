@@ -1,0 +1,7 @@
+{
+	"name": {
+		"translate": "block.barricade.player_barrier"
+	},
+	"icon": "barricade:steve",
+	"condition": "barricade:has_player"
+}

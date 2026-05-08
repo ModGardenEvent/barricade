@@ -1,0 +1,7 @@
+{
+	"name": {
+		"translate": "block.barricade.passive_barrier"
+	},
+	"icon": "barricade:parrot",
+	"condition": "barricade:has_passive"
+}

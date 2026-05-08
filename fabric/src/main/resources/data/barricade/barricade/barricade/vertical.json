@@ -1,0 +1,8 @@
+{
+	"name": {
+		"translate": "block.barricade.vertical_barrier"
+	},
+	"item_icon": "barricade:direction/vertical",
+	"item_background": "barricade:no_barrier",
+	"directions": ["up", "down"]
+}

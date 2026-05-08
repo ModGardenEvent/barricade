@@ -14,7 +14,7 @@ public record BarricadePalette(PalettedContainer<Holder<BarricadeData>> paletted
 	public static final Codec<PalettedContainer<Holder<BarricadeData>>> PALETTED_CONTAINER_CODEC = PalettedContainer.codecRW(
 			BarricadeData.CODEC,
 			BarricadeData.STRATEGY,
-			BarricadeData.DEFAULT_HOLDER
+			BarricadeData.UNKNOWN_HOLDER
 	);
 	public static final Codec<BarricadePalette> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			PALETTED_CONTAINER_CODEC.fieldOf("paletted_container").forGetter(BarricadePalette::palettedContainer)

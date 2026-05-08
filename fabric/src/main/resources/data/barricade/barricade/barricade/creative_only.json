@@ -1,0 +1,7 @@
+{
+	"name": {
+		"translate": "block.barricade.creative_only_barrier"
+	},
+	"icon": "barricade:iron_sword",
+	"condition": "barricade:creative_only"
+}

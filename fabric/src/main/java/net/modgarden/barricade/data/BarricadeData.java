@@ -36,24 +36,28 @@ import java.util.Optional;
 public record BarricadeData(Optional<Component> name,
                             BlockedDirections directions,
                             Optional<Identifier> icon,
+							Optional<Identifier> itemIcon,
+							Optional<Identifier> itemBackground,
                             Optional<Holder<GamePredicate<?>>> condition) {
-	public static BarricadeData DEFAULT = new BarricadeData(Optional.empty(), BlockedDirections.of(Direction.values()), Optional.empty(), Optional.empty());
-	public static final Holder<BarricadeData> DEFAULT_HOLDER = Holder.Reference.createStandAlone(
+	public static BarricadeData DEFAULT = new BarricadeData(Optional.empty(), BlockedDirections.of(Direction.values()), Optional.empty(), Optional.empty(), Optional.of(Identifier.withDefaultNamespace("item/barrier")), Optional.empty());
+	public static final Holder<BarricadeData> UNKNOWN_HOLDER = Holder.Reference.createStandAlone(
 			new HolderOwner<>() {
 				@Override
 				public boolean canSerializeIn(HolderOwner<BarricadeData> context) {
 					return context instanceof Registry<?> registry && registry.key().equals(BarricadeRegistries.BARRICADE);
 				}
 			},
-			ResourceKey.create(BarricadeRegistries.BARRICADE, id("default"))
+			ResourceKey.create(BarricadeRegistries.BARRICADE, id("unknown"))
 	);
 	public static final Identifier UNKNOWN_ICON = id("barricade/icon/unknown");
-	public static final BarricadeData UNKNOWN = new BarricadeData(Optional.empty(), BlockedDirections.of(Direction.values()), Optional.of(UNKNOWN_ICON), Optional.empty());
+	public static final BarricadeData UNKNOWN = new BarricadeData(Optional.empty(), BlockedDirections.of(Direction.values()), Optional.of(UNKNOWN_ICON), Optional.of(UNKNOWN_ICON), Optional.empty(), Optional.empty());
 
 	public static final Codec<BarricadeData> DIRECT_CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			ComponentSerialization.CODEC.optionalFieldOf("name").forGetter(BarricadeData::name),
 			BlockedDirections.CODEC.optionalFieldOf("directions", BlockedDirections.of(Direction.values())).forGetter(BarricadeData::directions),
 			Identifier.CODEC.optionalFieldOf("icon").forGetter(BarricadeData::icon),
+			Identifier.CODEC.optionalFieldOf("item_icon").forGetter(BarricadeData::icon),
+			Identifier.CODEC.optionalFieldOf("item_background").forGetter(BarricadeData::itemBackground),
 			GamePredicate.CODEC
 					.optionalFieldOf("condition")
 					.forGetter(BarricadeData::condition)
@@ -64,35 +68,53 @@ public record BarricadeData(Optional<Component> name,
 	public static final Strategy<Holder<BarricadeData>> STRATEGY = Strategy.createForBlockStates(ID_MAPPER);
 
 	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-	public BarricadeData(Optional<Component> name, BlockedDirections directions, Optional<Identifier> icon, Optional<Holder<GamePredicate<?>>> condition) {
+	public BarricadeData(Optional<Component> name, BlockedDirections directions, Optional<Identifier> icon, Optional<Identifier> itemIcon, Optional<Identifier> itemBackground, Optional<Holder<GamePredicate<?>>> condition) {
 		this.name = name;
 		this.directions = directions;
-		Optional<Identifier> finalIcon = icon.map(Identifier -> {
-			if (!Identifier.getPath().startsWith("barricade/icon")) {
-				return Identifier.withPath(s -> "barricade/icon/" + s);
+		Optional<Identifier> finalIcon = icon.map(id -> {
+			if (!id.getPath().startsWith("barricade/icon/")) {
+				return id.withPath(s -> "barricade/icon/" + s);
 			} else {
-				return Identifier;
+				return id;
+			}
+		});
+		Optional<Identifier> finalItemIcon = itemIcon.map(id -> {
+			if (id.getPath().startsWith("barricade/icon/")) {
+				return id;
+			} else if (!id.getPath().startsWith("item/")) {
+				return id.withPath(s -> "item/barricade/" + s);
+			} else {
+				return id;
+			}
+		});
+		Optional<Identifier> finalItemBackground = itemBackground.map(id -> {
+			if (!id.getPath().startsWith("item/")) {
+				return id.withPath(s -> "item/barricade/" + s);
+			} else {
+				return id;
 			}
 		});
 		// Sanity check for icon
+		// If there's a condition, then we assume an icon is necessary
 		if (condition.isPresent() && icon.isEmpty()) {
 			// Warn user
 			Component knownName = name.orElse(Component.literal("Unknown"));
-			BarricadeMod.LOG.warn("Icon is missing for Advanced Barrier \"{}\"", knownName.getString());
+			BarricadeMod.LOG.warn("Icon is missing for Barricade \"{}\"", knownName.getString());
 			// Use unknown icon
 			finalIcon = Optional.of(UNKNOWN_ICON);
 		}
 		this.icon = finalIcon;
+		this.itemIcon = finalItemIcon;
+		this.itemBackground = finalItemBackground;
 		this.condition = condition;
 	}
 
-
 	public boolean test(
-			@Nullable Level level,
+			@NotNull Level level,
 			@NotNull Entity entity,
 			BlockState state,
 			BlockPos pos
-	) throws Exception {
+	) {
 		return condition.isPresent() && condition.get().value().test(
 				PredicateBarrierBlock.newContext(level, entity, state, pos)
 		);
@@ -102,10 +124,12 @@ public record BarricadeData(Optional<Component> name,
 	public boolean equals(Object other) {
 		if (!(other instanceof BarricadeData(
 				Optional<Component> name1, BlockedDirections directions1, Optional<Identifier> icon1,
+				Optional<Identifier> itemIcon1,
+				Optional<Identifier> itemBackground1,
 				Optional<Holder<GamePredicate<?>>> condition1
 		)))
 			return false;
-		return name1.equals(name) && directions1.equals(directions) && icon1.equals(icon) && condition1.equals(condition);
+		return name1.equals(name) && directions1.equals(directions) && icon1.equals(icon) && itemIcon1.equals(itemIcon) && itemBackground1.equals(itemBackground) && condition1.equals(condition);
 	}
 
 	@Override

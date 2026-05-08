@@ -62,7 +62,13 @@ public class BarricadeBlock extends BarrierBlock {
 			@NonNull BlockPos pos,
 			Level level
 	) {
-		return getBarricadeDataHolder(pos, level).value();
+		Holder<BarricadeData> holder = getBarricadeDataHolder(pos, level);
+
+		if (!holder.isBound()) {
+			return BarricadeData.UNKNOWN;
+		}
+
+		return holder.value();
 	}
 
 	private static @NonNull Holder<BarricadeData> getBarricadeDataHolder(
@@ -71,7 +77,7 @@ public class BarricadeBlock extends BarrierBlock {
 	) {
 		LevelChunk chunk = level.getChunkAt(pos);
 		Int2ObjectMap<BarricadePalette> map = chunk.getAttachedOrCreate(ModAttachments.BARRICADE_PALETTE, Int2ObjectOpenHashMap::new);
-		BarricadePalette palette = map.computeIfAbsent(chunk.getSectionIndex(pos.getY()), _ -> new BarricadePalette(new PalettedContainer<>(BarricadeData.DEFAULT_HOLDER, BarricadeData.STRATEGY)));
+		BarricadePalette palette = map.computeIfAbsent(chunk.getSectionIndex(pos.getY()), _ -> new BarricadePalette(new PalettedContainer<>(BarricadeData.UNKNOWN_HOLDER, BarricadeData.STRATEGY)));
 		return palette.palettedContainer().get(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15);
 	}
 
@@ -88,7 +94,7 @@ public class BarricadeBlock extends BarrierBlock {
 		BarricadePalette palette = map.computeIfAbsent(
 				chunk.getSectionIndex(pos.getY()),
 				_ -> new BarricadePalette(new PalettedContainer<>(
-						BarricadeData.DEFAULT_HOLDER,
+						BarricadeData.UNKNOWN_HOLDER,
 						BarricadeData.STRATEGY
 				))
 		);
@@ -199,7 +205,7 @@ public class BarricadeBlock extends BarrierBlock {
 		Holder<BarricadeData> data = getBarricadeDataHolder(pos, level);
 
 		// Switch to default barrier
-		if (data.unwrapKey().orElseThrow().equals(BarricadeData.DEFAULT_HOLDER.unwrapKey().orElseThrow())) {
+		if (data.unwrapKey().orElseThrow().equals(BarricadeData.UNKNOWN_HOLDER.unwrapKey().orElseThrow())) {
 			return new ItemStack(Items.BARRIER);
 		}
 

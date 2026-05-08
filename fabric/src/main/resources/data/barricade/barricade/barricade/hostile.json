@@ -1,0 +1,7 @@
+{
+	"name": {
+		"translate": "block.barricade.hostile_barrier"
+	},
+	"icon": "barricade:creeper",
+	"condition": "barricade:has_hostile"
+}

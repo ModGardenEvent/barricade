@@ -61,10 +61,6 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generateItemModels(ItemModelGenerators itemModelGenerators) {
-			for (var barrier : StaticBarrierBlock.BARRIERS.values()) {
-				itemModelGenerators.generateFlatItem(barrier.asItem(), ModelTemplates.FLAT_ITEM);
-			}
-
 			generateNoBarrierItem(itemModelGenerators, BarricadeItems.BARRICADE.get());
 		}
 
@@ -93,14 +89,11 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void addTags(HolderLookup.Provider lookup) {
-			getOrCreateTagBuilder(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS, this).add(BarricadeBlocks.BARRICADE.get(), BarricadeBlocks.DOWN_BARRIER.get(), BarricadeBlocks.UP_BARRIER.get(), BarricadeBlocks.NORTH_BARRIER.get(), BarricadeBlocks.SOUTH_BARRIER.get(), BarricadeBlocks.EAST_BARRIER.get(), BarricadeBlocks.WEST_BARRIER.get(), BarricadeBlocks.HORIZONTAL_BARRIER.get(), BarricadeBlocks.VERTICAL_BARRIER.get());
-			getOrCreateTagBuilder(BarricadeTags.BlockTags.ENTITY_BARRIERS, this).add(BarricadeBlocks.BARRICADE.get(), BarricadeBlocks.PLAYER_BARRIER.get(), BarricadeBlocks.MOB_BARRIER.get(), BarricadeBlocks.PASSIVE_BARRIER.get(), BarricadeBlocks.HOSTILE_BARRIER.get());
-			getOrCreateTagBuilder(BarricadeTags.BlockTags.PREDICATE_BARRIERS, this).forceAddTag(BarricadeTags.BlockTags.ENTITY_BARRIERS).add(BarricadeBlocks.CREATIVE_ONLY_BARRIER.get());
-			getOrCreateTagBuilder(BarricadeTags.BlockTags.BARRIERS, this).add(Blocks.BARRIER).forceAddTag(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS).forceAddTag(BarricadeTags.BlockTags.PREDICATE_BARRIERS);
-			getOrCreateTagBuilder(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS, this).forceAddTag(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS).forceAddTag(BarricadeTags.BlockTags.PREDICATE_BARRIERS);
-			getOrCreateTagBuilder(BlockTags.CANNOT_SUPPORT_SNOW_LAYER, this).forceAddTag(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS).forceAddTag(BarricadeTags.BlockTags.PREDICATE_BARRIERS);
-			getOrCreateTagBuilder(BlockTags.DRAGON_IMMUNE, this).forceAddTag(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS).forceAddTag(BarricadeTags.BlockTags.PREDICATE_BARRIERS);
-			getOrCreateTagBuilder(BlockTags.WITHER_IMMUNE, this).forceAddTag(BarricadeTags.BlockTags.DIRECTIONAL_BARRIERS).forceAddTag(BarricadeTags.BlockTags.PREDICATE_BARRIERS);
+			getOrCreateTagBuilder(BarricadeTags.BlockTags.BARRIERS, this).add(Blocks.BARRIER).add(BarricadeBlocks.BARRICADE.get());
+			getOrCreateTagBuilder(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS, this).forceAddTag(BarricadeTags.BlockTags.BARRIERS);
+			getOrCreateTagBuilder(BlockTags.CANNOT_SUPPORT_SNOW_LAYER, this).forceAddTag(BarricadeTags.BlockTags.BARRIERS);
+			getOrCreateTagBuilder(BlockTags.DRAGON_IMMUNE, this).forceAddTag(BarricadeTags.BlockTags.BARRIERS);
+			getOrCreateTagBuilder(BlockTags.WITHER_IMMUNE, this).forceAddTag(BarricadeTags.BlockTags.BARRIERS);
 		}
 	}
 
@@ -115,11 +108,6 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void addTags(HolderLookup.Provider wrapperLookup) {
-			getOrCreateTagBuilder(BarricadeTags.EntityTags.BLOCKED_BY_MOB_BARRIER, this).forceAddTag(BarricadeTags.EntityTags.BLOCKED_BY_HOSTILE_BARRIER).forceAddTag(BarricadeTags.EntityTags.BLOCKED_BY_PASSIVE_BARRIER);
-			getOrCreateTagBuilder(BarricadeTags.EntityTags.BLOCKED_BY_PASSIVE_BARRIER, this).add(
-					EntityType.ALLAY, EntityType.ARMADILLO, EntityType.AXOLOTL, EntityType.BAT, EntityType.BEE, EntityType.CAMEL, EntityType.CAT, EntityType.CHICKEN, EntityType.COD, EntityType.COW, EntityType.DOLPHIN, EntityType.DONKEY, EntityType.FOX, EntityType.FROG, EntityType.GLOW_SQUID, EntityType.GOAT, EntityType.HORSE, EntityType.IRON_GOLEM, EntityType.LLAMA, EntityType.MOOSHROOM, EntityType.MULE, EntityType.OCELOT, EntityType.PANDA, EntityType.PARROT, EntityType.PIG, EntityType.POLAR_BEAR, EntityType.PUFFERFISH, EntityType.RABBIT, EntityType.SALMON, EntityType.SHEEP, EntityType.SKELETON_HORSE, EntityType.SNIFFER, EntityType.SNOW_GOLEM, EntityType.SQUID, EntityType.STRIDER, EntityType.TADPOLE, EntityType.TRADER_LLAMA, EntityType.TROPICAL_FISH, EntityType.TURTLE, EntityType.VILLAGER, EntityType.WANDERING_TRADER, EntityType.WOLF, EntityType.ZOMBIE_HORSE
-			);
-			getOrCreateTagBuilder(BarricadeTags.EntityTags.BLOCKED_BY_HOSTILE_BARRIER, this).add(EntityType.BLAZE, EntityType.BOGGED, EntityType.BREEZE, EntityType.CAVE_SPIDER, EntityType.CREEPER, EntityType.DROWNED, EntityType.ELDER_GUARDIAN, EntityType.ENDER_DRAGON, EntityType.ENDERMAN, EntityType.ENDERMITE, EntityType.GHAST, EntityType.GIANT, EntityType.GUARDIAN, EntityType.HOGLIN, EntityType.HUSK, EntityType.MAGMA_CUBE, EntityType.PHANTOM, EntityType.PIGLIN, EntityType.PIGLIN_BRUTE, EntityType.SHULKER, EntityType.SKELETON, EntityType.SLIME, EntityType.SPIDER, EntityType.STRAY, EntityType.VEX, EntityType.WARDEN, EntityType.WITCH, EntityType.WITHER, EntityType.WITHER_SKELETON, EntityType.ZOGLIN, EntityType.ZOMBIE, EntityType.ZOMBIE_VILLAGER).forceAddTag(EntityTypeTags.RAIDERS);
 		}
 	}
 

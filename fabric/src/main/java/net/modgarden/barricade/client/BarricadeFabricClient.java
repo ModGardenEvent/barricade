@@ -18,8 +18,7 @@ import net.minecraft.server.packs.PackType;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.modgarden.barricade.BarricadeMod;
 import net.modgarden.barricade.client.command.BarricadeClientCommands;
-import net.modgarden.barricade.client.model.BarricadeBlockStateModel;
-import net.modgarden.barricade.client.renderer.BarricadeRendering;
+import net.modgarden.barricade.client.render.BarricadeRendering;
 import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 import net.modgarden.barricade.client.platform.BarricadeClientPlatformHelperFabric;
 import net.modgarden.barricade.data.BarricadeData;
@@ -28,15 +27,11 @@ import net.modgarden.barricade.network.clientbound.ClientboundSyncDynamicRegistr
 import net.modgarden.barricade.network.clientbound.SetServerContextClientboundPacket;
 import net.modgarden.barricade.registry.BarricadeRegistries;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class BarricadeFabricClient implements ClientModInitializer {
-	public static final Map<Identifier, BarricadeBlockStateModel> MODELS = new HashMap<>();
-
 	@Override
 	public void onInitializeClient() {
 		BarricadeClient.init(new BarricadeClientPlatformHelperFabric());
@@ -47,7 +42,7 @@ public class BarricadeFabricClient implements ClientModInitializer {
 
 		ClientCommandRegistrationCallback.EVENT.register(BarricadeClientCommands::registerClientCommands);
 
-		ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncDynamicRegistriesPayload.TYPE, (payload, context) -> {
+		ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncDynamicRegistriesPayload.TYPE, (payload, _) -> {
 			((ClearableIdMapper) BarricadeData.ID_MAPPER).barricade$clear();
 
 			for (Int2ObjectMap.Entry<Holder<BarricadeData>> entry : payload.holderIdMap().int2ObjectEntrySet()) {
@@ -55,14 +50,6 @@ public class BarricadeFabricClient implements ClientModInitializer {
 				Holder<BarricadeData> holder = entry.getValue();
 				BarricadeData.ID_MAPPER.addMapping(holder, id);
 			}
-
-			Holder<BarricadeData> defaultHolder = Objects.requireNonNull(context.client().level)
-					.registryAccess()
-					.getOrThrow(ResourceKey.create(
-							BarricadeRegistries.BARRICADE,
-							id("default")
-					));
-			BarricadeData.ID_MAPPER.addMapping(BarricadeData.DEFAULT_HOLDER, BarricadeData.ID_MAPPER.getId(defaultHolder));
 		});
 
 		BarricadeRendering.initialize();

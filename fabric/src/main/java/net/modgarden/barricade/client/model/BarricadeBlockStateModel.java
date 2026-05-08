@@ -38,7 +38,6 @@ import net.minecraft.world.level.chunk.PalettedContainer;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.loader.api.FabricLoader;
 
 public class BarricadeBlockStateModel implements BlockStateModel {
 	private final Material.Baked barrier;
@@ -56,8 +55,24 @@ public class BarricadeBlockStateModel implements BlockStateModel {
 			RandomSource random,
 			Predicate<@Nullable Direction> cullTest
 	) {
-		BarricadeBlock block = (BarricadeBlock) state.getBlock();
+		if (!(state.getBlock() instanceof BarricadeBlock block)) {
+			for (Direction direction : Direction.values()) {
+				if (cullTest.test(direction)) continue;
+
+				emitter
+						.square(direction, 0, 0, 1, 1, 0)
+						.materialBake(
+								this.barrier,
+								MutableQuadView.BAKE_LOCK_UV
+						)
+						.emit();
+			}
+
+			return;
+		}
+
 		// TODO: reduce object churn?
+		//  what we should do here is hardcode the blocked directions to each direction block state
 		Set<Direction> blockedDirections = block.directions(state).directions();
 
 		// sometimes they'll try to throw us an empty BlockAndTintGetter, and to that I say "no"
@@ -103,7 +118,7 @@ public class BarricadeBlockStateModel implements BlockStateModel {
 		if (palette == null) {
 			BarricadeMod.LOG.error("No attached Barricade Palette found @ {}", pos);
 
-			palette = new BarricadePalette(new PalettedContainer<>(BarricadeData.DEFAULT_HOLDER, BarricadeData.STRATEGY));
+			palette = new BarricadePalette(new PalettedContainer<>(BarricadeData.UNKNOWN_HOLDER, BarricadeData.STRATEGY));
 		}
 
 		BarricadeData barricadeData = palette.palettedContainer().get(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15).value();

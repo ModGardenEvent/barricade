@@ -2,5 +2,7 @@
 	"name": {
 		"translate": "block.barricade.up_barrier"
 	},
+	"item_icon": "barricade:direction/up",
+	"item_background": "barricade:no_barrier",
 	"directions": ["up"]
 }

@@ -1,11 +1,7 @@
 {
   "values": [
     {
-      "id": "#barricade:directional_barriers",
-      "required": false
-    },
-    {
-      "id": "#barricade:predicate_barriers",
+      "id": "#barricade:barriers",
       "required": false
     }
   ]

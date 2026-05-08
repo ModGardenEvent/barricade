@@ -16,12 +16,15 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Holder;
 import net.minecraft.core.IdMap;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -61,6 +64,8 @@ public class BarricadeFabric implements ModInitializer {
 			ResourceManagerHelper.registerBuiltinResourcePack(id("modded_rendering"), modContainer, Component.translatable("resourcePack.barricade.modded_rendering.name"), ResourcePackActivationType.DEFAULT_ENABLED)
 		);
 
+		BarricadeValueTypes.initialize();
+
 		DynamicRegistries.registerSynced(BarricadeRegistries.BARRICADE, BarricadeData.DIRECT_CODEC);
 		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, _) -> {
 			Registry<BarricadeData> registry = Objects.requireNonNull(
@@ -90,10 +95,10 @@ public class BarricadeFabric implements ModInitializer {
 
 				Holder<BarricadeData> defaultHolder = registry.getOrThrow(ResourceKey.create(
 						BarricadeRegistries.BARRICADE,
-						id("default")
+						id("unknown")
 				));
 				BarricadeData.ID_MAPPER.addMapping(
-						BarricadeData.DEFAULT_HOLDER,
+						BarricadeData.UNKNOWN_HOLDER,
 						holderIdMap.getId(defaultHolder)
 				);
 			}
@@ -104,20 +109,15 @@ public class BarricadeFabric implements ModInitializer {
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.OP_BLOCKS).register(entries -> {
 			if (!entries.shouldShowOpRestrictedItems() || !BarricadeMod.serverContext)
 				return;
-			entries.insertAfter(Items.BARRIER,
-					BarricadeItems.UP_BARRIER.get(),
-					BarricadeItems.DOWN_BARRIER.get(),
-					BarricadeItems.NORTH_BARRIER.get(),
-					BarricadeItems.SOUTH_BARRIER.get(),
-					BarricadeItems.WEST_BARRIER.get(),
-					BarricadeItems.EAST_BARRIER.get(),
-					BarricadeItems.HORIZONTAL_BARRIER.get(),
-					BarricadeItems.VERTICAL_BARRIER.get(),
-					BarricadeItems.PLAYER_BARRIER.get(),
-					BarricadeItems.MOB_BARRIER.get(),
-					BarricadeItems.PASSIVE_BARRIER.get(),
-					BarricadeItems.HOSTILE_BARRIER.get(),
-					BarricadeItems.CREATIVE_ONLY_BARRIER.get());
+			ClientLevel level = Minecraft.getInstance().level;
+
+			if (level == null) return;
+
+			for (Holder<BarricadeData> holder : BarricadeData.ID_MAPPER) {
+				ItemStack stack = new ItemStack(BarricadeItems.BARRICADE.get());
+				stack.set(BarricadeComponents.BARRICADE, holder);
+				entries.insertAfter(Items.BARRIER, stack);
+			}
 		});
 	}
 }

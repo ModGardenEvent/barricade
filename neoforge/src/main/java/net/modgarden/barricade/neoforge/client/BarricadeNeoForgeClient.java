@@ -15,7 +15,7 @@ import net.modgarden.barricade.Barricade;
 import net.modgarden.barricade.client.BarricadeClient;
 import net.modgarden.barricade.client.command.BarricadeClientCommands;
 import net.modgarden.barricade.client.model.OperatorUnbakedModel;
-import net.modgarden.barricade.client.renderer.block.AdvancedBarrierBlockRenderer;
+import net.modgarden.barricade.client.render.block.AdvancedBarrierBlockRenderer;
 import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 import net.modgarden.barricade.neoforge.client.bewlr.BarricadeBEWLR;
 import net.modgarden.barricade.neoforge.client.model.CreativeOnlyUnbakedModelGeometry;

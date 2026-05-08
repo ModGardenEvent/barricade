@@ -2,5 +2,7 @@
 	"name": {
 		"translate": "block.barricade.south_barrier"
 	},
+	"item_icon": "barricade:direction/south",
+	"item_background": "barricade:no_barrier",
 	"directions": ["south"]
 }

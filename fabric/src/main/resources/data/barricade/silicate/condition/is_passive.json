@@ -1,5 +1,5 @@
 {
-	"predicate": "entity_is_type",
-	"entity": "${this_entity}",
-	"entity_type": "#barricade:blocked_by_passive_barrier"
+	"predicate": "is_type",
+	"parameter": "this_entity",
+	"value_type": "barricade:passive_mob"
 }

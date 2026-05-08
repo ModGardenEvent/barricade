@@ -86,7 +86,7 @@ public class PredicateBarrierBlock extends StaticBarrierBlock {
 	 * @return Whether to let the entity pass (true) or block the entity (false).
 	 */
 	public boolean test(
-			@Nullable Level level,
+			@NotNull Level level,
 			@NotNull Entity entity,
 			BlockState state,
 			BlockPos pos
@@ -101,7 +101,7 @@ public class PredicateBarrierBlock extends StaticBarrierBlock {
 	}
 
 	public static GameContext newContext(
-			@Nullable Level level,
+			@NotNull Level level,
 			@NotNull Entity entity,
 			BlockState state,
 			BlockPos pos
@@ -126,6 +126,8 @@ public class PredicateBarrierBlock extends StaticBarrierBlock {
 			Level level = null;
 			if (blockGetter instanceof Level) {
 				level = (Level) blockGetter;
+			} else {
+				return Shapes.block();
 			}
 
 			try {
