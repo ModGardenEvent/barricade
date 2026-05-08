@@ -25,10 +25,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.Strategy;
 
 import net.modgarden.barricade.BarricadeMod;
-import net.modgarden.barricade.block.PredicateBarrierBlock;
+import net.modgarden.barricade.block.BarricadeBlock;
 import net.modgarden.barricade.registry.BarricadeRegistries;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -116,7 +115,7 @@ public record BarricadeData(Optional<Component> name,
 			BlockPos pos
 	) {
 		return condition.isPresent() && condition.get().value().test(
-				PredicateBarrierBlock.newContext(level, entity, state, pos)
+				BarricadeBlock.newContext(level, entity, state, pos)
 		);
 	}
 

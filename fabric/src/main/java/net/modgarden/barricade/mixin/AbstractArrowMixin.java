@@ -10,8 +10,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.modgarden.barricade.block.BarricadeBlock;
-import net.modgarden.barricade.block.DirectionalBarrierBlock;
-import net.modgarden.barricade.block.PredicateBarrierBlock;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -23,7 +21,7 @@ public abstract class AbstractArrowMixin {
 	@ModifyVariable(method = "tick", at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER), name = "shape")
 	private VoxelShape entityCollision(VoxelShape shape, @Local BlockPos pos, @Local BlockState state) {
 		Block block = state.getBlock();
-		if (block instanceof BarricadeBlock || block instanceof DirectionalBarrierBlock || block instanceof PredicateBarrierBlock)
+		if (block instanceof BarricadeBlock)
 			// IntelliJ doesn't like that we're getting this
 			//noinspection DataFlowIssue
 			return state.getCollisionShape(((AbstractArrow) (Object) this).level(), pos, CollisionContext.of((AbstractArrow) (Object) this));

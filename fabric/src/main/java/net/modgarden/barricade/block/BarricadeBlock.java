@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -25,6 +26,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import lgbt.greenhouse.silicate.api.context.GameContext;
+import lgbt.greenhouse.silicate.api.context.parameter.GlobalParameterKeys;
+import lgbt.greenhouse.silicate.api.context.parameter.ParameterMap;
 import net.modgarden.barricade.BarricadeMod;
 import net.modgarden.barricade.attachment.BarricadePalette;
 import net.modgarden.barricade.attachment.ModAttachments;
@@ -108,6 +112,21 @@ public class BarricadeBlock extends BarrierBlock {
 			chunk.setAttached(ModAttachments.BARRICADE_PALETTE, null); // FIXME: ugly hack to force sync
 			chunk.setAttached(ModAttachments.BARRICADE_PALETTE, map);
 		}
+	}
+
+	public static GameContext newContext(
+			@NotNull Level level,
+			@NotNull Entity entity,
+			BlockState state,
+			BlockPos pos
+	) {
+		ParameterMap paramMap = ParameterMap.Builder
+				.of()
+				.withParameter(GlobalParameterKeys.THIS_ENTITY, entity)
+				.withParameter(GlobalParameterKeys.BLOCK_STATE, state)
+				.withParameter(GlobalParameterKeys.ORIGIN, pos.getCenter())
+				.build();
+		return GameContext.of(level, paramMap);
 	}
 
 	@Override

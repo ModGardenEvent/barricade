@@ -16,16 +16,12 @@ import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
-import net.modgarden.barricade.block.StaticBarrierBlock;
 import net.modgarden.barricade.mixin.Accessor_TagsProvider;
 import net.modgarden.barricade.registry.BarricadeBlocks;
 import net.modgarden.barricade.registry.BarricadeItems;
@@ -52,10 +48,6 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerators) {
-			for (var barrier : StaticBarrierBlock.BARRIERS.values()) {
-				blockStateModelGenerators.createAirLikeBlock(barrier, Items.BARRIER);
-			}
-
 			blockStateModelGenerators.createAirLikeBlock(BarricadeBlocks.BARRICADE.get(), Items.BARRIER);
 		}
 
@@ -122,7 +114,7 @@ public class BarricadeDataGen implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void addTags(HolderLookup.Provider wrapperLookup) {
-			getOrCreateTagBuilder(BarricadeTags.ItemTags.BARRIERS, this).add(Items.BARRIER).add(BarricadeItems.BARRICADE.get()).add(StaticBarrierBlock.BARRIERS.values().stream().map(Block::asItem).toArray(Item[]::new));
+			getOrCreateTagBuilder(BarricadeTags.ItemTags.BARRIERS, this).add(Items.BARRIER).add(BarricadeItems.BARRICADE.get());
 		}
 	}
 
