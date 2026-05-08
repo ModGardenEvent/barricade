@@ -1,9 +1,10 @@
 ## Features
-- Barriers now fade visibility when a barrier item is equipped or unequipped
+- Advanced Barriers are now called Barricades
+- Barricades are now 100% data-driven with customizable item icons
+- All Barriers have been merged into the new data-driven Barricade item
 
 ## Bugfixes
-- Barriers no longer flicker when interacted with
-- Always render barriers when barrier visibility is enabled
 
 ## Removed
+- All previous Barricade barriers
 - Removed Tiny Pineapple
