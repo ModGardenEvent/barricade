@@ -81,12 +81,6 @@ public class BarricadeBlocks {
 	);
 
 	public static final Set<Supplier<? extends StaticBarrierBlock>> BLOCKS = Set.of(
-			BarricadeBlocks.DOWN_BARRIER,
-			BarricadeBlocks.UP_BARRIER,
-			BarricadeBlocks.SOUTH_BARRIER,
-			BarricadeBlocks.NORTH_BARRIER,
-			BarricadeBlocks.EAST_BARRIER,
-			BarricadeBlocks.WEST_BARRIER,
 			BarricadeBlocks.HORIZONTAL_BARRIER,
 			BarricadeBlocks.VERTICAL_BARRIER,
 			BarricadeBlocks.CREATIVE_ONLY_BARRIER,
