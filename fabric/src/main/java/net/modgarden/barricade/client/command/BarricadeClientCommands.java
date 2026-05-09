@@ -28,7 +28,7 @@ public class BarricadeClientCommands {
 									float seconds = FloatArgumentType.getFloat(ctx, "seconds");
 
 									var oldConfig = BarricadeClient.CONFIG.get();
-									var newConfig = new BarricadeClientConfig(oldConfig.everythingVisible(), oldConfig.visibleBlocks(), seconds);
+									var newConfig = new BarricadeClientConfig(oldConfig.everythingVisible(), oldConfig.disableInSurvival(), oldConfig.visibleBlocks(), seconds);
 									BarricadeClient.CONFIG.save(newConfig, null);
 
 									BarricadeClient.getHelper().sendSuccessClient(ctx, Component.translatable("command.barricade.barrier_fade_time.success"));

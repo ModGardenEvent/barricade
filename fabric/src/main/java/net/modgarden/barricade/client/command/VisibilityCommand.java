@@ -6,12 +6,16 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.datafixers.util.Either;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 
 import net.modgarden.barricade.client.BarricadeClient;
@@ -21,6 +25,7 @@ import net.modgarden.barricade.client.util.OperatorBlockPseudoTag;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class VisibilityCommand {
@@ -43,6 +48,13 @@ public class VisibilityCommand {
 
 		blocksArg(disable, visibility);
 
+		LiteralCommandNode<T> disableInSurvival = LiteralArgumentBuilder
+				.<T>literal("disable_in_survival")
+				.executes(VisibilityCommand::surviveAll)
+				.build();
+
+		visibility.addChild(disableInSurvival);
+
 		root.addChild(visibility);
 	}
 
@@ -64,11 +76,31 @@ public class VisibilityCommand {
 			return 0;
 		}
 
-		var newConfig = new BarricadeClientConfig(true, Set.of(), BarricadeClient.CONFIG.get().barrierFadeTime());
+		var newConfig = new BarricadeClientConfig(true, false, Set.of(), BarricadeClient.CONFIG.get().barrierFadeTime());
 		BarricadeClient.CONFIG.save(newConfig, null);
 
 		BarricadeClient.getHelper().sendSuccessClient(context, Component.translatable("command.barricade.visibility.enable.all.success"));
 		BarricadeRendering.reloadBarriers();
+		return 1;
+	}
+
+	// haha get it, survive-ALL? survival? no?
+	public static int surviveAll(CommandContext<?> context) {
+		if (BarricadeClient.CONFIG.get().everythingVisible() && BarricadeClientConfig.DEFAULT.disableInSurvival()) {
+			BarricadeClient.getHelper().sendFailureClient(context, Component.translatable("command.barricade.visibility.enable.survival.error.already_enabled"));
+			return 0;
+		}
+
+		var newConfig = new BarricadeClientConfig(true, true, Set.of(), BarricadeClient.CONFIG.get().barrierFadeTime());
+		BarricadeClient.CONFIG.save(newConfig, null);
+
+		BarricadeClient.getHelper().sendSuccessClient(context, Component.translatable("command.barricade.visibility.enable.survival.success"));
+
+		LocalPlayer player = Minecraft.getInstance().player;
+		if (player != null && Objects.requireNonNullElse(player.gameMode(), GameType.DEFAULT_MODE).isSurvival()) {
+			BarricadeRendering.reloadBarriers();
+		}
+
 		return 1;
 	}
 
@@ -77,7 +109,7 @@ public class VisibilityCommand {
 			BarricadeClient.getHelper().sendFailureClient(context, Component.translatable("command.barricade.visibility.disable.all.error.already_disabled"));
 			return 0;
 		}
-		var newConfig = new BarricadeClientConfig(false, Set.of(), BarricadeClient.CONFIG.get().barrierFadeTime());
+		var newConfig = new BarricadeClientConfig(false, false, Set.of(), BarricadeClient.CONFIG.get().barrierFadeTime());
 		BarricadeClient.CONFIG.save(newConfig, null);
 
 		BarricadeClient.getHelper().sendSuccessClient(context, Component.translatable("command.barricade.visibility.disable.all.success"));
@@ -98,7 +130,7 @@ public class VisibilityCommand {
 
 		Set<Either<Identifier, ResourceKey<Block>>> newSpecifics = new HashSet<>(oldConfig.visibleBlocks());
 		newSpecifics.add(blocksTagResult.tag());
-		var newConfig = new BarricadeClientConfig(false, newSpecifics, oldConfig.barrierFadeTime());
+		var newConfig = new BarricadeClientConfig(false, false, newSpecifics, oldConfig.barrierFadeTime());
 		BarricadeClient.CONFIG.save(newConfig, null);
 
 		BarricadeClient.getHelper().sendSuccessClient(context, Component.translatable("command.barricade.visibility.enable.blocks.success", blocksTagResult.id().toString()));
@@ -123,7 +155,7 @@ public class VisibilityCommand {
 
 		Set<Either<Identifier, ResourceKey<Block>>> newSpecifics = new HashSet<>(oldConfig.visibleBlocks());
 		newSpecifics.remove(blocksTagResult.tag());
-		var newConfig = new BarricadeClientConfig(false, newSpecifics, oldConfig.barrierFadeTime());
+		var newConfig = new BarricadeClientConfig(false, false, newSpecifics, oldConfig.barrierFadeTime());
 		BarricadeClient.CONFIG.save(newConfig, null);
 
 		BarricadeClient.getHelper().sendSuccessClient(context, Component.translatable("command.barricade.visibility.disable.blocks.success", blocksTagResult.id().toString()));

@@ -1,7 +1,8 @@
 ## Features
 
 ## Bugfixes
-- Fixed data attachment desynchronization issue in multiplayer
+- flickering
+- unknown barricade in creative inventory
 
 ## Removed
 - Removed Tiny Pineapple

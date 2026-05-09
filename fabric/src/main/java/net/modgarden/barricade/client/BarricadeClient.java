@@ -22,7 +22,7 @@ public class BarricadeClient {
 	public static final GreenhouseConfigHolder<BarricadeClientConfig> CONFIG = GreenhouseConfigHolder.register(
 			BarricadeClientConfig.class,
 			BarricadeMod.MOD_ID,
-			3,
+			4,
 			GreenhouseConfigJsonCLang.INSTANCE,
 			GreenhouseConfigSide.CLIENT,
 			builder -> builder
@@ -35,6 +35,17 @@ public class BarricadeClient {
 							Codec.BOOL,
 							BarricadeClientConfig.DEFAULT.everythingVisible(),
 							BarricadeClientConfig::everythingVisible,
+							DefaultValueCommentSettings.PREPEND
+					)
+					.withValue(
+							"disable_in_survival",
+							"""
+							Whether invisible blocks should be invisible in survival.
+							WARNING: This will cause flickering when changing game modes!
+							""",
+							Codec.BOOL,
+							BarricadeClientConfig.DEFAULT.disableInSurvival(),
+							BarricadeClientConfig::disableInSurvival,
 							DefaultValueCommentSettings.PREPEND
 					)
 					.withValue(

@@ -7,9 +7,10 @@ import net.minecraft.world.level.block.Block;
 import java.util.Set;
 
 public record BarricadeClientConfig(boolean everythingVisible,
+									boolean disableInSurvival,
                                     Set<Either<Identifier, ResourceKey<Block>>> visibleBlocks,
                                     float barrierFadeTime) {
-	public static final BarricadeClientConfig DEFAULT = new BarricadeClientConfig(false, Set.of(), 2.0f);
+	public static final BarricadeClientConfig DEFAULT = new BarricadeClientConfig(false, false, Set.of(), 2.0f);
 
 	public float barrierFadeTimeTicks() {
 		return barrierFadeTime * 20.0f;

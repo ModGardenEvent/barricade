@@ -14,6 +14,7 @@ import net.modgarden.barricade.attachment.BarricadePalette;
 import net.modgarden.barricade.attachment.ModAttachments;
 import net.modgarden.barricade.block.BarricadeBlock;
 import net.modgarden.barricade.client.BarricadeClient;
+import net.modgarden.barricade.client.BarricadeClientConfig;
 import net.modgarden.barricade.data.BarricadeData;
 import net.modgarden.barricade.mixin.client.Accessor_LevelSlice;
 import net.modgarden.barricade.mixin.client.Accessor_RenderSectionRegion;
@@ -59,12 +60,13 @@ public class BarricadeBlockStateModel implements BlockStateModel {
 			RandomSource random,
 			Predicate<@Nullable Direction> cullTest
 	) {
-		boolean invisible = !BarricadeClient.CONFIG.get().everythingVisible();
+		BarricadeClientConfig config = BarricadeClient.CONFIG.get();
+		boolean invisible = !config.everythingVisible();
 
-		if (Minecraft.getInstance().player != null) {
+		if (Minecraft.getInstance().player != null && config.disableInSurvival()) {
 			GameType gameType = Objects.requireNonNullElse(Minecraft.getInstance().player.gameMode(), GameType.SURVIVAL);
 
-			if (gameType.isSurvival() && invisible) {
+			if (gameType.isSurvival()) {
 				return;
 			}
 		} else if (invisible) {
