@@ -8,6 +8,7 @@ import java.util.Set;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
@@ -30,9 +31,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.modgarden.barricade.attachment.BarricadePalette;
 import net.modgarden.barricade.attachment.ModAttachments;
 import net.modgarden.barricade.block.BarricadeBlock;
 import net.modgarden.barricade.block.entity.BarricadeBlockEntity;
@@ -94,6 +97,19 @@ public class BarricadeFabric implements ModInitializer {
 		);
 
 		BarricadeValueTypes.initialize();
+
+		// FIXME: find a better solution because this is fucking hacky
+		ServerPlayerEvents.JOIN.register(player -> {
+			player.getChunkTrackingView().forEach(chunkPos -> {
+				LevelChunk chunk = player.level().getChunk(chunkPos.x(), chunkPos.z());
+				Int2ObjectMap<BarricadePalette> palettes = chunk.getAttached(ModAttachments.BARRICADE_PALETTE);
+
+				if (palettes != null) {
+					chunk.setAttached(ModAttachments.BARRICADE_PALETTE, null);
+					chunk.setAttached(ModAttachments.BARRICADE_PALETTE, palettes);
+				}
+			});
+		});
 
 		DynamicRegistries.registerSynced(BarricadeRegistries.BARRICADE, BarricadeData.DIRECT_CODEC);
 		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, _) -> {
