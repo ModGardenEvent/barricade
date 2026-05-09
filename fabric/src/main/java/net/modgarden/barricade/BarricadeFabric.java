@@ -144,6 +144,10 @@ public class BarricadeFabric implements ModInitializer {
 			if (level == null) return;
 
 			for (Holder<BarricadeData> holder : BarricadeData.ID_MAPPER) {
+				if (holder.is(BarricadeData.UNKNOWN_HOLDER) || holder.is(id("unknown"))) {
+					continue;
+				}
+
 				ItemStack stack = new ItemStack(BarricadeItems.BARRICADE.get());
 				stack.set(BarricadeComponents.BARRICADE, holder);
 				entries.insertAfter(Items.BARRIER, stack);
