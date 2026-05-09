@@ -1,7 +1,7 @@
 package net.modgarden.barricade.gradle
 
 object Versions {
-	const val MOD = "3.0.0-beta.1"
+	const val MOD = "3.0.0-beta.2"
 	const val MOD_STABILITY = "beta" // stable, beta, alpha
 
 	const val MINECRAFT = "26.1.1"

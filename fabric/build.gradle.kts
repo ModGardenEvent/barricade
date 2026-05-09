@@ -18,6 +18,7 @@ repositories {
 	maven("https://maven.caffeinemc.net/releases") {
 		name = "CaffeineMC"
 	}
+	mavenCentral()
 }
 
 sourceSets {
@@ -73,6 +74,8 @@ dependencies {
 	api("gay.sylv.frappe:frappe-ext-terrain-material:${Versions.FRAPPE}")
 //	include("gay.sylv.frappe:frappe:${Versions.FRAPPE}")
 	runtimeOnly("gay.sylv.frappe:mocha:${Versions.MOCHA}")
+
+	compileOnly("dev.lukebemish:codecextras:3.0.0")
 }
 
 loom {

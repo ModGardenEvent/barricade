@@ -6,11 +6,13 @@
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 		"AbstractArrowMixin",
+		"Accessor_DynamicMetaPredicate",
 		"Accessor_TagsProvider",
 		"BarrierBlockMixin",
 		"BlockBehaviourBlockStateBaseMixin",
 		"BlockMixin",
-		"Mixin_IdMapper"
+		"Mixin_IdMapper",
+		"Mixin_KeyedRecordCodecBuilder"
 	],
 	"client": [
 		"client.Accessor_LevelRenderer",
