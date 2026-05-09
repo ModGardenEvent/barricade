@@ -31,6 +31,7 @@ import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.GameType;
@@ -136,7 +137,15 @@ public class BarricadeBlockStateModel implements BlockStateModel {
 			palette = new BarricadePalette(new PalettedContainer<>(BarricadeData.UNKNOWN_HOLDER, BarricadeData.STRATEGY));
 		}
 
-		BarricadeData barricadeData = palette.palettedContainer().get(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15).value();
+		Holder<BarricadeData> holder = palette.palettedContainer().get(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15);
+		BarricadeData barricadeData;
+
+		if (!holder.isBound()) {
+			barricadeData = BarricadeData.UNKNOWN;
+		} else {
+			barricadeData = holder.value();
+		}
+
 		TextureAtlas blockAtlas = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(QuadAtlas.BLOCK.getId());
 		Identifier iconId = barricadeData.icon().orElse(null);
 		var icon = iconId != null ? new Material.Baked(blockAtlas.getSprite(iconId), false) : null;

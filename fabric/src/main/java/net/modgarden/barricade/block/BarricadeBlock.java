@@ -106,7 +106,13 @@ public class BarricadeBlock extends BarrierBlock implements EntityBlock {
 			Optional<BarricadeBlockEntity> optionalBlockEntity = chunk.getBlockEntity(pos, BarricadeBlockEntityTypes.BARRICADE);
 
 			if (optionalBlockEntity.isPresent()) {
-				return BarricadeData.ID_MAPPER.byIdOrThrow(optionalBlockEntity.get().id);
+				Holder<BarricadeData> holder1 = BarricadeData.ID_MAPPER.byId(optionalBlockEntity.get().id);
+
+				if (holder1 == null) {
+					return BarricadeData.UNKNOWN_HOLDER;
+				}
+
+				return holder1;
 			}
 		}
 
