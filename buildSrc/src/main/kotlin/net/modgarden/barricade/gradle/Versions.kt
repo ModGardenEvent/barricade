@@ -1,13 +1,11 @@
 package net.modgarden.barricade.gradle
 
 object Versions {
-	const val MOD = "3.0.0-beta.3"
+	const val MOD = "3.0.0-beta.4"
 	const val MOD_STABILITY = "beta" // stable, beta, alpha
 
-	const val MINECRAFT = "26.1.1"
-	const val PARCHMENT_MINECRAFT = "1.21.11"
+	const val MINECRAFT = "26.1.2"
 	const val NEOFORM = "$MINECRAFT-1"
-	const val PARCHMENT = "2025.12.20"
 
 	const val FABRIC_API = "0.148.0+26.1.2"
 	const val FABRIC_LOADER = "0.19.2"

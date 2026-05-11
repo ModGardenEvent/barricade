@@ -1,8 +1,8 @@
 ## Features
 
 ## Bugfixes
-- flickering world when switching game modes or players joining
-- unknown barricade in creative inventory
+- use of deprecated fabric api modules
+- use of client-only code in common entrypoint
 
 ## Removed
 - Removed Tiny Pineapple

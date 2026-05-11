@@ -16,12 +16,10 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
+import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Holder;
 import net.minecraft.core.IdMap;
 import net.minecraft.core.Registry;
@@ -93,7 +91,7 @@ public class BarricadeFabric implements ModInitializer {
 		PayloadTypeRegistry.clientboundPlay().register(ClientboundSyncBarricadeDataPayload.TYPE, ClientboundSyncBarricadeDataPayload.STREAM_CODEC);
 
 		FabricLoader.getInstance().getModContainer(BarricadeMod.MOD_ID).ifPresent(modContainer ->
-			ResourceManagerHelper.registerBuiltinResourcePack(id("modded_rendering"), modContainer, Component.translatable("resourcePack.barricade.modded_rendering.name"), ResourcePackActivationType.DEFAULT_ENABLED)
+			ResourceLoader.registerBuiltinPack(id("modded_rendering"), modContainer, Component.translatable("resourcePack.barricade.modded_rendering.name"), PackActivationType.DEFAULT_ENABLED)
 		);
 
 		BarricadeValueTypes.initialize();
@@ -139,9 +137,6 @@ public class BarricadeFabric implements ModInitializer {
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.OP_BLOCKS).register(entries -> {
 			if (!entries.shouldShowOpRestrictedItems() || !BarricadeMod.serverContext)
 				return;
-			ClientLevel level = Minecraft.getInstance().level;
-
-			if (level == null) return;
 
 			for (Holder<BarricadeData> holder : BarricadeData.ID_MAPPER) {
 				if (holder.is(BarricadeData.UNKNOWN_HOLDER) || holder.is(id("unknown"))) {
